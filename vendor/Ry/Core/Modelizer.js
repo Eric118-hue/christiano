@@ -17,6 +17,24 @@ export default function Modelizer(It) {
             if(base!==null)
                 return base
         }
+
+        return fallback
+    }
+
+    It.prototype.descend = function(it, path, value) {
+        if(!it)
+            it = {}
+        let base = it
+        let ar = path.split('.')
+        if(ar.length>0) {
+            for(var i=0; i<ar.length; i++) {
+                if(base && !(ar[i] in base)) {
+                    base[ar[i]] = {}
+                    base = base[ar[i]]
+                }
+            }
+        }
+        base = value
     }
 
     It.prototype.models = function(path, fallback=''){

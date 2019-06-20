@@ -28,7 +28,7 @@
     padding: 14px;
     top: 100px;
     z-index: 100000;
-    color: $primary;
+    color: #1fb5ac;
     right: 0;
     background: #000000bb;
     border-top-left-radius: 56px;
@@ -60,10 +60,9 @@ $hover-breadcrumb : lighten($primary, 3%);
 
 .breadcrumbs-alt {
     list-style-type:none;
-    margin:0px 0 20px;
+    margin:0;
     overflow:hidden;
     padding:0;
-    width:100%;
 }
 
 .breadcrumbs-alt li {

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import * as d3 from 'd3';
 import $ from 'jquery';
 import './LineBar.scss';
-import {DATES} from '../../core/translations';
+import {DATES} from '../../../../app/translations';
 
 export const LOCALEFR = d3.timeFormatLocale(DATES)
 
@@ -95,21 +95,15 @@ class LineBarMultiple extends Component
             .attr("r", 3)
             .on("mouseover", function(d, b, c) { 
                 var div = d3.select("#chart-tooltip")
-                div.transition()		
-                    .duration(200)		
-                    .style("opacity", .9);		
                 div.html(function(){
                     var date = new Date(d.x);
                     return LOCALEFR.format("%d %b")(date)+'<br/>'+yFormat(d.y)
                 })
-                    .style("left", (d3.event.pageX) + "px")		
-                    .style("top", (d3.event.pageY - 38) + "px");
+                div.style("left", (d3.event.pageX - 10 - $('#chart-tooltip').width()/2) + "px")		
+                    .style("top", (d3.event.pageY - 25 - $('#chart-tooltip').height()) + "px");
+                    $('#chart-tooltip').addClass('tooltip-show')
             }).on("mouseout", function(d) {		
-                var div = d3.select("#chart-tooltip")
-                div.transition()	
-                    .delay(2000)		
-                    .duration(500)		
-                    .style("opacity", 0);	
+                $('#chart-tooltip').removeClass('tooltip-show');	
             });
 
         this.baries = svg.append("g").attr("transform", `translate(0,0)`).attr("id", "bar-chart").attr('class', 'd-none');
@@ -132,22 +126,16 @@ class LineBarMultiple extends Component
             .attr("transform", `translate(2,0)`)
             .attr('class', 'fill-violet-4')
             .on("mouseover", function(d, i) {
-                var div = d3.select("#chart-tooltip")
-                div.transition()		
-                    .duration(200)		
-                    .style("opacity", .9);		
+                var div = d3.select("#chart-tooltip")	
                 div.html(function(){
                     var date = new Date(d.x);
                     return LOCALEFR.format("%d %b")(date)+'<br/>'+yFormat(d.y)
                 })
-                    .style("left", (d3.event.pageX) + "px")		
-                    .style("top", (d3.event.pageY - 28) + "px");
+                div.style("left", (d3.event.pageX - 10 - $('#chart-tooltip').width()/2) + "px")		
+                    .style("top", (d3.event.pageY - 25 - $('#chart-tooltip').height()) + "px");
+                    $('#chart-tooltip').addClass('tooltip-show')
             }).on("mouseout", function(d) {	
-                var div = d3.select("#chart-tooltip")	
-                div.transition()
-                    .delay(1000)		
-                    .duration(500)		
-                    .style("opacity", 0);	
+                $('#chart-tooltip').removeClass('tooltip-show');	
             });
     }
 

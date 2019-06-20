@@ -6,14 +6,14 @@ class Pie extends Component
 {
     componentDidMount() {
         const layout = {
-            width: 300,
-            height: 300,
+            width: 150,
+            height: 150,
             gutter : 10,
             margin: {
                 top : 0,
-                right : 0,
+                right : 20,
                 bottom : 0,
-                left : 0
+                left : 20
             }
         }
 
@@ -32,8 +32,8 @@ class Pie extends Component
             .append('svg:svg')
             .data([data])
             .attr('preserveAspectRatio', 'xMinYMin meet')
-            .attr('viewBox', `0 0 ${layout.width} ${layout.height}`)
-            .attr('width', layout.width)
+            .attr('viewBox', `0 0 ${layout.width+layout.margin.left+layout.margin.right} ${layout.height}`)
+            .attr('width', layout.width+layout.margin.left+layout.margin.right)
             .attr('height', layout.height)
         
         var arc = d3.arc()
@@ -41,7 +41,7 @@ class Pie extends Component
         .innerRadius(layout.width/2-layout.width/5)
 
         var container = svg.append("g")
-        .attr("transform", `translate(${layout.width/2}, ${layout.height/2})`)
+        .attr("transform", `translate(${layout.width/2+layout.margin.left}, ${layout.height/2+layout.margin.top})`)
 
         const format = d3.format(".2f")
         
@@ -54,19 +54,13 @@ class Pie extends Component
             })            
             .attr("d", arc)
             .on("mouseover", function(d, i) {
-                var div = d3.select("#chart-tooltip")
-                div.transition()		
-                    .duration(200)		
-                    .style("opacity", .9);		
-                div.html(data[i].title+": "+format(100*data[i].quantity/sum)+"%")
-                    .style("left", (d3.event.pageX) + "px")		
-                    .style("top", (d3.event.pageY - 28) + "px");
-            }).on("mouseout", function(d) {	
                 var div = d3.select("#chart-tooltip")	
-                div.transition()	
-                    .delay(2000)		
-                    .duration(500)		
-                    .style("opacity", 0);	
+                div.html(data[i].title+": "+format(100*data[i].quantity/sum)+"%")
+                div.style("left", (d3.event.pageX - 10 - $('#chart-tooltip').width()/2) + "px")		
+                    .style("top", (d3.event.pageY - 25 - $('#chart-tooltip').height()) + "px");
+                    $('#chart-tooltip').addClass('tooltip-show');	
+            }).on("mouseout", function(d) {	
+                $('#chart-tooltip').removeClass('tooltip-show');	
             });
 
         var labelGroup = container.append("g")
@@ -76,7 +70,7 @@ class Pie extends Component
             .append("text")
             .attr("d", arc)
             .attr("text-anchor", "middle")
-            .attr("font-size", "24px")
+            .attr("font-size", 12)
             .attr("transform", function(d, i){
                 var centroids = arc.centroid(d);
                 return `translate(${centroids[0]},${centroids[1]})`;
@@ -90,13 +84,13 @@ class Pie extends Component
     render() {
         const titleStyle = {color:"#afaebc"}; 
 
-        return <div className="bg-white mt-1 pt-2 h-100 rounded">
-			<h6 className="font-14 mb-4 text-center" style={titleStyle} dangerouslySetInnerHTML={{__html:this.props.data.title}}></h6>		
+        return <div className="bg-white pt-2 h-100 rounded">
+			<h6 className="font-14 text-center" style={titleStyle} dangerouslySetInnerHTML={{__html:this.props.data.title}}></h6>		
             <div className="row m-3">
-                <div className="col-md-60 p-0">
-                    <div ref="pie" className="vis"></div>
+                <div className="col p-0" style={{marginLeft:20}}>
+                    <div ref="pie" className="vis" style={{height:145}}></div>
                 </div>
-                <div className="col-md-40">
+                <div className="p-0">
                     <ul className="list-group font-12">
                         {this.props.data.data.map((item, key)=><li key={`pie-${this.props.data.id}-${key}`} className="list-unstyled"><i className={`fa fa-circle text-${item.color.replace(/-\d+/, '')}`}></i> {item.title}</li>)}
                     </ul>

@@ -124,13 +124,13 @@ class Gauge extends Component
     	const titleStyle = {color:"#afaebc"};
     	const subtitleStyle = {color:"#767676"};
 
-        return <div className="bg-white mt-1 pt-2 text-center h-100 rounded">
-			<h6 className="font-14 mb-0 text-center" style={titleStyle} dangerouslySetInnerHTML={{__html:this.props.data.title}}></h6>
-			<span className="alpha-60 font-15" style={subtitleStyle}>{this.props.data.subtitle}</span><br/>
-			<div ref="powergauge" className="vis"></div>
+        return <div className="bg-white pt-2 text-center h-100 rounded">
+			<h6 className="font-14 mb-3 text-center" style={titleStyle} dangerouslySetInnerHTML={{__html:this.props.data.title}}></h6>
+			<span className="font-15" style={subtitleStyle}>{this.props.data.subtitle}</span><br/>
+			<div ref="powergauge" className="vis" style={{width:210, margin:'0 auto'}}></div>
 			<div className="m-0 ml-3 mr-3 mt-2">
 				<h3 className="text-orange font-16 float-left">{this.props.data.label}</h3>
-				<span className="font-13 float-right" style={subtitleStyle}><strong>{this.props.data.sublabel}</strong></span>
+				<span className="font-13 float-right" style={subtitleStyle}>{this.props.data.sublabel}</span>
 			</div>
 		</div>
     }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import trans from '../translations';
+import trans from '../../../../app/translations';
 import $ from 'jquery';
 
 class AwareInput extends Component

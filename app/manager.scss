@@ -68,9 +68,10 @@ $max-menu-level: 5;
 
 //lucid
 @import '../vendor/lucid/scss/style.scss';
+@import '../vendor//lucid/vendor/light/assets/scss/color_skins.scss';
 
 //app
-@import "../core/Core.scss";
+@import "../vendor/Ry/Core/Core.scss";
 
 @import "../vendor/Ry/Profile/Editor";
 @import "../vendor/Ry/Categories/Categorie.scss";

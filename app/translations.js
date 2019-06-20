@@ -1,5 +1,5 @@
 import LocalizedStrings from 'react-localization';
-import { frtranslations, entranslations, estranslations } from './env';
+import { frtranslations, entranslations, estranslations } from '../env';
 import blank from '../medias/images/blank.png';
 import moment from 'moment';
 import $ from 'jquery';

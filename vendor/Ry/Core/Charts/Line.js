@@ -7,8 +7,8 @@ class Line extends Component
 {
     componentDidMount() {
         const layout = {
-            width: 640,
-            height: 300,
+            width: 305,
+            height: 150,
             gutter : 10,
             margin: {
                 top : 10,
@@ -95,31 +95,24 @@ class Line extends Component
                 return xScale(moment(d.month).toDate())
             })
             .attr("cy", function(d){return yScale(d.quantity)})
-            .attr("r", 4)
+            .attr("r", 1)
             .on("mouseover", function(d, b, c) { 
                 var div = d3.select("#chart-tooltip")
-                div.transition()		
-                    .duration(200)		
-                    .style("opacity", .9);		
                 div.html(format(d.quantity)+" €")
-                    .style("left", (d3.event.pageX) + "px")		
-                    .style("top", (d3.event.pageY - 28) + "px");
+                div.style("left", (d3.event.pageX - 10 - $('#chart-tooltip').width()/2) + "px")		
+                    .style("top", (d3.event.pageY - 25 - $('#chart-tooltip').height()) + "px");
+                    $('#chart-tooltip').addClass('tooltip-show')
             }).on("mouseout", function(d) {		
-                var div = d3.select("#chart-tooltip")
-                div.transition()	
-                    .delay(2000)		
-                    .duration(500)		
-                    .style("opacity", 0);	
+                $('#chart-tooltip').removeClass('tooltip-show');	
             });
     }
 
     render() {
         const titleStyle = {color:"#afaebc"}; 
 
-        return <div className="bg-white mt-1 pt-2 text-center h-100 rounded">
-            <h6 className="font-14 mb-4 text-center" style={titleStyle} dangerouslySetInnerHTML={{__html:this.props.data.title}}></h6>
+        return <div className="bg-white pt-2 text-center h-100 rounded">
+            <h6 className="font-14 mb-0 text-center" style={titleStyle} dangerouslySetInnerHTML={{__html:this.props.data.title}}></h6>
             <div ref="line" className="vis"></div>
-            <div className="pt-3" dangerouslySetInnerHTML={{__html:this.props.data.subtitle}}></div>
         </div>
     }
 }

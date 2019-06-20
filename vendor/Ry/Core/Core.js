@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import $ from 'jquery';
-import Overlays from '../vendor/bs/Overlays';
-import {logo} from '../env';
-import trans from './translations';
+import Overlays from '../../bs/Overlays';
+import {logo} from '../../../env';
+import trans from '../../../app/translations';
 import toastr from 'toastr';
 import {Img} from './Ry';
 
@@ -75,7 +75,7 @@ class Core extends Component
 		    		<i className="fa fa-2x fa-sync-alt fa-spin"></i> {trans("patientez")}
 		    	</div>
 		    </div>
-			<div id="chart-tooltip" className="tooltip bg-dark text-light p-2" style={{opacity: 0}}></div>
+			<div id="chart-tooltip" className="chartist-tooltip bg-dark text-light p-2"></div>
 		</React.Fragment>
 	}
 }

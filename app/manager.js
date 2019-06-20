@@ -1,19 +1,21 @@
 import Lucid from '../vendor/lucid';
 import './manager.scss';
 import RyManager from '../vendor/Ry/Manager';
-import __OPTIONTREE from '../core/OptionTree';
+import __OPTIONTREE from '../vendor/Ry/Core/OptionTree';
 import __ADMINTOOLS from '../vendor/Ry/Admin/AdminTools';
 import __NAVIGATION_BY_ROLE from '../vendor/Ry/Admin/NavigationByRole';
-import __CORE from '../core/Core';
+import __CORE from '../vendor/Ry/Core/Core';
 import __TRANSLATOR, {TraductionsDialog, Languages} from '../vendor/Ry/Admin/Translator';
 import __USER from '../vendor/Ry/Admin/User';
-import __CHART from '../core/Charts';
+import __CHART from '../vendor/Ry/Core/Charts';
 import __EMAILS from '../vendor/Ry/Profile/Emails';
 import __EDITOR from '../vendor/Ry/Profile/Editor';
 import __CATEGORIES from '../vendor/Ry/Categories';
-import __TUTO from '../core/Tuto';
+import __TUTO from '../vendor/Ry/Core/Tuto';
+import App from './App';
 
 const Components = {
+    App : App,
     Ry : {
         Admin : {
             User : __USER,

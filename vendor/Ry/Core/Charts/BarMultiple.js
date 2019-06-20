@@ -85,19 +85,13 @@ class BarMultiple extends Component
             .attr("transform", "translate(5, 0)")
             .attr('class', 'fill-turquoise-0')
             .on("mouseover", function(d, i) {
-                var div = d3.select("#chart-tooltip")
-                div.transition()		
-                    .duration(200)		
-                    .style("opacity", .9);		
-                div.html(tooltip.replace(':n', d.quantity))
-                    .style("left", (d3.event.pageX) + "px")		
-                    .style("top", (d3.event.pageY - 28) + "px");
-            }).on("mouseout", function(d) {	
                 var div = d3.select("#chart-tooltip")	
-                div.transition()	
-                    .delay(2000)		
-                    .duration(500)		
-                    .style("opacity", 0);	
+                div.html(tooltip.replace(':n', d.quantity))
+                    .style("left", (d3.event.pageX - 10 - $('#chart-tooltip').width()/2) + "px")		
+                    .style("top", (d3.event.pageY - 25 - $('#chart-tooltip').height()) + "px");
+                    $('#chart-tooltip').addClass('tooltip-show')
+            }).on("mouseout", function(d) {
+                $('#chart-tooltip').removeClass('tooltip-show');	
             });
 
         lesx.append("line")
