@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
 import trans from '../translations';
 import moment from 'moment';
+import UPUList from './UPUList';
 
-class Upu extends Component
+class List extends Component
 {
     render() {
         return <div className="col-md-12">
@@ -17,6 +18,7 @@ class Upu extends Component
                                 <th>{trans('Code List Number')}</th>
                                 <th>{trans('Code List Name')}</th>
                                 <th>{trans('Date the code list was last modified')}</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -24,6 +26,7 @@ class Upu extends Component
                                 <td>{item.code}</td>
                                 <td>{item.name}</td>
                                 <td>{moment(item.revision_at).format('DD/MM/YYYY')}</td>
+                                <td><a href={`/upu/${item.id}`}><i className="fa fa-share-square"></i></a></td>
                             </tr>)}
                         </tbody>
                     </table>
@@ -33,4 +36,16 @@ class Upu extends Component
     }
 }
 
-export default Upu;
+class Upu extends Component
+{
+    render() {
+        return <List data={this.props.data.data}/>
+    }
+}
+
+const Components = {
+    List : Upu,
+    UPUList : UPUList
+}
+
+export default Components;

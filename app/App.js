@@ -1,9 +1,10 @@
 import Upu from './Upu';
-import Airport from './Air'
+import Air from './Air'
 
 const Components = {
-    List : Upu,
-    Airport : Airport
+    Upu : Upu,
+    Airport : Air.Airport,
+    Airline : Air.Airline
 };
 
 export default Components;

@@ -1,13 +1,20 @@
 const CKEDITOR = window.CKEDITOR;
 
-export default {
+const ckmodules = []
+
+const ckeditorconf = {
+    addModule : (modulename)=>{
+        if(ckmodules.indexOf(modulename)<0)
+            ckmodules.push(modulename)
+    },
+
     configure : ()=>{
         CKEDITOR.editorConfig = function(config) {
             config.language = 'fr';  
             config.extraAllowedContent = 'twig';
             config.uiColor = '#1FB5AD';   
             config.height = '500px';
-            config.extraPlugins = 'textmatch,textwatcher,autocomplete,ry';
+            config.extraPlugins = 'textmatch,textwatcher,autocomplete'+(ckmodules.length>0?','+ckmodules.join(','):'');
             config.toolbarGroups = [
             {
                 name : 'document',
@@ -67,3 +74,5 @@ export default {
         };
     }
 }
+
+export default ckeditorconf;

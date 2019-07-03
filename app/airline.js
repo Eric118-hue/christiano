@@ -1,11 +1,11 @@
 import Lucid, {LucidComponents} from '../vendor/lucid';
-import './cardit.scss';
+import './airline.scss';
 import $ from 'jquery';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Ry from '../vendor/Ry/Core/Ry';
 import Dropzone from '../vendor/Ry/Core/dropzone';
-import trans, {nophoto, LOADINGEND, LOADINGSTART} from '../app/translations';
+import trans, {nophoto, LOADINGEND, LOADINGSTART} from './translations';
 import __OPTIONTREE from '../vendor/Ry/Core/OptionTree';
 import __ADMINTOOLS from '../vendor/Ry/Admin/AdminTools';
 import __NAVIGATION_BY_ROLE from '../vendor/Ry/Admin/NavigationByRole';
@@ -19,6 +19,7 @@ import __EDITOR from '../vendor/Ry/Profile/Editor';
 import __CATEGORIES from '../vendor/Ry/Categories';
 import __TUTO from '../vendor/Ry/Core/Tuto';
 import __CARDIT from '../vendor/Ry/Cardit';
+import __AIRLINE from '../vendor/Ry/Airline';
 
 const Components = {
     Ry : {
@@ -35,7 +36,8 @@ const Components = {
             Contact : __EMAILS,
             Editor : __EDITOR
 		},
-		Cardit : __CARDIT
+		Cardit : __CARDIT,
+		Airline : __AIRLINE
     },
     Core : {
         Core : __CORE,

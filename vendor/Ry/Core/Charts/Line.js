@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import * as d3 from 'd3';
 import moment from 'moment';
 import $ from 'jquery';
+import numeral from 'numeral';
 
 class Line extends Component
 {
@@ -27,8 +28,6 @@ class Line extends Component
                 xIsScalar = false
             ar.push(data[i].quantity)
         }
-
-        const format = d3.format('.2f')
         
         var xScale 
         var dates = []
@@ -41,7 +40,9 @@ class Line extends Component
             xScale = d3.scaleTime().domain([moment.min(dates).toDate(), moment.max(dates).toDate()]).range([0, layout.width-layout.margin.left-layout.margin.right])
         }  
 
-        var yFormat = d3.format(".1s")
+        var yFormat = function(a){
+            return numeral(a).format('0a')
+        }
         var yScale = d3.scaleLinear().domain([0,Math.max.apply(null, ar)]).range([layout.height-layout.margin.top, layout.margin.top])
         var yAxis = d3.axisLeft(yScale).tickSize(-(layout.width-layout.margin.left-layout.margin.right)).ticks(5).tickFormat(yFormat)
 
@@ -55,13 +56,13 @@ class Line extends Component
             g.call(yAxis);
             g.select(".domain").remove();
             g.selectAll(".tick line").attr("class", "line-10");
-            g.selectAll(".tick text").attr("x", 4).attr("dy", -4);
+            g.selectAll(".tick text").attr('class', 'text-uppercase');
         }
 
         var fontSize = 12
 
         svg.append("g")
-            .attr("transform", `translate(${layout.margin.left},${layout.margin.top})`)
+            .attr("transform", `translate(${layout.margin.left},${layout.margin.top-5})`)
             .call(customYAxis)
             .attr('font-size', fontSize);
 
@@ -76,14 +77,14 @@ class Line extends Component
             })
         
         var linecontainer = svg.append("g")
-        .attr("transform", `translate(${layout.margin.left},${layout.margin.top})`)
+        .attr("transform", `translate(${layout.margin.left},${layout.margin.top-5})`)
         linecontainer.append("path")
             .datum(data)
             .attr("class", "line")
             .attr("d", line)
 
         var points = svg.append("g")
-            .attr("transform", `translate(${layout.margin.left},${layout.margin.top})`)
+            .attr("transform", `translate(${layout.margin.left},${layout.margin.top-5})`)
 
         points.selectAll(".dot-10")
             .data(data)
@@ -98,7 +99,7 @@ class Line extends Component
             .attr("r", 1)
             .on("mouseover", function(d, b, c) { 
                 var div = d3.select("#chart-tooltip")
-                div.html(format(d.quantity)+" €")
+                div.html(numeral(d.quantity).format('0.00$'))
                 div.style("left", (d3.event.pageX - 10 - $('#chart-tooltip').width()/2) + "px")		
                     .style("top", (d3.event.pageY - 25 - $('#chart-tooltip').height()) + "px");
                     $('#chart-tooltip').addClass('tooltip-show')

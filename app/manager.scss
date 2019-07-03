@@ -234,3 +234,9 @@ $max-menu-level: 5;
 		text-align: center;
 	}
 }
+
+.text-capitalize {
+	.dropdown-toggle {
+		text-transform: capitalize;
+	}
+}

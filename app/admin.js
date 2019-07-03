@@ -1,4 +1,4 @@
-import Lucid from '../vendor/lucid';
+import Lucid, {LucidComponents} from '../vendor/lucid';
 import './manager.scss';
 import RyAdmin from '../vendor/Ry/Admin';
 import __OPTIONTREE from '../vendor/Ry/Core/OptionTree';
@@ -35,10 +35,10 @@ const Components = {
         OptionTree : __OPTIONTREE,
         Chart : __CHART
     },
-    Lucid : Lucid.COMPONENTS
+    Lucid : LucidComponents
 }
 
-const ry = new RyAdmin(Components)
+const ry = new RyAdmin.Admin(Components)
 const lucid = new Lucid(Components)
 lucid.theme({
 

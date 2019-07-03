@@ -7,7 +7,8 @@ module.exports = {
   entry: {
     manager : './app/manager.js',
     cardit : './app/cardit.js',
-    ryadmin : './app/admin.js'
+    ryadmin : './app/admin.js',
+    airline : './app/airline.js'
   },
   plugins: [
     new CleanWebpackPlugin(['dist']),

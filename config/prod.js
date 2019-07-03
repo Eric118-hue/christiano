@@ -24,7 +24,7 @@ fs.readdir('/mnt/hgfs/empire/var/www/macentrale/leg2/public/', (err, files)=>{
     var webpack = spawn("webpack", [`--config`, 'config/webpack.prod.js']);
 
     webpack.on('close', (code) => {
-        //spawn("rm", ['/mnt/hgfs/empire/var/www/macentrale/leg2/public/index.html']);         
+        spawn("rm", ['/mnt/hgfs/empire/var/www/macentrale/leg2/public/index.html']);         
     });
 })
 
