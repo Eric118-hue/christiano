@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import NavigableModel from '../../vendor/Ry/Core/NavigableModel';
 import trans from '../translations';
 import Modelizer from '../../vendor/Ry/Core/Modelizer';
+import $ from 'jquery';
 
 class Item extends Component
 {
@@ -20,12 +21,41 @@ class List extends NavigableModel
 {
     constructor(props) {
         super(props)
+        this.state.filter = {
+            iata : '',
+            name : '',
+            country_name : ''
+        }
         this.model = 'airports';
         this.endpoint = '/airports';
+        this.onFilter = this.onFilter.bind(this);
+        this.data = {
+            json : true,
+            s : {}
+        }
     }
 
     item(airport, key) {
         return <Item key={`list-airport-${key}`} data={airport} remove={(callbacks)=>this.remove(key, airport.id, callbacks)}/>
+    }
+
+    onFilter(event, field) {
+        const value = event.target.value
+        this.setState(state=>{
+            state.filter[field] = value
+            return state
+        })
+        this.data.s[field] = value
+        if(this.request) {
+            this.request.abort()
+        }
+        this.request = $.ajax({
+            url : this.endpoint,
+            data : this.data,
+            success : response=>{
+                this.props.store.dispatch({...response})
+            }
+        })
     }
 
     render() {
@@ -58,6 +88,17 @@ class List extends NavigableModel
                                 <th className="text-capitalize">{trans('Code')}</th>
                                 <th className="text-capitalize">{trans('Nom')}</th>
                                 <th className="text-capitalize">{trans('Pays')}</th>
+                            </tr>
+                            <tr className="bg-yellow">
+                                <th>
+                                    <input type="search" value={this.state.filter.iata} onChange={e=>this.onFilter(e, 'iata')} className="form-control text-capitalize" placeholder={trans('filtre')}/>
+                                </th>
+                                <th>
+                                    <input type="search" value={this.state.filter.name} onChange={e=>this.onFilter(e, 'name')} className="form-control text-capitalize" placeholder={trans('filtre')}/>
+                                </th>
+                                <th>
+                                    <input type="search" value={this.state.filter.country_name} onChange={e=>this.onFilter(e, 'country_name')} className="form-control text-capitalize" placeholder={trans('filtre')}/>
+                                </th>
                             </tr>
                         </thead>
                         <tbody>

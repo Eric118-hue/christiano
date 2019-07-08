@@ -13,6 +13,7 @@ import __EDITOR from '../vendor/Ry/Profile/Editor';
 import __CATEGORIES from '../vendor/Ry/Categories';
 import __TUTO from '../vendor/Ry/Core/Tuto';
 import App from './App';
+import Cardit from './Manager/Cardit';
 
 const Components = {
     App : App,
@@ -29,7 +30,8 @@ const Components = {
         Profile : {
             Contact : __EMAILS,
             Editor : __EDITOR
-        }
+        },
+        Cardit : Cardit
     },
     Core : {
         Core : __CORE,

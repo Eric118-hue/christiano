@@ -11,6 +11,10 @@ class List extends NavigableModel
         this.model = this.props.type;
         this.endpoint = this.props.endpoint
         this.onTfilter = this.onTfilter.bind(this)
+        this.data = {
+            json : true,
+            s : {}
+        }
     }
 
     onTfilter(event, key) {
@@ -19,14 +23,10 @@ class List extends NavigableModel
             state.tfilter[key] = value
             return state
         })
-        let data = {
-            json : true,
-            s : {}
-        }
-        data.s[key] = value
+        this.data.s[key] = value
         $.ajax({
             url : this.props.endpoint,
-            data : data,
+            data : this.data,
             success : response=>{
                 this.props.store.dispatch({...response})
             }
@@ -37,6 +37,14 @@ class List extends NavigableModel
         return <tr key={`list-${row.id}`}>
             {this.props.headers.map((header, key2)=><td key={`item-${header}-${key2}`}>{Object.values(row)[key2+1]}</td>)}
         </tr>
+    }
+
+    beforelist() {
+        return <div></div>
+    }
+
+    afterlist() {
+        return this.beforelist()
     }
 
     render() {
@@ -73,7 +81,7 @@ class List extends NavigableModel
                             </tr>
                             <tr className="bg-yellow">
                                 {this.props.headers.map((header, key)=><th key={`header-${key}`}>
-                                    <input type="search" value={this.state.tfilter[key]?this.state.tfilter[key]:''} onChange={e=>this.onTfilter(e, key)} className="form-control" placeholder={trans('filtre_rapide')}/>
+                                    <input type="search" value={this.state.tfilter[key]?this.state.tfilter[key]:''} onChange={e=>this.onTfilter(e, key)} className="form-control text-capitalize" placeholder={trans('filtre')}/>
                                 </th>)}
                             </tr>
                         </thead>

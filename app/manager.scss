@@ -77,6 +77,9 @@ $max-menu-level: 5;
 @import "../vendor/Ry/Categories/Categorie.scss";
 @import "../vendor/bs/css/bootstrap-datepicker.css";
 
+//cardit
+@import '../vendor/Ry/Cardit/style.scss';
+
 @each $size, $length in $spacers {
 	.custom-control-label.custom-control-mt-#{$size} {
 		&::before {

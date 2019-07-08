@@ -92,6 +92,8 @@ class Cardit
 			}
 		});
 		$("[data-dropzone-action]").each(function(){
+			if(this.dropzone)
+				return;
 			const dz = new Dropzone(this, {
 				url : $(this).data('dropzone-action'),
 				paramName : $(this).data('name'),

@@ -48,7 +48,9 @@ class UserForm extends AdminUser
             airline : value
         })
         if(value.length>2) {
-            $.ajax({
+            if(this.request)
+                this.request.abort()
+            this.request = $.ajax({
                 url : '/airlines',
                 data : {
                     q : value,
@@ -141,7 +143,7 @@ class UserForm extends AdminUser
                                 <div className="row">
                                     <div className="form-group col-md-6">
                                         <label>{trans('societe')}</label>
-                                        <input type="text" name="company[name]" defaultValue={this.models('props.data.company.name', '')} className="form-control"/>
+                                        <input required type="text" name="company[name]" defaultValue={this.models('props.data.company.name', '')} className="form-control"/>
                                     </div>
                                     <div className="form-group col-md-6">
                                         <label>{trans('code_societe')}</label>
@@ -174,7 +176,9 @@ class UserForm extends AdminUser
                                     </div>
                                     <div className="form-group col-md-6">
                                         <label>{trans('statut_de_lentreprise')}</label>
-                                        <input type="text" name="company[nsetup][legal_entity]" defaultValue={this.models('props.data.company.nsetup.legal_entity', '')} className="form-control"/>
+                                        <select className="form-control" name="company[nsetup][legal_entity]" title={trans('choisissez')} defaultValue={this.models('props.data.company.nsetup.legal_entity', '')}>
+                                            {this.props.data.legal_entities.map(legal_entity=><option key={`legal-entity-${legal_entity.id}`}>{legal_entity.label}</option>)}
+                                        </select>
                                     </div>
                                     <div className="form-group col-md-12">
                                         <label>{trans('SIRET')}</label>
@@ -305,6 +309,18 @@ class List extends NavigableModel
         this.model = 'airlines'
         this.endpoint = '/airlines'
         this.onFilter = this.onFilter.bind(this)
+        this.data = {
+            json : true,
+            s : {}
+        }
+    }
+
+    beforelist() {
+        return <div></div>
+    }
+
+    afterlist() {
+        return this.beforelist()
     }
 
     onFilter(event, field) {
@@ -313,14 +329,13 @@ class List extends NavigableModel
             state.filter[field] = value
             return state
         })
-        let data = {
-            json : true,
-            s : {}
+        this.data.s[field] = value
+        if(this.request) {
+            this.request.abort()
         }
-        data.s[field] = value
-        $.ajax({
+        this.request = $.ajax({
             url : this.endpoint,
-            data : data,
+            data : this.data,
             success : response=>{
                 this.props.store.dispatch({...response})
             }
@@ -363,10 +378,10 @@ class List extends NavigableModel
                             </tr>
                             <tr className="bg-yellow">
                                 <th>
-                                    <input type="search" value={this.state.filter.iata_code} onChange={e=>this.onFilter(e, 'iata_code')} className="form-control" placeholder={trans('filtre_rapide')}/>
+                                    <input type="search" value={this.state.filter.iata_code} onChange={e=>this.onFilter(e, 'iata_code')} className="form-control text-capitalize" placeholder={trans('filtre')}/>
                                 </th>
                                 <th>
-                                    <input type="search" value={this.state.filter.name} onChange={e=>this.onFilter(e, 'name')} className="form-control" placeholder={trans('filtre_rapide')}/>
+                                    <input type="search" value={this.state.filter.name} onChange={e=>this.onFilter(e, 'name')} className="form-control text-capitalize" placeholder={trans('filtre')}/>
                                 </th>
                             </tr>
                         </thead>

@@ -7,8 +7,9 @@ import 'bootstrap/js/dist/util';
 import 'bootstrap-select/sass/bootstrap-select.scss';
 import swal from 'sweetalert2';
 import 'sweetalert2/src/sweetalert2.scss';
-import trans from '../../../app/translations';
+import trans, {LOADINGEND, LOADINGSTART} from '../../../app/translations';
 import querystring from 'querystring';
+import Dropzone from '../Core/dropzone';
 
 $(document).ajaxSend(function(event, state, ajax){
 	if(ajax.isPagination) {
@@ -195,6 +196,40 @@ class Ry extends Component {
         $('label').centraleValidate()
         $('form').parsley({
             excluded : ':hidden'
+        });
+        $("[data-dropzone-action]").each(function(){
+            if(this.dropzone)
+				return;
+            const dz = new Dropzone(this, {
+                url : $(this).data('dropzone-action'),
+                paramName : $(this).data('name'),
+                acceptedFiles: $(this).data('accepted-files') ? $(this).data('accepted-files') : '.png,.jpg,.jpeg,.gif',
+                dictCancelUpload: trans('annuler'),
+                dictCancelUploadConfirmation: trans('etes_vous_certain_dannuler_le_transfert'),
+                dictInvalidFileType: trans(`ce_type_de_fichier_nest_pas_autorise`),
+                previewTemplate: `<div style="display: none;"></div>`,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            })
+            const LOGOadded = (file) => {
+                const imgContainer = $($(this).data("preview-target"));
+                var reader = new FileReader();
+    
+                reader.onload = function (e) {
+                    imgContainer.attr('src', e.target.result);
+                };
+    
+                reader.readAsDataURL(file);
+            };
+            dz.on('addedfile', LOGOadded);
+            dz.on("sending", ()=>LOADINGSTART($(this).data('name')));
+            dz.on("complete", ()=>LOADINGEND($(this).data('name')));
+            dz.on("success", (event, response)=>{
+                if(response.type) {
+                    AmDiffered.dispatch(response)
+                }
+            })
         });
     }
 
