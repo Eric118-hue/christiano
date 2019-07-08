@@ -43,8 +43,8 @@ class List extends Component
         this.setState(state=>{
             state.items.map(i_cardit=>{
                 if(cardit.id==i_cardit.id) {
-                    i_cardit.nsetup.receptacles.map(i_receptacle=>{
-                        if(i_receptacle.receptacle_id==receptacle.receptacle_id)
+                    i_cardit.receptacles.map(i_receptacle=>{
+                        if(i_receptacle.id==receptacle.id)
                             i_receptacle.selected = value
                     })
                 }
@@ -70,7 +70,7 @@ class List extends Component
             state.items.map(i_cardit=>{
                 if(cardit.id==i_cardit.id) {
                     i_cardit.selected = value
-                    i_cardit.nsetup.receptacles.map(i_receptacle=>{
+                    i_cardit.receptacles.map(i_receptacle=>{
                         i_receptacle.selected = value
                     })
                 }
@@ -288,17 +288,17 @@ class List extends Component
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {item.nsetup.receptacles.map((receptacle, index)=><tr key={`content-${receptacle.receptacle_id}`}>
+                                            {item.receptacles.map((receptacle, index)=><tr key={`content-${receptacle.id}`}>
                                                 <td>{numeral(index+1).format('00')}</td>
-                                                <td>{receptacle.receptacle_id}</td>
-                                                <td>{receptacle.handling}</td>
-                                                <td>{receptacle.nesting}</td>
-                                                <td>{receptacle.type.interpretation}</td>
-                                                <td>{receptacle.weight}</td>
+                                                <td>{receptacle.id}</td>
+                                                <td>{receptacle.nsetup.handling}</td>
+                                                <td>{receptacle.nsetup.nesting}</td>
+                                                <td>{receptacle.nsetup.type.interpretation}</td>
+                                                <td>{receptacle.nsetup.weight}</td>
                                                 <td>
                                                     <div className="fancy-checkbox">
                                                         <label>
-                                                            <input name={`receptacles[${receptacle.receptacle_id}]`} type="checkbox" value="1" checked={receptacle.selected===true} onChange={e=>this.handleCheck(e, receptacle, item)}/>
+                                                            <input name={`receptacles[${receptacle.id}]`} type="checkbox" value="1" checked={receptacle.selected===true} onChange={e=>this.handleCheck(e, receptacle, item)}/>
                                                             <span></span>
                                                         </label>
                                                     </div>
