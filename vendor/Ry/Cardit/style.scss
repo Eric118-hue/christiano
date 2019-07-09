@@ -365,4 +365,21 @@
   }
   .breadcrumbCardit li:first-child:hover::before, .breadcrumbCardit li:first-child:hover::after {
 	background-color: #ffffff;
-  }
+	}
+	
+	.d-flex .fancy-checkbox input[type="checkbox"] + span:before {
+		background: #fff;
+		margin-right: 0 !important;
+	}
+
+	.airport-modal {
+		.modal-header {
+			border-bottom: none;
+		}
+	}
+
+	.vol-container .card-bureau table.table-liste td {
+		.modal {
+			text-transform: none;
+		}
+	}

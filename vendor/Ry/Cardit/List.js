@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import $ from 'jquery';
 import moment from 'moment';
-import swal from 'sweetalert2';
 import {Popup, PopupHeader, PopupBody} from '../../bs/bootstrap';
 import numeral from 'numeral';
 
@@ -278,11 +277,13 @@ class List extends Component
                                                 <th>Type de récipient</th>
                                                 <th>Poids (Kg)</th>
                                                 <th>
-                                                    <div className="fancy-checkbox">
-                                                        <label>
-                                                            <input name={`checkbox${item}`} type="checkbox" value="1" checked={item.selected===true} onChange={e=>this.handleCheckAll(e, item)}/>
-                                                            <span></span>
-                                                        </label>
+                                                    <div className="d-flex justify-content-center">
+                                                        <div className="fancy-checkbox mr-0">
+                                                            <label className="m-0">
+                                                                <input name={`checkbox${item}`} type="checkbox" value="1" checked={item.selected===true} onChange={e=>this.handleCheckAll(e, item)}/>
+                                                                <span></span>
+                                                            </label>
+                                                        </div>
                                                     </div>
                                                 </th>
                                             </tr>
@@ -290,17 +291,19 @@ class List extends Component
                                         <tbody>
                                             {item.receptacles.map((receptacle, index)=><tr key={`content-${receptacle.id}`}>
                                                 <td>{numeral(index+1).format('00')}</td>
-                                                <td>{receptacle.id}</td>
+                                                <td>{receptacle.nsetup.receptacle_id}</td>
                                                 <td>{receptacle.nsetup.handling}</td>
                                                 <td>{receptacle.nsetup.nesting}</td>
                                                 <td>{receptacle.nsetup.type.interpretation}</td>
                                                 <td>{receptacle.nsetup.weight}</td>
                                                 <td>
-                                                    <div className="fancy-checkbox">
-                                                        <label>
-                                                            <input name={`receptacles[${receptacle.id}]`} type="checkbox" value="1" checked={receptacle.selected===true} onChange={e=>this.handleCheck(e, receptacle, item)}/>
-                                                            <span></span>
-                                                        </label>
+                                                    <div className="d-flex justify-content-center">
+                                                        <div className="fancy-checkbox mr-0">
+                                                            <label className="m-0">
+                                                                <input name={`receptacles[${receptacle.id}]`} type="checkbox" value="1" checked={receptacle.selected===true} onChange={e=>this.handleCheck(e, receptacle, item)}/>
+                                                                <span></span>
+                                                            </label>
+                                                        </div>
                                                     </div>
                                                 </td>
                                             </tr>)}
@@ -315,11 +318,40 @@ class List extends Component
                     <td>{item.nsetup.consignment_category.code}</td>
                     <td>{item.nsetup.mail_class.code}</td>
                     <td>{item.nsetup.nreceptacles}</td>
-                    <td>{item.nsetup.wreceptacles} Kg</td>
+                    <td>{item.nsetup.wreceptacles}</td>
                     <td>{item.nsetup.handover_origin_location.iata} <a href="#" onClick={e=>{
                         e.preventDefault()
-                        swal(item.nsetup.handover_origin_location.name)
-                    }}><i className="fa fa-info-circle text-turquoise"></i></a></td>
+                        $(`#origin-${item.id}`).modal('show')
+                    }}><i className="fa fa-info-circle text-turquoise"></i></a>
+                        <Popup id={`origin-${item.id}`} className="airport-modal">
+                            <PopupHeader className="pl-3 pb-2" closeButton={<span aria-hidden="true"  className="pb-1 pl-2 pr-2 rounded text-white" style={{background:'#170000'}}>&times;</span>}>
+                                <h5><img src="/medias/images/ico-airport.png" className="position-absolute"/> <span className="pl-5 text-body">Aéroport d'origine</span></h5>
+                            </PopupHeader>
+                            <hr className="border m-0 m-auto" style={{width:'calc(100% - 10px)', height:3}}/>
+                            <PopupBody>
+                                <div className="row">
+                                    <div className="col-5 text-right text-grey">
+                                        Pays :
+                                    </div>
+                                    <div className="col-7 text-left">
+                                        {item.nsetup.handover_origin_location.country.nom}
+                                    </div>
+                                    <div className="col-5 text-right text-grey">
+                                        Code :
+                                    </div>
+                                    <div className="col-7 text-left">
+                                        {item.nsetup.handover_origin_location.iata}
+                                    </div>
+                                    <div className="col-5 text-right text-grey">
+                                        Aéroport :
+                                    </div>
+                                    <div className="col-7 text-left text-wrap">
+                                        {item.nsetup.handover_origin_location.name}
+                                    </div>
+                                </div>
+                            </PopupBody>
+                        </Popup>
+                    </td>
                     <td>{this.escales(item)}
                         <Popup id={`escales-${item.id}`}>
                             <PopupHeader>
@@ -340,7 +372,7 @@ class List extends Component
                                             <td>{transport.arrival_location.iata} - {transport.arrival_location.name} - {transport.arrival_location.country.nom}</td>
                                             <td>{moment.utc(transport.arrival_datetime).format('DD/MM/YYYY HH:mm')}</td>
                                             <td>{moment.utc(item.nsetup.transports[index+1].departure_datetime).format('DD/MM/YYYY HH:mm')}</td>
-                                            <td>{transport.conveyence_reference}</td>
+                                            <td>{item.nsetup.transports[index+1].conveyence_reference}</td>
                                         </tr>)}
                                     </tbody>
                                 </table>
@@ -349,12 +381,51 @@ class List extends Component
                     </td>
                     <td>{item.nsetup.handover_destination_location.iata} <a href="#" onClick={e=>{
                         e.preventDefault()
-                        swal(item.nsetup.handover_destination_location.name)
-                    }}><i className="fa fa-info-circle text-turquoise"></i></a></td>
+                        $(`#destination-${item.id}`).modal('show')
+                    }}><i className="fa fa-info-circle text-turquoise"></i></a>
+                        <Popup id={`destination-${item.id}`} className="airport-modal">
+                            <PopupHeader className="pl-3 pb-2" closeButton={<span aria-hidden="true"  className="pb-1 pl-2 pr-2 rounded text-white" style={{background:'#170000'}}>&times;</span>}>
+                                <h5><img src="/medias/images/ico-airport.png" className="position-absolute"/> <span className="pl-5 text-body">Aéroport de destination</span></h5>
+                            </PopupHeader>
+                            <hr className="border m-0 m-auto" style={{width:'calc(100% - 10px)', height:3}}/>
+                            <PopupBody>
+                                <div className="row">
+                                    <div className="col-5 text-right text-grey">
+                                        Pays :
+                                    </div>
+                                    <div className="col-7 text-left">
+                                        {item.nsetup.handover_destination_location.country.nom}
+                                    </div>
+                                    <div className="col-5 text-right text-grey">
+                                        Code :
+                                    </div>
+                                    <div className="col-7 text-left">
+                                        {item.nsetup.handover_destination_location.iata}
+                                    </div>
+                                    <div className="col-5 text-right text-grey">
+                                        Aéroport :
+                                    </div>
+                                    <div className="col-7 text-left text-wrap">
+                                        {item.nsetup.handover_destination_location.name}
+                                    </div>
+                                </div>
+                            </PopupBody>
+                        </Popup>
+                    </td>
                     <td>{item.nsetup.transports[0].conveyence_reference} <a href="#" onClick={e=>{
                         e.preventDefault()
-                        swal(item.nsetup.transports[0].airlines.join('<br/>'))
-                    }}><i className="fa fa-info-circle text-turquoise"></i></a></td>
+                        $(`#conveyence-${item.id}`).modal('show')
+                    }}><i className="fa fa-info-circle text-turquoise"></i></a>
+                        <Popup id={`conveyence-${item.id}`} className="airport-modal">
+                            <PopupHeader className="pl-3 pb-2" closeButton={<span aria-hidden="true"  className="pb-1 pl-2 pr-2 rounded text-white" style={{background:'#170000'}}>&times;</span>}>
+                                <h5><img src="/medias/images/ico-airport.png" className="position-absolute"/> <span className="pl-5 text-body">Premier vol</span></h5>
+                            </PopupHeader>
+                            <hr className="border m-0 m-auto" style={{width:'calc(100% - 10px)', height:3}}/>
+                            <PopupBody>
+                                {item.nsetup.transports[0].airlines.join('<br/>')}
+                            </PopupBody>
+                        </Popup>
+                    </td>
                     <td>{this.irregularites()}</td>
                     <td>{this.performances()}</td>
                     <td>{this.completed()}</td>
