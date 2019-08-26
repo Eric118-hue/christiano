@@ -240,11 +240,11 @@ class List extends Component
                     <th>Nº d’expédition</th>
                     <th>Cat.</th>
                     <th>Classe</th>
-                    <th>Nbr récipients</th>
+                    <th>Nb récips</th>
                     <th>Poids (Kg)</th>
-                    <th>Aéroport ORIG.</th>
+                    <th>Aéro. ORIG.</th>
                     <th>Direct/Escales</th>
-                    <th>Aéroport DEST.</th>
+                    <th>Aéro. DEST.</th>
                     <th>Premier vol</th>
                     <th style={{width:107}}>Irrégularités</th>
                     <th style={{width:107}}>Performances</th>
@@ -511,7 +511,7 @@ class List extends Component
                                 </div>
                                 {this.beforelist()}
                             </div>
-                            <div className="card-bureau no-border">
+                            <div className="card-bureau no-border p-0">
                                 <div className="table-responsive">
                                     {this.table()}
                                 </div>

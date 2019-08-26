@@ -3,6 +3,7 @@ import NavigableModel from '../../vendor/Ry/Core/NavigableModel';
 import trans from '../translations';
 import Modelizer from '../../vendor/Ry/Core/Modelizer';
 import $ from 'jquery';
+import qs from 'qs';
 
 class Item extends Component
 {
@@ -56,6 +57,12 @@ class List extends NavigableModel
                 this.props.store.dispatch({...response})
             }
         })
+    }
+
+    builPaginationFromQuery(page) {
+        let queries = {...this.data}
+        queries.page = page
+        return this.endpoint + '?' + qs.stringify(queries)
     }
 
     render() {

@@ -162,6 +162,7 @@ $max-menu-level: 5;
 		&::after {
 			color: #fff;
 			margin-right: 5px;
+			margin-left: 1.55em;
 		}
 
 		&:hover {
@@ -242,4 +243,8 @@ $max-menu-level: 5;
 	.dropdown-toggle {
 		text-transform: capitalize;
 	}
+}
+
+.form-inline .bootstrap-select, .form-inline .bootstrap-select.form-control:not([class*="col-"]) {
+	width: 100%;
 }

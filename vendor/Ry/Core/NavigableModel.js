@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
 import $ from 'jquery';
-import querystring from 'querystring';
+import qs from 'qs';
 
 class NavigableModel extends Component
 {
-    endpoint
-    model
-
     constructor(props) {
 		super(props);
 		this.state = {
@@ -19,6 +16,7 @@ class NavigableModel extends Component
         this.toEnd = this.toEnd.bind(this);
         this.remove = this.remove.bind(this);
         this.searchEngine = this.searchEngine.bind(this);
+        this.builPaginationFromQuery = this.builPaginationFromQuery.bind(this);
     }
 
     componentDidMount() {
@@ -141,10 +139,10 @@ class NavigableModel extends Component
     }
     
     builPaginationFromQuery(page) {
-        let queries = querystring.parse(document.location.search.replace(/^\?/, ''))
+        let queries = qs.parse(document.location.search.replace(/^\?/, ''))
         queries.page = page
         queries.json = true
-        return this.endpoint + '?' + querystring.stringify(queries)
+        return this.endpoint + '?' + qs.stringify(queries)
     }
 	
 	toNext(event) {

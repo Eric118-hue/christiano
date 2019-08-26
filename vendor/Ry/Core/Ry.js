@@ -8,7 +8,7 @@ import 'bootstrap-select/sass/bootstrap-select.scss';
 import swal from 'sweetalert2';
 import 'sweetalert2/src/sweetalert2.scss';
 import trans, {LOADINGEND, LOADINGSTART} from '../../../app/translations';
-import querystring from 'querystring';
+import qs from 'qs';
 import Dropzone from '../Core/dropzone';
 
 $(document).ajaxSend(function(event, state, ajax){
@@ -16,10 +16,10 @@ $(document).ajaxSend(function(event, state, ajax){
 		let url = ajax.url
 		let queryparts = url.split(/\?/)
 		if(queryparts.length>1) {
-			let queries = querystring.parse(queryparts[1])
+			let queries = qs.parse(queryparts[1])
 			delete queries.json
 			delete queries.ry
-			url = queryparts[0]+'?'+querystring.stringify(queries)
+			url = queryparts[0]+'?'+qs.stringify(queries)
 		}
 		window.history.pushState({},"", url)
 	}

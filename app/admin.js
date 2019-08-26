@@ -5,24 +5,18 @@ import __OPTIONTREE from '../vendor/Ry/Core/OptionTree';
 import __ADMINTOOLS from '../vendor/Ry/Admin/AdminTools';
 import __NAVIGATION_BY_ROLE from '../vendor/Ry/Admin/NavigationByRole';
 import __CORE from '../vendor/Ry/Core/Core';
-import __TRANSLATOR, {TraductionsDialog, Languages} from '../vendor/Ry/Admin/Translator';
+import __TRANSLATOR from '../vendor/Ry/Admin/Translator';
 import __USER from '../vendor/Ry/Admin/User';
 import __CHART from '../vendor/Ry/Core/Charts';
 import __EMAILS from '../vendor/Ry/Profile/Emails';
 import __EDITOR from '../vendor/Ry/Profile/Editor';
 import __CATEGORIES from '../vendor/Ry/Categories';
 import __TUTO from '../vendor/Ry/Core/Tuto';
+import Admin from '../vendor/Ry/Admin';
 
 const Components = {
     Ry : {
-        Admin : {
-            User : __USER,
-            Languages : Languages,
-            AdminTools : __ADMINTOOLS,
-            NavigationByRole : __NAVIGATION_BY_ROLE,
-            Translator : __TRANSLATOR,
-            Traductions : TraductionsDialog
-        },
+        Admin : Admin,
         Categories : __CATEGORIES,
         Profile : {
             Contact : __EMAILS,

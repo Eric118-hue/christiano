@@ -35,7 +35,7 @@ class Line extends Component
             xScale = d3.scaleLinear().domain([1, 12]).range([0, layout.width-layout.margin.left-layout.margin.right])
         else {
             for(var i=0; i<data.length; i++) {
-                dates.push(moment(data[i].month))
+                dates.push(moment.utc(data[i].month))
             }
             xScale = d3.scaleTime().domain([moment.min(dates).toDate(), moment.max(dates).toDate()]).range([0, layout.width-layout.margin.left-layout.margin.right])
         }  
@@ -70,7 +70,7 @@ class Line extends Component
             .x(function(d){
                 if(xIsScalar)
                     return xScale(d.month)
-                return xScale(moment(d.month).toDate())
+                return xScale(moment.utc(d.month).local().toDate())
             })
             .y(function(d){
                 return yScale(d.quantity)
@@ -93,7 +93,7 @@ class Line extends Component
             .attr("cx", function(d){
                 if(xIsScalar)
                     return xScale(d.month)
-                return xScale(moment(d.month).toDate())
+                return xScale(moment.utc(d.month).local().toDate())
             })
             .attr("cy", function(d){return yScale(d.quantity)})
             .attr("r", 1)

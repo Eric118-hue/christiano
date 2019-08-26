@@ -1,4 +1,4 @@
-import Lucid, {LucidComponents} from '../vendor/lucid';
+import Lucid, {LucidComponents, LucidWrapper, Wrapper} from '../vendor/lucid';
 import './airline.scss';
 import $ from 'jquery';
 import React from 'react';
@@ -126,12 +126,38 @@ class Cardit
 	}
 }
 
-const ry = new Cardit(Components)
-const lucid = new Lucid(Components)
+class Leg2LucidWrapper extends LucidWrapper
+{
+    render() {
+        return <Wrapper data={this.props.content} style={{minWidth:960}}>
+            <Ry class={this.props.content.view} content={this.props.content} components={this.props.components}/>
+            <div className="ry-float-loading">
+		    	<div className="ry loading-content">
+		    		<i className="fa fa-2x fa-sync-alt fa-spin"></i> {trans("patientez")}
+		    	</div>
+		    </div>
+        </Wrapper>
+    }
+}
+
+class Leg2Lucid extends Lucid
+{
+    wrap() {
+        const dis = this
+        $("script[type='application/ld+json']").each(function(){
+            let text = $(this).text()
+            const content = JSON.parse(text?text:'{}');
+            ReactDOM.render(<Leg2LucidWrapper content={content} components={dis.components}/>, $(this).parent()[0])
+        });
+    }
+}
+
+const lucid = new Leg2Lucid(Components)
 lucid.theme({
 
 })
 lucid.render()
+const ry = new Cardit(Components)
 
 export const instance = ry
 

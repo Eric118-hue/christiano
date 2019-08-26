@@ -2,6 +2,7 @@ import React from 'react';
 import NavigableModel from '../../vendor/Ry/Core/NavigableModel';
 import trans from '../translations';
 import $ from 'jquery';
+import qs from 'qs';
 
 class List extends NavigableModel
 {
@@ -15,6 +16,12 @@ class List extends NavigableModel
             json : true,
             s : {}
         }
+    }
+
+    builPaginationFromQuery(page) {
+        let queries = {...this.data}
+        queries.page = page
+        return this.endpoint + '?' + qs.stringify(queries)
     }
 
     onTfilter(event, key) {
