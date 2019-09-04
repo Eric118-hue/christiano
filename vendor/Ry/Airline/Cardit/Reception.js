@@ -3,23 +3,50 @@ import moment from 'moment';
 import Ry from '../../Core/Ry';
 import Countdown from './Countdown';
 import trans from '../../../../app/translations';
+import Modelizer from '../../Core/Modelizer';
 
 class Reception extends Component
 {
     constructor(props) {
         super(props)
         this.state = {
-            receptacles : this.props.data.receptacles
+            receptacles : this.props.data.receptacles,
+            reception : this.props.data.reception,
+            updated_resdits : this.props.data.updated_resdits,
+            dialogs : [{}]
         }
         this.handleReceptacleStatusChange = this.handleReceptacleStatusChange.bind(this)
         this.handleAllReceptacleStatusChange = this.handleAllReceptacleStatusChange.bind(this)
     }
 
+    componentWillUnmount() {
+        this.unsubscribe()
+    }
+
+    componentDidMount() {
+        this.unsubscribe = this.props.store.subscribe(()=>{
+            const storeState = this.props.store.getState()
+            if(storeState.type=='resdit' && storeState.event=='reception') {
+                this.setState(state => {
+                    state.reception = storeState
+                    state.updated_resdits.reception = storeState
+                    state.dialogs.push({})
+                    return state
+                })
+            }
+        })
+    }
+
     handleReceptacleStatusChange(receptacle, status) {
         this.setState(state=>{
+            state.reception = null
             let found_receptacle = state.receptacles.find(item=>item.id==receptacle.id)
-            if(found_receptacle)
-                found_receptacle.status = status
+            if(found_receptacle) {
+                if(!found_receptacle.statuses) {
+                    found_receptacle.statuses = {}
+                }
+                found_receptacle.statuses.reception = status
+            } 
             return state
         })
     }
@@ -27,20 +54,59 @@ class Reception extends Component
     handleAllReceptacleStatusChange(status) {
         this.setState(state=>{
             state.receptacles.map(item=>{
-                item.status = status
+                if(!item.statuses) {
+                    item.statuses = {}
+                }
+                item.statuses.reception = status
             })
             return state
         })
     }
 
     render() {
+        let files = null
+        let files_tablet = null
+        if(this.state.updated_resdits.reception) {
+            files = <div className="row">
+                {this.state.updated_resdits.reception.files.map(file=><a key={`download-${this.props.data.id}-resdit-${file}`} className="btn btn-info col-md-3 font-10 pt-2 m-2" href={`#dialog/export/resdit-${file}-${this.state.updated_resdits.reception.id}.txt`} target="_blank">RESDIT<span className="bg-light d-block font-25 m-2 rounded text-primary">{file}</span></a>)}
+            </div>  
+            files_tablet =  <div className="row">
+                {this.state.updated_resdits.reception.files.map(file=><a key={`download-${this.props.data.id}-resdit-${file}`} className="btn btn-info col-md-4 font-10 pt-2 m-2" href={`#dialog/export/resdit-${file}-${this.state.updated_resdits.reception.id}.txt`} target="_blank">RESDIT<span className="bg-light d-block font-25 m-2 rounded text-primary">{file}</span></a>)}
+            </div>  
+        }
         return <div className="row">
-            <div className="col-lg-3">
-                <div className="blockTemps">
-                    <h3>{trans('Temps restant pour valider la réception')} :</h3>
-                    <div className="skillContainer d-flex align-items-center justify-content-around">
-                        <Countdown from={moment.utc('2019-08-22 09:00:00').local()} to={moment.utc('2019-08-27 09:00:00').local()}/>
+            <div className="col-md-12 d-md-block d-xl-none">
+                <div className="row text-left text-body">
+                    {this.state.reception?null:<div className="col-md-4">
+                        <div className="skillContainer d-flex align-items-center justify-content-around">
+                            <Countdown from={moment.utc(this.props.data.nsetup.consignment_completion).local()} to={moment.utc(this.props.data.nsetup.handover_origin_cut_off).local()}/>
+                        </div>
+                    </div>}
+                    <div className="col-md-4">
+                        <div className="row">
+                            <div className="col-md-6">
+                                <small className="text-muted">{trans('Numéro du container')} :</small><br/>
+                                {this.props.data.nsetup.container_id}
+                            </div>
+                            <div className="col-md-6">
+                                <small className="text-muted">{trans('Nombre de récipient')} :</small><br/>
+                                {this.props.data.nsetup.nreceptacles}
+                            </div>
+                        </div>
                     </div>
+                    <div className="col-md-4">
+                        {files_tablet}
+                    </div>
+                </div>
+            </div>
+            <div className="col-xl-3 d-md-none d-xl-block">
+                <div className="blockTemps">
+                    {this.state.reception?null:<React.Fragment>
+                        <h3>{trans('Temps restant pour valider la réception')} :</h3>
+                        <div className="skillContainer d-flex align-items-center justify-content-around">
+                            <Countdown from={moment.utc(this.props.data.nsetup.consignment_completion).local()} to={moment.utc(this.props.data.nsetup.handover_origin_cut_off).local()}/>
+                        </div>
+                    </React.Fragment>}
                     <ul className="info">
                         <li>
                             {trans('Numéro du container')} :
@@ -55,30 +121,34 @@ class Reception extends Component
                             <span>{this.props.data.nsetup.nreceptacles}</span>
                         </li>
                     </ul>
+                    {files}
                 </div>
             </div>
-            <div className="col-lg-9">
+            <div className="col-xl-9">
                 <div className="table-responsive">
-                    <form name={`frm_cardit${this.props.data.id}`} action={`/resdit`} method="post">
-                        <Ry title="ajaxform"/>
+                    <form name={`frm_cardit${this.props.data.id}`} action={`/reception`} method="post">
+                        {this.state.dialogs.map((v,k)=><Ry key={`ajaxform-${k}`} title="ajaxform"/>)}
                         <input type="hidden" name="ry"/>
                         <input type="hidden" name="id" value={this.props.data.id}/>
+                        <input type="hidden" name="consignment_event" value="reception"/>
                         <table className="table tableRecap">
                             <thead>
                                 <tr>
-                                    <th rowSpan="2" colSpan="3"
-                                        className="noBor colorVert"></th>
-                                    <th rowSpan="2" colSpan="2"
-                                        className="noBor"></th>
+                                    <th rowSpan="2" colSpan="5"
+                                        className="colorVert noBor pl-0 text-left">
+                                        {this.state.reception?trans('Réception validée le :date à :time par :author - RESDIT 74 envoyé', {
+                                            date : moment.utc(this.state.reception.created_at).local().format('DD/MM/YYYY'),
+                                            time : moment.utc(this.state.reception.created_at).local().format('HH:mm'),
+                                            author : `${this.state.reception.author.profile.gender_label} ${this.state.reception.author.profile.official}`
+                                        }):null}    
+                                    </th>
                                     <th colSpan="3" className="thTop">Réception</th>
                                     <th rowSpan="2" className="thModal">
                                         
                                     </th>
                                 </tr>
                                 <tr className="thLeft">
-                                    <th>Reçu</th>
-                                    <th>Non reçu</th>
-                                    <th>Retourné</th>
+                                    {this.props.consignmentEvents.map(consignment_event=><th key={`consignment_event-${consignment_event.code}`}>{trans(consignment_event.interpretation)}</th>)}
                                 </tr>
                                 <tr>
                                     <th>Numéro du récipient</th>
@@ -86,59 +156,35 @@ class Reception extends Component
                                     <th>Container Journey ID</th>
                                     <th>Type de récipient</th>
                                     <th>Poids (Kg)</th>
-                                    <th>
+                                    {this.props.consignmentEvents.map(consignment_event=><th key={`consignment_event-checkall-${consignment_event.code}`}>
                                         <label className="fancy-radio custom-color-green m-auto">
-                                            <input type="radio" name="checkall" onChange={()=>this.handleAllReceptacleStatusChange(1)}/>
+                                            <input type="radio" name="checkall[status]" onChange={()=>this.handleAllReceptacleStatusChange(consignment_event.code)}/>
                                             <span><i className="m-0"></i></span>
                                         </label>
-                                    </th>
-                                    <th>
-                                        <label className="fancy-radio custom-color-green m-auto">
-                                            <input type="radio" name="checkall" onChange={()=>this.handleAllReceptacleStatusChange(2)}/>
-                                            <span><i className="m-0"></i></span>
-                                        </label>
-                                    </th>
-                                    <th>
-                                        <label className="fancy-radio custom-color-green m-auto">
-                                            <input type="radio" name="checkall" onChange={()=>this.handleAllReceptacleStatusChange(3)}/>
-                                            <span><i className="m-0"></i></span>
-                                        </label>
-                                    </th>
+                                    </th>)}
                                 </tr>
                             </thead>
                             <tbody>
-                                {this.props.data.receptacles.map((receptacle, index)=><tr key={`content-${receptacle.id}`}>
-                                    <td>
+                                {this.state.receptacles.map((receptacle, index)=><tr key={`content-reception-${receptacle.id}`}>
+                                    <td className="text-left">
                                         {receptacle.nsetup.receptacle_id}
                                     </td>
                                     <td>{receptacle.nsetup.handling}</td>
                                     <td>{receptacle.nsetup.nesting}</td>
                                     <td>{receptacle.nsetup.type.interpretation}</td>
                                     <td>{receptacle.nsetup.weight}</td>
-                                    <td className="text-center">
+                                    {this.props.consignmentEvents.map(consignment_event=><td key={`consignment_event-check-${receptacle.id}-${consignment_event.code}`} className="text-center">
                                         <label className="fancy-radio m-auto custom-color-green">
-                                            <input name={`receptacles[${receptacle.id}]`} type="radio" value="1" checked={receptacle.status==1} onChange={()=>this.handleReceptacleStatusChange(receptacle, 1)}/>
+                                            <input name={`receptacles[${receptacle.id}][status]`} type="radio" value={consignment_event.code} checked={this.cast(receptacle, 'statuses.reception', -1)==consignment_event.code} onChange={()=>this.handleReceptacleStatusChange(receptacle, consignment_event.code)}/>
                                             <span><i className="mr-0"></i></span>
                                         </label>
-                                    </td>
-                                    <td className="text-center">
-                                        <label className="fancy-radio m-auto custom-color-green">
-                                            <input name={`receptacles[${receptacle.id}]`} type="radio" value="2" checked={receptacle.status==2} onChange={()=>this.handleReceptacleStatusChange(receptacle, 2)}/>
-                                            <span><i className="mr-0"></i></span>
-                                        </label>
-                                    </td>
-                                    <td className="text-center">
-                                        <label className="fancy-radio m-auto custom-color-green">
-                                            <input name={`receptacles[${receptacle.id}]`} type="radio" value="3" checked={receptacle.status==3} onChange={()=>this.handleReceptacleStatusChange(receptacle, 3)}/>
-                                            <span><i className="mr-0"></i></span>
-                                        </label>
-                                    </td>
+                                    </td>)}
                                 </tr>)}
                                 <tr>
                                     <td colSpan="3" className="border-right-0 noBg"></td>
                                     <td colSpan="5" className="border-left-0 border-right-0">
-                                        <button className="btn btn-orange rounded-0">STEP 1 :
-                                            Valider</button>
+                                        {this.state.reception?null:<button className="btn btn-orange rounded-0">{trans('STEP')} 1 :
+                                            {trans('Valider')}</button>}
                                     </td>
                                 </tr>
                             </tbody>
@@ -150,4 +196,4 @@ class Reception extends Component
     }
 }
 
-export default Reception;
+export default Modelizer(Reception);

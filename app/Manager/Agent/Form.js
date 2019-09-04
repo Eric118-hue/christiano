@@ -37,6 +37,7 @@ class Form extends AdminUser
         this.handleSelectEdiB = this.handleSelectEdiB.bind(this)
         this.saveCouple = this.saveCouple.bind(this)
         this.removeCouple = this.removeCouple.bind(this)
+        this.offClick = this.offClick.bind(this)
     }
 
     saveCouple() {
@@ -207,6 +208,13 @@ class Form extends AdminUser
         }
     }
 
+    offClick() {
+        this.setState({
+            select_ediA : false,
+            select_ediB : false
+        })
+    }
+
     componentDidMount() {
         const nophoto = this.refs.nophoto
         $("input:file").change(function(){
@@ -216,14 +224,7 @@ class Form extends AdminUser
         $("input:file").change(function(){
             $(nologo).attr("checked", false)
         });
-        if(this.state.select_ediA || this.state.select_ediB) {
-            $('body').on('click', ()=>{
-                this.setState({
-                    select_ediA : false,
-                    select_ediB : false
-                })
-            });
-        }
+        $('body').on('click', this.offClick);
         $(this.refs.customer_select).on('changed.bs.select', (e, clickedIndex, isSelected, previousValue)=>{
             this.setState(state=>{
                 if(isSelected) {

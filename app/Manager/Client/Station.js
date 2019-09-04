@@ -16,16 +16,14 @@ class Station extends NavigableModel
         this.handleSearch = this.handleSearch.bind(this)
         this.handleSelectAirport = this.handleSelectAirport.bind(this)
         this.removeAirport = this.removeAirport.bind(this)
+        this.offClick = this.offClick.bind(this)
     }
 
-    componentDidMount() {
-        super.componentDidMount()
-        if(this.state.select_airport)
-            $('body').on('click', ()=>{
-                this.setState({
-                    select_airport : false
-                })
-            })
+    offClick() {
+        this.setState({
+            select_airport : false
+        })
+        $('body').off('click', this.offClick)
     }
 
     removeAirport(customer_airport) {
@@ -79,6 +77,9 @@ class Station extends NavigableModel
                 }
             },
             success : response=>{
+                if(response.data.data.length>0)
+                    $('body').on('click', this.offClick)
+
                 this.setState({
                     select_airports : response.data.data,
                     select_airport : response.data.data.length>0

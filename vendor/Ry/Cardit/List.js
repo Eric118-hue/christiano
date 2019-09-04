@@ -3,6 +3,7 @@ import $ from 'jquery';
 import moment from 'moment';
 import {Popup, PopupHeader, PopupBody} from '../../bs/bootstrap';
 import numeral from 'numeral';
+import trans from '../../../app/translations';
 
 class List extends Component
 {
@@ -195,11 +196,11 @@ class List extends Component
         let k = Math.floor(3 * Math.random())
         switch(k) {
             case 0:
-                return <a className="btn btn-danger d-flex justify-content-between pr-1 align-items-center" href="#" style={{width:100,height:34}}><span></span><span>NT</span> <i className="icon-pencil"></i></a>
+                return <a className="btn btn-danger d-flex justify-content-between pr-1 align-items-center" href="#" style={{width:85,height:34}}><span></span><span>NT</span> <i className="icon-pencil"></i></a>
             case 1:
-                return <a className="btn d-flex text-white justify-content-between pr-1 align-items-center" href="#" style={{width:100,background:'#ff7c07',height:34}}><span></span><span>TP</span> <i className="icon-pencil"></i></a>
+                return <a className="btn d-flex text-white justify-content-between pr-1 align-items-center" href="#" style={{width:85,background:'#ff7c07',height:34}}><span></span><span>TP</span> <i className="icon-pencil"></i></a>
             case 2:
-                return <a className="btn btn-success d-flex justify-content-between pr-1 align-items-center" href="#" style={{width:100,height:34}}><span></span><i className="fa fa-check text-white"></i><i className="fa fa-info-circle text-white"></i></a>
+                return <a className="btn btn-success d-flex justify-content-between pr-1 align-items-center" href="#" style={{width:85,height:34}}><span></span><i className="fa fa-check text-white"></i><i className="fa fa-info-circle text-white"></i></a>
             
         }
     }
@@ -208,11 +209,11 @@ class List extends Component
         let k = Math.floor(3 * Math.random())
         switch(k) {
             case 0:
-                return <a className="btn btn-danger d-flex justify-content-between pr-1 align-items-center" href="#" style={{width:100,height:34}}><span></span><span>&gt; 24h</span><i className="icon-pencil"></i></a>
+                return <a className="btn btn-danger d-flex justify-content-between pr-1 align-items-center" href="#" style={{width:85,height:34}}><span></span><span>&gt; 24h</span><i className="icon-pencil"></i></a>
             case 1:
-                return <a className="btn text-white d-flex justify-content-between pr-1 align-items-center" href="#" style={{width:100,background:'#ff7c07',height:34}}><span></span><span>&lt; 24h</span><i className="icon-pencil"></i></a>
+                return <a className="btn text-white d-flex justify-content-between pr-1 align-items-center" href="#" style={{width:85,background:'#ff7c07',height:34}}><span></span><span>&lt; 24h</span><i className="icon-pencil"></i></a>
             case 2:
-                return <a className="btn btn-success d-flex justify-content-between pr-1 align-items-center" href="#" style={{width:100,height:34}}><span></span><i className="fa fa-check text-white"></i> <i className="fa fa-info-circle text-white"></i></a>
+                return <a className="btn btn-success d-flex justify-content-between pr-1 align-items-center" href="#" style={{width:85,height:34}}><span></span><i className="fa fa-check text-white"></i> <i className="fa fa-info-circle text-white"></i></a>
             
         }
     }
@@ -221,11 +222,11 @@ class List extends Component
         let k = Math.floor(3 * Math.random())
         switch(k) {
             case 0:
-                return <a className="btn btn-danger d-flex justify-content-between pr-1 align-items-center" href="#" style={{width:100,height:34}}><span></span><span>{Math.floor(100*Math.random())}</span><i className="icon-pencil"></i></a>
+                return <a className="btn btn-danger d-flex justify-content-between pr-1 align-items-center" href="#" style={{width:85,height:34}}><span></span><span>{Math.floor(100*Math.random())}</span><i className="icon-pencil"></i></a>
             case 1:
-                return <a className="btn d-flex text-white justify-content-between pr-1 align-items-center" href="#" style={{width:100,background:'#ff7c07',height:34}}><span></span><span>{Math.floor(100*Math.random())}</span><i className="icon-pencil"></i></a>
+                return <a className="btn d-flex text-white justify-content-between pr-1 align-items-center" href="#" style={{width:85,background:'#ff7c07',height:34}}><span></span><span>{Math.floor(100*Math.random())}</span><i className="icon-pencil"></i></a>
             case 2:
-                return <a className="btn btn-success text-white d-flex justify-content-between pr-1 align-items-center" href="#" style={{width:100,height:34}}><span></span><span>{Math.floor(100*Math.random())}</span><i className="fa fa-check text-white"></i> <i className="fa fa-info-circle text-white"></i></a>
+                return <a className="btn btn-success text-white d-flex justify-content-between pr-1 align-items-center" href="#" style={{width:85,height:34}}><span></span><span>{Math.floor(100*Math.random())}</span><i className="fa fa-check text-white"></i> <i className="fa fa-info-circle text-white"></i></a>
             
         }
     }
@@ -235,17 +236,17 @@ class List extends Component
         id="addrowExample">
             <thead>
                 <tr>
-                    <th>Emis le</th>
-                    <th>à (hh:mm)</th>
-                    <th>Nº d’expédition</th>
-                    <th>Cat.</th>
-                    <th>Classe</th>
-                    <th>Nb récips</th>
-                    <th>Poids (Kg)</th>
-                    <th>Aéro. ORIG.</th>
-                    <th>Direct/Escales</th>
-                    <th>Aéro. DEST.</th>
-                    <th>Premier vol</th>
+                    <th>{trans('Emis le')}</th>
+                    <th>{trans('à')}</th>
+                    <th>{trans('N° d’expédition')}</th>
+                    <th>{trans('Cat.')}</th>
+                    <th>{trans('Clas.')}</th>
+                    <th>{trans('Qté')}</th>
+                    <th>{trans('Poids')}</th>
+                    <th>{trans('Orig.')}</th>
+                    <th>{trans('Escale')}</th>
+                    <th>{trans('Dest.')}</th>
+                    <th>{trans('Nº de vol')}</th>
                     <th style={{width:107}}>Irrégularités</th>
                     <th style={{width:107}}>Performances</th>
                     <th style={{width:107}}>Trip completed</th>
@@ -254,8 +255,8 @@ class List extends Component
             </thead>
             <tbody>
                 {this.state.items.map(item=><tr key={`cardit-${item.id}`} className="gradeA">
-                    <td>{moment.utc(item.nsetup.preparation_datetime).format('DD/MM/YYYY')}</td>
-                    <td>{moment.utc(item.nsetup.preparation_datetime).format('HH:mm')}</td>
+                    <td>{moment.utc(item.nsetup.preparation_datetime).local().format('DD/MM/YYYY')}</td>
+                    <td>{moment.utc(item.nsetup.preparation_datetime).local().format('HH:mm')}</td>
                     <td className="actions">{item.nsetup.document_number} <a href="#" className="btn-sm btn-icon btn-pure btn-turquoise on-default ml-2 m-r-5 button-edit" onClick={e=>{
                         e.preventDefault()
                         $(`#receptacles-${item.id}`).modal('show')
@@ -352,7 +353,7 @@ class List extends Component
                             </PopupBody>
                         </Popup>
                     </td>
-                    <td>{this.escales(item)}
+                    <td className="p-2">{this.escales(item)}
                         <Popup id={`escales-${item.id}`}>
                             <PopupHeader>
                                 Escales
@@ -370,8 +371,8 @@ class List extends Component
                                     <tbody>
                                         {item.nsetup.transports.slice(0, -1).map((transport, index)=><tr key={`escale-${item.id}-${index}`}>
                                             <td>{transport.arrival_location.iata} - {transport.arrival_location.name} - {transport.arrival_location.country.nom}</td>
-                                            <td>{moment.utc(transport.arrival_datetime).format('DD/MM/YYYY HH:mm')}</td>
-                                            <td>{moment.utc(item.nsetup.transports[index+1].departure_datetime).format('DD/MM/YYYY HH:mm')}</td>
+                                            <td>{moment(transport.arrival_datetime_lt).format('DD/MM/YYYY HH:mm')}</td>
+                                            <td>{moment(item.nsetup.transports[index+1].departure_datetime_lt).format('DD/MM/YYYY HH:mm')}</td>
                                             <td>{item.nsetup.transports[index+1].conveyence_reference}</td>
                                         </tr>)}
                                     </tbody>
@@ -467,7 +468,7 @@ class List extends Component
                             <a href="#"><i className="fa fa-angle-double-right"></i></a>
                         </div>
                     </div>
-                    <div className="card mb-3">
+                    {false?<div className="card mb-3">
                         <div className="card-header">
                             Search
                         </div>
@@ -494,7 +495,7 @@ class List extends Component
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div>:null}
                     <div className="card overflowhidden">
                         <div className="body">
                             <div className="row m-0 justify-content-between">

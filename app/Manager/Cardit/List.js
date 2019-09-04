@@ -1,5 +1,5 @@
 import React from 'react';
-import BaseList from '../../../vendor/Ry/Cardit/List';
+import BaseList from '../../../vendor/Ry/Airline/Cardit/List';
 
 class List extends BaseList
 {

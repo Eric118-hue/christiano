@@ -2,6 +2,7 @@ import ReactDOM from 'react-dom';
 import React from 'react';
 import Lucid, {LucidComponents, LucidWrapper, Wrapper} from '../vendor/lucid';
 import './manager.scss';
+import '../medias/fonts/leg2.css';
 import RyManager from '../vendor/Ry/Manager';
 import __OPTIONTREE from '../vendor/Ry/Core/OptionTree';
 import __ADMINTOOLS from '../vendor/Ry/Admin/AdminTools';

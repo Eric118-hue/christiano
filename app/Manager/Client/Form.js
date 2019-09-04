@@ -20,15 +20,14 @@ class Form extends Component
         this.handleSearch = this.handleSearch.bind(this)
         this.handleTypeChange = this.handleTypeChange.bind(this)
         this.handleNameChange = this.handleNameChange.bind(this)
+        this.offClick = this.offClick.bind(this)
     }
 
-    componentDidMount() {
-        if(this.state.select_airline)
-            $('body').on('click', ()=>{
-                this.setState({
-                    select_airline : false
-                })
-            })
+    offClick() {
+        this.setState({
+            select_airline : false
+        })
+        $('body').off('click', this.offClick)
     }
 
     handleNameChange(event) {
@@ -66,6 +65,8 @@ class Form extends Component
                 }
             },
             success : response=>{
+                if(response.data.data.length>0)
+                    $('body').on('click', this.offClick)
                 this.setState({
                     airlines : response.data.data,
                     select_airline : response.data.data.length>0

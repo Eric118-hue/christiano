@@ -1,5 +1,6 @@
 import Lucid, {LucidComponents, LucidWrapper, Wrapper} from '../vendor/lucid';
 import './airline.scss';
+import '../medias/fonts/leg2.css';
 import $ from 'jquery';
 import React from 'react';
 import ReactDOM from 'react-dom';
