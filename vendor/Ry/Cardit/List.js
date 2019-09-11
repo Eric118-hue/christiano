@@ -9,6 +9,7 @@ class List extends Component
 {
     constructor(props) {
         super(props)
+        this.readOnly = false
         this.state = {
             items : this.props.data.data.data,
             date : moment().format('YYYY-MM-DD'),

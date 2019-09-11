@@ -11,7 +11,6 @@ class Reception extends Component
         super(props)
         this.state = {
             receptacles : this.props.data.receptacles,
-            reception : this.props.data.reception,
             updated_resdits : this.props.data.updated_resdits,
             dialogs : [{}]
         }
@@ -28,7 +27,6 @@ class Reception extends Component
             const storeState = this.props.store.getState()
             if(storeState.type=='resdit' && storeState.event=='reception') {
                 this.setState(state => {
-                    state.reception = storeState
                     state.updated_resdits.reception = storeState
                     state.dialogs.push({})
                     return state
@@ -39,7 +37,7 @@ class Reception extends Component
 
     handleReceptacleStatusChange(receptacle, status) {
         this.setState(state=>{
-            state.reception = null
+            delete state.updated_resdits.reception
             let found_receptacle = state.receptacles.find(item=>item.id==receptacle.id)
             if(found_receptacle) {
                 if(!found_receptacle.statuses) {
@@ -77,7 +75,7 @@ class Reception extends Component
         return <div className="row">
             <div className="col-md-12 d-md-block d-xl-none">
                 <div className="row text-left text-body">
-                    {this.state.reception?null:<div className="col-md-4">
+                    {this.models('state.updated_resdits.reception', false)?null:<div className="col-md-4">
                         <div className="skillContainer d-flex align-items-center justify-content-around">
                             <Countdown from={moment.utc(this.props.data.nsetup.consignment_completion).local()} to={moment.utc(this.props.data.nsetup.handover_origin_cut_off).local()}/>
                         </div>
@@ -101,7 +99,7 @@ class Reception extends Component
             </div>
             <div className="col-xl-3 d-md-none d-xl-block">
                 <div className="blockTemps">
-                    {this.state.reception?null:<React.Fragment>
+                    {this.models('state.updated_resdits.reception', false)?null:<React.Fragment>
                         <h3>{trans('Temps restant pour valider la réception')} :</h3>
                         <div className="skillContainer d-flex align-items-center justify-content-around">
                             <Countdown from={moment.utc(this.props.data.nsetup.consignment_completion).local()} to={moment.utc(this.props.data.nsetup.handover_origin_cut_off).local()}/>
@@ -136,13 +134,15 @@ class Reception extends Component
                                 <tr>
                                     <th rowSpan="2" colSpan="5"
                                         className="colorVert noBor pl-0 text-left">
-                                        {this.state.reception?trans('Réception validée le :date à :time par :author - RESDIT 74 envoyé', {
-                                            date : moment.utc(this.state.reception.created_at).local().format('DD/MM/YYYY'),
-                                            time : moment.utc(this.state.reception.created_at).local().format('HH:mm'),
-                                            author : `${this.state.reception.author.profile.gender_label} ${this.state.reception.author.profile.official}`
+                                        {(this.models('state.updated_resdits.reception.files', []).length>0)?trans('Réception validée le :date à :time par :author - RESDIT :resdits envoyé:plural_resdits', {
+                                            resdits : this.state.updated_resdits.reception.files.join(', '),
+                                            plural_resdits : this.state.updated_resdits.reception.files.length>1?'s':'',
+                                            date : moment.utc(this.state.updated_resdits.reception.created_at).local().format('DD/MM/YYYY'),
+                                            time : moment.utc(this.state.updated_resdits.reception.created_at).local().format('HH:mm'),
+                                            author : `${this.state.updated_resdits.reception.author.profile.gender_label} ${this.state.updated_resdits.reception.author.profile.official}`
                                         }):null}    
                                     </th>
-                                    <th colSpan="3" className="thTop">Réception</th>
+                                    <th colSpan={this.props.consignmentEvents.length} className="thTop">{trans('Réception')}</th>
                                     <th rowSpan="2" className="thModal">
                                         
                                     </th>
@@ -151,11 +151,11 @@ class Reception extends Component
                                     {this.props.consignmentEvents.map(consignment_event=><th key={`consignment_event-${consignment_event.code}`}>{trans(consignment_event.interpretation)}</th>)}
                                 </tr>
                                 <tr>
-                                    <th>Numéro du récipient</th>
-                                    <th>Flag <i className="icon-info"></i></th>
-                                    <th>Container Journey ID</th>
-                                    <th>Type de récipient</th>
-                                    <th>Poids (Kg)</th>
+                                    <th>{trans('Numéro du récipient')}</th>
+                                    <th>{trans('Flag')} <i className="icon-info"></i></th>
+                                    <th>{trans('Container Journey ID')}</th>
+                                    <th>{trans('Type de récipient')}</th>
+                                    <th>{trans('Poids (Kg)')}</th>
                                     {this.props.consignmentEvents.map(consignment_event=><th key={`consignment_event-checkall-${consignment_event.code}`}>
                                         <label className="fancy-radio custom-color-green m-auto">
                                             <input type="radio" name="checkall[status]" onChange={()=>this.handleAllReceptacleStatusChange(consignment_event.code)}/>
@@ -175,15 +175,15 @@ class Reception extends Component
                                     <td>{receptacle.nsetup.weight}</td>
                                     {this.props.consignmentEvents.map(consignment_event=><td key={`consignment_event-check-${receptacle.id}-${consignment_event.code}`} className="text-center">
                                         <label className="fancy-radio m-auto custom-color-green">
-                                            <input name={`receptacles[${receptacle.id}][status]`} type="radio" value={consignment_event.code} checked={this.cast(receptacle, 'statuses.reception', -1)==consignment_event.code} onChange={()=>this.handleReceptacleStatusChange(receptacle, consignment_event.code)}/>
+                                            <input name={`receptacles[${receptacle.id}][status]`} type="radio" value={consignment_event.code} checked={this.cast(receptacle, 'statuses.reception', -100)==consignment_event.code} onChange={()=>this.handleReceptacleStatusChange(receptacle, consignment_event.code)}/>
                                             <span><i className="mr-0"></i></span>
                                         </label>
                                     </td>)}
                                 </tr>)}
                                 <tr>
-                                    <td colSpan="3" className="border-right-0 noBg"></td>
+                                    <td colSpan={this.props.consignmentEvents.length} className="border-right-0 noBg"></td>
                                     <td colSpan="5" className="border-left-0 border-right-0">
-                                        {this.state.reception?null:<button className="btn btn-orange rounded-0">{trans('STEP')} 1 :
+                                        {(this.models('state.updated_resdits.reception', false) || this.props.readOnly)?null:<button className="btn btn-orange rounded-0">{trans('STEP')} 1 :
                                             {trans('Valider')}</button>}
                                     </td>
                                 </tr>

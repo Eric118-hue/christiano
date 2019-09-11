@@ -9,6 +9,7 @@ class Item extends Component
     render() {
         return <tr>
             <td>{this.props.data.iata_code}</td>
+            <td>{this.props.data.icao_code}</td>
             <td>{this.props.data.name}</td>
         </tr>
     }
@@ -95,12 +96,16 @@ class List extends NavigableModel
                     <table className="table table-striped table-bordered">
                         <thead>
                             <tr>
-                                <th className="text-capitalize">{trans('Code')}</th>
+                                <th className="text-capitalize">{trans('Code IATA')}</th>
+                                <th className="text-capitalize">{trans('Code ICAO')}</th>
                                 <th className="text-capitalize">{trans('Nom')}</th>
                             </tr>
                             <tr className="bg-yellow">
                                 <th>
                                     <input type="search" value={this.state.filter.iata_code} onChange={e=>this.onFilter(e, 'iata_code')} className="form-control text-capitalize" placeholder={trans('filtre')}/>
+                                </th>
+                                <th>
+                                    <input type="search" value={this.state.filter.icao_code} onChange={e=>this.onFilter(e, 'icao_code')} className="form-control text-capitalize" placeholder={trans('filtre')}/>
                                 </th>
                                 <th>
                                     <input type="search" value={this.state.filter.name} onChange={e=>this.onFilter(e, 'name')} className="form-control text-capitalize" placeholder={trans('filtre')}/>

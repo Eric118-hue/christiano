@@ -3,7 +3,7 @@ import trans from '../../translations';
 import Modelizer from '../../../vendor/Ry/Core/Modelizer';
 import $ from 'jquery';
 import MultiForm from '../../../vendor/Ry/Admin/User/Multiform';
-import Station from './Station';
+import Organisation from './Organisation';
 
 class Form extends Component
 {
@@ -101,8 +101,8 @@ class Form extends Component
                             </li>
                             <li className="nav-item">
                                 <a className={`nav-link`}
-                        data-toggle="tab" href={`#stations`} role="tab"
-                        aria-controls="stations">{trans('Stations')}</a>
+                        data-toggle="tab" href={`#organisation`} role="tab"
+                        aria-controls="organisation">{trans('Organisation')}</a>
                             </li>
                         </ul>
                         <div className="tab-content border-bottom border-left border-right p-4 mb-4">
@@ -317,8 +317,8 @@ class Form extends Component
                                 </div>
                             </div>
                             <div className={`tab-pane`}
-                            id={`stations`} role="tabpanel" aria-labelledby="stations-tab">
-                                <Station data={this.models('props.data.row.stations')} customerId={this.models('props.data.row.id')} store={this.props.store}/>
+                            id={`organisation`} role="tabpanel" aria-labelledby="organisation-tab">
+                                <Organisation data={this.props.data} store={this.props.store}/>
                             </div>
                         </div>
                         <input type="hidden" name="id" value={this.models('props.data.row.id')}/>

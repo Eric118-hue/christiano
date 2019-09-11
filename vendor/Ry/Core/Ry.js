@@ -44,7 +44,7 @@ $(document).ajaxError(function(event, response) {
 	}
 	if(response.status) {
 		swal({
-			title: `Erreur ${response.status}!`,
+			title: (response.responseJSON && response.responseJSON.message) ? `Erreur ${response.status}!` : trans('Désolé'),
 			text: errorText,
 			type: 'error'
 		});

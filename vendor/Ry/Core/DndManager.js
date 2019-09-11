@@ -6,4 +6,5 @@ class ProductApp
     
 }
 
-export default DragDropContext(HTML5Backend)(ProductApp)
+const App = DragDropContext(HTML5Backend)(ProductApp)
+export default App;

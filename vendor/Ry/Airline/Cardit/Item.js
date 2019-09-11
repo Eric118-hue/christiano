@@ -5,6 +5,7 @@ import $ from 'jquery';
 import Reception from './Reception';
 import Assignation from './Assignation';
 import Status from './Status';
+import Delivery from './Delivery';
 import trans from '../../../../app/translations';
 
 class StepView extends Component
@@ -12,11 +13,24 @@ class StepView extends Component
     constructor(props) {
         super(props)
         this.state = {
-            transportIndex : 0
+            transportIndex : 0,
+            resdits : this.props.data.resdits
         }
         this.assignate = this.assignate.bind(this)
         this.departure = this.departure.bind(this)
         this.arrival = this.arrival.bind(this)
+    }
+
+    componentDidMount() {
+        this.props.store.subscribe(()=>{
+            const storeState = this.props.store.getState()
+            if(storeState.type=='resdit') {
+                this.setState(state=>{
+                    state.resdits.push(storeState)
+                    return state
+                })
+            }
+        })
     }
 
     assignate(index) {
@@ -44,14 +58,16 @@ class StepView extends Component
         return <div className="recipientContainer">
             <div className="d-flex justify-content-center align-items-center stepContainer">
                 <div className="asideList">{this.props.data.nsetup.handover_origin_location.iata}</div>
-                <div className={`recipientList d-flex flex-column justify-content-between align-items-center ${this.props.step=='reception'?'red':(this.props.data.reception?'text-success':'')}`}>
+                <div className={`recipientList d-flex flex-column justify-content-between align-items-center ${this.props.step=='reception'?'red':(this.state.resdits.find(item=>{
+                        return item.event == 'reception'
+                    })?'text-success':'')}`}>
                     <div className="mouse-pointable w-100" onClick={this.props.reception}>
                         <i className="font-50 l2-receipt"></i>
                         <span className="text-capitalize">{trans('Réception')}</span>
                     </div>
                 </div>
                 {this.props.data.nsetup.transports.map((transport, index)=><React.Fragment key={`cardit-${this.props.data.id}-transport-${index}`}>
-                    <div className={`recipientList d-flex flex-column justify-content-between align-items-center ${(this.props.step=='assignation' && this.state.transportIndex==index)?'red':(this.props.data.resdits.find(item=>{
+                    <div className={`recipientList d-flex flex-column justify-content-between align-items-center ${(this.props.step=='assignation' && this.state.transportIndex==index)?'red':(this.state.resdits.find(item=>{
                         return item.event == 'assignation' && item.transport_step==index
                     })?'text-success':'')}`}>
                         <div className="mouse-pointable w-100" onClick={()=>this.assignate(index)}>
@@ -59,7 +75,7 @@ class StepView extends Component
                             <span className="text-capitalize">{trans('Assignation')}</span>
                         </div>
                     </div>
-                    <div className={`recipientList d-flex flex-column justify-content-between align-items-center  ${(this.props.step=='departure' && this.state.transportIndex==index)?'red':(this.props.data.resdits.find(item=>{
+                    <div className={`recipientList d-flex flex-column justify-content-between align-items-center  ${(this.props.step=='departure' && this.state.transportIndex==index)?'red':(this.state.resdits.find(item=>{
                         return item.event == 'departure' && item.transport_step==index
                     })?'text-success':'')}`}>
                         <div className="mouse-pointable w-100" onClick={()=>this.departure(index)}>
@@ -67,7 +83,7 @@ class StepView extends Component
                             <span className="text-capitalize">{trans('Départ')}</span>
                         </div>
                     </div>
-                    <div className={`recipientList d-flex flex-column justify-content-between align-items-center ${(this.props.step=='arrival' && this.state.transportIndex==index)?'red':(this.props.data.resdits.find(item=>{
+                    <div className={`recipientList d-flex flex-column justify-content-between align-items-center ${(this.props.step=='arrival' && this.state.transportIndex==index)?'red':(this.state.resdits.find(item=>{
                         return item.event == 'arrival' && item.transport_step==index
                     })?'text-success':'')}`}>
                         <div className="mouse-pointable w-100" onClick={()=>this.arrival(index)}>
@@ -76,14 +92,10 @@ class StepView extends Component
                         </div>
                     </div>
                 </React.Fragment>)}
-                <div className="recipientList d-flex flex-column justify-content-between align-items-center">
-                    <div className="mouse-pointable w-100">
-                        <i className="font-50 l2-warehouse"></i>
-                        <span className="text-capitalize">{trans('Entrepôt')}</span>
-                    </div>
-                </div>
-                <div className="recipientList d-flex flex-column justify-content-between align-items-center last">
-                    <div className="mouse-pointable w-100">
+                <div className={`recipientList d-flex flex-column justify-content-between align-items-center last ${this.props.step=='delivery'?'red':(this.state.resdits.find(item=>{
+                        return item.event == 'delivery'
+                    })?'text-success':'')}`}>
+                    <div className="mouse-pointable w-100" onClick={this.props.delivery}>
                         <i className="font-50 l2-destination"></i>
                         <span className="text-capitalize">{trans('Livraison')}</span>
                     </div>
@@ -100,8 +112,14 @@ class Item extends Component
         super(props)
         let selectTransports = []
         let allTransports = []
-        this.props.data.nsetup.transports.map(transport=>{
-            selectTransports.push([transport])
+        this.props.data.nsetup.transports.map((transport, index)=>{
+            let transports = [transport]
+            if('alt_transports' in this.props.data.nsetup && index in this.props.data.nsetup.alt_transports) {
+                this.props.data.nsetup.alt_transports[index].map(alt_transport=>{
+                    transports.push(alt_transport)
+                })
+            }
+            selectTransports.push(transports)
             allTransports.push({
                 assignation : null,
                 departure : null,
@@ -122,6 +140,7 @@ class Item extends Component
         this.reception = this.reception.bind(this)
         this.assignation = this.assignation.bind(this)
         this.departure = this.departure.bind(this)
+        this.delivery = this.delivery.bind(this)
         this.arrival = this.arrival.bind(this)
         this.addTransport = this.addTransport.bind(this)
         this.saveTransport = this.saveTransport.bind(this)
@@ -169,10 +188,12 @@ class Item extends Component
     }
 
     handleSelectAirport(event, airport) {
+        event.preventDefault()
         this.setState({
             newairport : airport,
             select_airport : false
         })
+        return false
     }
 
     componentDidMount() {
@@ -220,14 +241,17 @@ class Item extends Component
                     this.departure_date = moment()
                     this.arrival_date = moment()
                     this.refs.departure_time.value = ''
-                    $(`#transport_popup`).modal('hide')
+                    this.refs.arrival_time.value = ''
+                    $(this.refs.departure_date).datepicker('update', '');
+                    $(this.refs.arrival_date).datepicker('update', '');
+                    $(`#transport_popup_${this.props.data.id}`).modal('hide')
                 }
             })
         }
     }
 
     addTransport() {
-        $(`#transport_popup`).modal('show')
+        $(`#transport_popup_${this.props.data.id}`).modal('show')
     }
 
     reception() {
@@ -247,6 +271,12 @@ class Item extends Component
         this.setState({
             step : 'departure',
             transport_index : transport_index
+        })
+    }
+
+    delivery() {
+        this.setState({
+            step : 'delivery'
         })
     }
 
@@ -276,26 +306,32 @@ class Item extends Component
         let headStep = null;
         switch(this.state.step) {
             case 'reception':
-                step = <Reception data={this.props.data} consignmentEvents={this.props.consignmentEvents} store={this.props.store}/>
+                step = <Reception data={this.props.data} consignmentEvents={this.props.consignmentEvents} store={this.props.store} readOnly={this.props.readOnly}/>
                 headStep = <div className="centerText">
                     {trans("Réception : récipients au départ de l’aéroport d’origine")} : {this.props.data.nsetup.handover_origin_location.country.nom} - {this.props.data.nsetup.handover_origin_location.iata} - {this.props.data.nsetup.handover_origin_location.name}
                 </div>
                 break;
+            case 'delivery':
+                step = <Delivery readOnly={this.props.readOnly} data={this.props.data} consignmentEvents={this.props.deliveryConsignmentEvents} store={this.props.store}/>
+                headStep = <div className="centerText">
+                    {trans("Livraison : récipients à l'arrivée de l’aéroport de destination")} : {this.props.data.nsetup.handover_destination_location.country.nom} - {this.props.data.nsetup.handover_destination_location.iata} - {this.props.data.nsetup.handover_destination_location.name}
+                </div>
+                break;
             case 'assignation':
             //todo : choices available transport at same point
-                step = <Assignation data={this.props.data} transportIndex={this.state.transport_index} selectTransports={this.state.select_transports[this.state.transport_index]} addTransport={this.addTransport} consignmentEvent="assignation" handleAllReceptacleTransportChange={transport=>this.handleAllReceptacleTransportChange(transport)} allTransport={this.state.allTransports[this.state.transport_index].assignation} store={this.props.store}/>
+                step = <Assignation key={`assignation-${this.props.data.id}-${this.state.transport_index}`} readOnly={this.props.readOnly} data={this.props.data} transportIndex={this.state.transport_index} selectTransports={this.state.select_transports[this.state.transport_index]} addTransport={this.addTransport} consignmentEvent="assignation" handleAllReceptacleTransportChange={transport=>this.handleAllReceptacleTransportChange(transport)} allTransport={this.state.allTransports[this.state.transport_index].assignation} store={this.props.store}/>
                 headStep = <div className="centerText">
                     {trans("Assignation : récipients au vol Nº:vol au départ de l'aéroport", {vol:this.state.transport_index+1})} {this.props.data.nsetup.transports[this.state.transport_index].departure_location.country.nom} - {this.props.data.nsetup.transports[this.state.transport_index].departure_location.iata} - {this.props.data.nsetup.transports[this.state.transport_index].departure_location.name}
                 </div>
                 break;
             case 'departure':
-                step = <Status data={this.props.data} transportIndex={this.state.transport_index} selectTransports={this.state.select_transports[this.state.transport_index]} addTransport={this.addTransport} consignmentEvent="departure" handleAllReceptacleTransportChange={transport=>this.handleAllReceptacleTransportChange(transport)} allTransport={this.state.allTransports[this.state.transport_index].departure} store={this.props.store}/>
+                step = <Status key={`departure-${this.props.data.id}-${this.state.transport_index}`} readOnly={this.props.readOnly} data={this.props.data} transportIndex={this.state.transport_index} selectTransports={this.state.select_transports[this.state.transport_index]} addTransport={this.addTransport} consignmentEvent="departure" handleAllReceptacleTransportChange={transport=>this.handleAllReceptacleTransportChange(transport)} allTransport={this.state.allTransports[this.state.transport_index].departure} store={this.props.store}/>
                 headStep = <div className="centerText">
                     {trans("Départ : récipients sur le vol Nº:vol au départ de l'aéroport", {vol:this.state.transport_index+1})} {this.props.data.nsetup.transports[this.state.transport_index].departure_location.country.nom} - {this.props.data.nsetup.transports[this.state.transport_index].departure_location.iata} - {this.props.data.nsetup.transports[this.state.transport_index].departure_location.name}
                 </div>
                 break;
             case 'arrival':
-                step = <Status data={this.props.data} transportIndex={this.state.transport_index} selectTransports={this.state.select_transports[this.state.transport_index]} addTransport={this.addTransport} consignmentEvent="arrival" handleAllReceptacleTransportChange={transport=>this.handleAllReceptacleTransportChange(transport)} allTransport={this.state.allTransports[this.state.transport_index].arrival} store={this.props.store}/>
+                step = <Status key={`arrival-${this.props.data.id}-${this.state.transport_index}`} readOnly={this.props.readOnly} data={this.props.data} transportIndex={this.state.transport_index} selectTransports={this.state.select_transports[this.state.transport_index]} addTransport={this.addTransport} consignmentEvent="arrival" handleAllReceptacleTransportChange={transport=>this.handleAllReceptacleTransportChange(transport)} allTransport={this.state.allTransports[this.state.transport_index].arrival} store={this.props.store}/>
                 headStep = <div className="centerText">
                     {trans("Arrivée : récipients du vol Nº:vol à l'arrivée à l'aéroport", {vol:this.state.transport_index+1})} {this.props.data.nsetup.transports[this.state.transport_index].departure_location.country.nom} - {this.props.data.nsetup.transports[this.state.transport_index].departure_location.iata} - {this.props.data.nsetup.transports[this.state.transport_index].departure_location.name}
                 </div>
@@ -429,11 +465,11 @@ class Item extends Component
                 <span className="title-bandeau">{trans('Liste des récipients')} </span>
                 {headStep}
             </div>
-            <StepView data={this.props.data} step={this.state.step} store={this.props.store} reception={this.reception} assignation={transport_index=>this.assignation(transport_index)} departure={transport_index=>this.departure(transport_index)} arrival={transport_index=>this.arrival(transport_index)}/>
+            <StepView data={this.props.data} step={this.state.step} store={this.props.store} reception={this.reception} assignation={transport_index=>this.assignation(transport_index)} departure={transport_index=>this.departure(transport_index)} arrival={transport_index=>this.arrival(transport_index)} delivery={this.delivery}/>
             <div className="tableBottom">
                 {step}
             </div>
-            <Popup id={`transport_popup`}>
+            <Popup id={`transport_popup_${this.props.data.id}`}>
                 <PopupBody>
                     <form className="text-left" ref="frm_add_transport">
                         <div className="form-group">

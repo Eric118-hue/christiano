@@ -3,6 +3,11 @@ import BaseList from '../../../vendor/Ry/Airline/Cardit/List';
 
 class List extends BaseList
 {
+    constructor(props) {
+        super(props)
+        this.readOnly = true
+    }
+
     afterTh() {
         return <th></th>
     }
