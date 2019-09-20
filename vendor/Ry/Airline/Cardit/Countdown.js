@@ -169,7 +169,7 @@ class Countdown extends Component
                 <span className="text-uppercase">{trans('minutes')}</span>
                 <h3 className="mb-0" style={{lineHeight:'22px',fontWeight:'normal'}}>{minutes>=0?minutes:0}</h3>
             </Knob>
-            <Knob className="primary-0" step="second" tick={this.state.tick} {...this.props}>
+            <Knob className="beige-0" step="second" tick={this.state.tick} {...this.props}>
                 <span className="text-uppercase">{trans('secondes')}</span>
                 <h3 className="mb-0" style={{lineHeight:'22px',fontWeight:'normal'}}>{seconds>=0?seconds:0}</h3>
             </Knob>

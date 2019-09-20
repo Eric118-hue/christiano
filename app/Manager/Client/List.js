@@ -11,6 +11,23 @@ class List extends NavigableModel
         this.model = 'airline';
         this.endpoint = '/clients/airlines';
         this.remove = this.remove.bind(this)
+        this.handleSetup = this.handleSetup.bind(this)
+    }
+
+    handleSetup(event, customer_index, option) {
+        const checked = event.target.checked
+        this.setState(state=>{
+            state.data[customer_index].nsetup[option] = checked
+            $.ajax({
+                url : '/customer',
+                type : 'post',
+                data : {
+                    id : state.data[customer_index].id,
+                    nsetup : state.data[customer_index].nsetup
+                }
+            })
+            return state
+        })
     }
 
     remove(customer) {
@@ -42,7 +59,37 @@ class List extends NavigableModel
     item(customer, key) {
         return <tr key={`customer-${customer.id}`}>
             <td>{customer.id}</td>
-    <td>{customer.facturable.name} {customer.type=='airline'?<div className={`badge badge-rose`}>{trans('Compagnie aérienne')}</div>:<div className={`badge badge-blue`}>{trans('GSA')}</div>}</td>
+            <td>{customer.facturable.name}</td>
+            <td>
+                {customer.type=='airline'?<div className={`badge badge-rose`}>{trans('Compagnie aérienne')}</div>:<div className={`badge badge-blue`}>{trans('GSA')}</div>}
+            </td>
+            <td className="text-center">
+                {customer.type=='airline'?customer.facturable.icao_code:'--'}
+            </td>
+            <td className="text-center">
+                {customer.type=='airline'?customer.facturable.iata_code:'--'}
+            </td>
+            <td className="text-center">
+                {customer.type=='airline'?customer.facturable.edi_code:'--'}
+            </td>
+            <td className="text-center">
+                <label className="fancy-checkbox">
+                    <input type="checkbox" checked={customer.nsetup.resdit?true:false} onChange={e=>this.handleSetup(e, key, 'resdit')} value="1"/>
+                    <span></span>
+                </label>
+            </td>
+            <td className="text-center">
+                <label className="fancy-checkbox">
+                    <input type="checkbox" checked={customer.nsetup.invoice?true:false} onChange={e=>this.handleSetup(e, key, 'invoice')} value="1"/>
+                    <span></span>
+                </label>
+            </td>
+            <td className="text-center">
+                <label className="fancy-checkbox">
+                    <input type="checkbox" checked={customer.nsetup.stat?true:false} onChange={e=>this.handleSetup(e, key, 'stat')} value="1"/>
+                    <span></span>
+                </label>
+            </td>
             <td className="text-right">
                 <a className="btn btn-primary" href={`/client_edit?id=${customer.id}`}><i className="fa fa-edit"></i> {trans('modifier')}</a>
                 <button className="btn btn-danger ml-2" type="button" onClick={()=>this.remove(customer)}><i className="fa fa-remove"></i> {trans('supprimer')}</button>
@@ -83,6 +130,13 @@ class List extends NavigableModel
                             <tr>
                                 <th>ID</th>
                                 <th>{trans('nom')}</th>
+                                <th>{trans('type')}</th>
+                                <th>{trans('code OACI')}</th>
+                                <th>{trans('code IATA')}</th>
+                                <th>{trans('code GXS')}</th>
+                                <th className="text-uppercase">{trans('RESDIT')}</th>
+                                <th className="text-uppercase">{trans('facturation')}</th>
+                                <th className="text-uppercase">{trans('stats')}</th>
                                 <th></th>
                             </tr>
                         </thead>

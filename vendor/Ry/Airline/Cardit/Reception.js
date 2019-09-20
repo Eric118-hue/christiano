@@ -143,20 +143,17 @@ class Reception extends Component
                                         }):null}    
                                     </th>
                                     <th colSpan={this.props.consignmentEvents.length} className="thTop">{trans('Réception')}</th>
-                                    <th rowSpan="2" className="thModal">
-                                        
-                                    </th>
                                 </tr>
                                 <tr className="thLeft">
-                                    {this.props.consignmentEvents.map(consignment_event=><th key={`consignment_event-${consignment_event.code}`}>{trans(consignment_event.interpretation)}</th>)}
+                                    {this.props.consignmentEvents.map(consignment_event=><th key={`consignment_event-${consignment_event.code}`}>{trans(consignment_event.trans_interpretation)}</th>)}
                                 </tr>
                                 <tr>
-                                    <th>{trans('Numéro du récipient')}</th>
+                                    <th width="300">{trans('Numéro du récipient')}</th>
                                     <th>{trans('Flag')} <i className="icon-info"></i></th>
-                                    <th>{trans('Container Journey ID')}</th>
+                                    <th width="250">{trans('Container Journey ID')}</th>
                                     <th>{trans('Type de récipient')}</th>
                                     <th>{trans('Poids (Kg)')}</th>
-                                    {this.props.consignmentEvents.map(consignment_event=><th key={`consignment_event-checkall-${consignment_event.code}`}>
+                                    {this.props.consignmentEvents.map(consignment_event=><th key={`consignment_event-checkall-${consignment_event.code}`} width="10%">
                                         <label className="fancy-radio custom-color-green m-auto">
                                             <input type="radio" name="checkall[status]" onChange={()=>this.handleAllReceptacleStatusChange(consignment_event.code)}/>
                                             <span><i className="m-0"></i></span>

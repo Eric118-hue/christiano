@@ -248,3 +248,9 @@ $max-menu-level: 5;
 .form-inline .bootstrap-select, .form-inline .bootstrap-select.form-control:not([class*="col-"]) {
 	width: 100%;
 }
+
+.focus-outline-hidden {
+	&:focus {
+		outline : none !important;
+	}
+}

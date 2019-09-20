@@ -160,7 +160,7 @@ export default function trans(input, replaces={}) {
 	return result;
 }
 
-export const nophoto = siteSetup.general&&siteSetup.general.nophoto?(`/`+siteSetup.general.nophoto):blank
+export const nophoto = siteSetup.general&&siteSetup.general.nophoto?(`/`+siteSetup.general.nophoto):'/medias/images/blank.png'
 
 export const genders = {
     mr : trans('mr'),

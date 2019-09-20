@@ -6,113 +6,125 @@ import homme from '../../../medias/images/profil-homme.jpg';
 import femme from '../../../medias/images/profil-femme.jpg';
 import trans, {nophoto} from '../../translations';
 import $ from 'jquery';
+import Organisation from '../Client/Organisation';
+
+const airportinfo = false
 
 class Form extends AdminUser
 {
     constructor(props) {
         super(props)
         this.state = {
+            oncevalidate : false,
+            errors : [],
+            search_airport : '',
+            active : this.models('props.data.active', true),
             airline : '',
             filter_airlines : [],
             airlines : this.models('props.data.company.airlines', []),
             deleted_airlines : [],
-            select_ediA : false,
-            select_ediB : false,
-            select_ediAs : [],
-            select_ediBs : [],
-            search_ediA : '',
-            search_ediB : '',
-            edi_couples : this.models('props.data.edi_couples', []),
-            select_airports : this.models('props.data.select_airports', []),
-            deleted_customers : []
+            select_edi : false,
+            select_edis : [],
+            select_airport : false,
+            search_edi : '',
+            edis : this.models('props.data.edis', []),
+            select_airports : [],
+            deleted_customers : [],
+            airport : this.models('props.data.airport', null) ? this.props.data.airport : this.models('props.data.select_airports', []).length>0?this.props.data.select_airports[0]:null
         }
-        this.couple_index = 0
         this.removeLogo = this.removeLogo.bind(this)
         this.filterAirline = this.filterAirline.bind(this)
         this.addAirline = this.addAirline.bind(this)
         this.removeAirline = this.removeAirline.bind(this)
-        this.handleEdiAChange = this.handleEdiAChange.bind(this)
-        this.handleEdiBChange = this.handleEdiBChange.bind(this)
-        this.handleSelectEdiA = this.handleSelectEdiA.bind(this)
-        this.handleSelectEdiB = this.handleSelectEdiB.bind(this)
-        this.saveCouple = this.saveCouple.bind(this)
-        this.removeCouple = this.removeCouple.bind(this)
+        this.handleEdiChange = this.handleEdiChange.bind(this)
+        this.handleSelectEdi = this.handleSelectEdi.bind(this)
         this.offClick = this.offClick.bind(this)
+        this.activeHandler = this.activeHandler.bind(this)
+        this.handleStationChange = this.handleStationChange.bind(this)
+        this.editAirport = this.editAirport.bind(this)
+        this.handleSearchAirport = this.handleSearchAirport.bind(this)
+        this.handleSelectAirport = this.handleSelectAirport.bind(this)
+        this.removeSelectedEdi = this.removeSelectedEdi.bind(this)
     }
 
-    saveCouple() {
-        if(!this.props.data.id) {
-            this.couple_index++;
-            this.setState(state=>{
-                state.edi_couples.push({
-                    a : state.ediA,
-                    b : state.ediB,
-                    id : this.couple_index
-                })
-                state.search_ediA = ''
-                state.search_ediB = ''
-                return state
-            })
-        }
-        else {
-            $.ajax({
-                url : '/edi_couple',
-                type : 'post',
-                data : {
-                    user_id : this.props.data.id,
-                    a_id : this.state.ediA.id,
-                    b_id : this.state.ediB.id
-                },
-                success : response => {
-                    this.setState(state=>{
-                        state.edi_couples.push({
-                            a : state.ediA,
-                            b : state.ediB,
-                            id : response.row.id
-                        })
-                        state.search_ediA = ''
-                        state.search_ediB = ''
-                        delete state.ediA
-                        delete state.ediB
-                        return state
-                    })
-                }
-            })
-        }
+    removeSelectedEdi(event, edi_index) {
+        event.preventDefault()
+        this.setState(state=>{
+            state.edis[edi_index].deleted = true
+            return state
+        })
+        return false
     }
 
-    removeCouple(couple) {
-        if(!this.props.data.id) {
-            this.setState(state=>{
-                state.edi_couples = state.edi_couples.filter(item=>item.id!=couple.id)
-                return state
-            })
-        }
-        else {
-            $.ajax({
-                url : '/edi_couple',
-                type : 'delete',
-                data : {
-                    id : couple.id
-                },
-                success : response=>{
-                    this.setState(state=>{
-                        state.edi_couples = state.edi_couples.filter(item=>item.id!=couple.id)
-                        return state
-                    })
-                }
-            })
-        }
+    handleSelectAirport(event, airport) {
+        event.preventDefault()
+        this.setState({
+            airport : airport,
+            select_airport : false
+        })
+        return false
     }
 
-    handleEdiAChange(event) {
+    handleSearchAirport(event) {
         const value = event.target.value
         this.setState({
-            search_ediA : value
+            search_airport : value
+        })
+        if(this.axAirport)
+            this.axAirport.abort()
+        this.axAirport = $.ajax({
+            url : '/airports',
+            data : {
+                json : true,
+                q : value,
+                with : ['customers']
+            },
+            success : response=>{
+                this.setState(state=>{
+                    if(response.data.data.length>0)
+                        state.select_airport = true
+                    state.select_airports = response.data.data
+                    return state
+                })
+            }
+        })
+    }
+
+    editAirport() {
+        this.setState({
+            select_airport : true
+        })
+        window.setTimeout(()=>{
+            $(this.refs.airport_editor).focus();
+            $('body').on('click', this.offClick);
+        }, 0)
+    }
+
+    handleStationChange(event) {
+        const value = event.target.value
+        this.setState(state=>{
+            state.airport = state.select_airports.find(item=>item.id==value)
+            return state
+        })
+    }
+
+    activeHandler(event) {
+        const checked = event.target.checked
+        this.setState({
+            active : checked
+        })
+    }
+
+    handleEdiChange(event) {
+        const value = event.target.value
+        this.setState({
+            search_edi : value
         })
         if(value.length<2)
             return
-        $.ajax({
+        if(this.axEdi)
+            this.axEdi.abort()
+        this.axEdi = $.ajax({
             url : '/edis',
             data : {
                 s : value
@@ -120,51 +132,24 @@ class Form extends AdminUser
             success : response=>{
                 if(response.length==0)
                     return
+                $('body').on('click', this.offClick);
                 this.setState({
-                    select_ediA : true,
-                    select_ediAs : response
+                    select_edi : true,
+                    select_edis : response
                 })
             }
         })
     }
 
-    handleEdiBChange(event) {
-        const value = event.target.value
-        this.setState({
-            search_ediB : value
-        })
-        if(value.length<2)
-            return
-        $.ajax({
-            url : '/edis',
-            data : {
-                s : value
-            },
-            success : response=>{
-                if(response.length==0)
-                    return
-                this.setState({
-                    select_ediB : true,
-                    select_ediBs : response
-                })
-            }
-        })
-    }
-
-    handleSelectEdiA(event, item) {
+    handleSelectEdi(event, item) {
         event.preventDefault()
-        this.setState({
-            search_ediA : item.edi_address,
-            ediA : item
+        this.setState(state=>{
+            state.search_edi = ''
+            if(!state.edis.find(it=>it.id==item.id))
+                state.edis.push(item)
+            return state
         })
-    }
-
-    handleSelectEdiB(event, item) {
-        event.preventDefault()
-        this.setState({
-            search_ediB : item.edi_address,
-            ediB : item
-        })
+        return false
     }
 
     addAirline(airline) {
@@ -210,9 +195,10 @@ class Form extends AdminUser
 
     offClick() {
         this.setState({
-            select_ediA : false,
-            select_ediB : false
+            select_edi : false,
+            select_airport : false
         })
+        $('body').off('click', this.offClick);
     }
 
     componentDidMount() {
@@ -224,38 +210,22 @@ class Form extends AdminUser
         $("input:file").change(function(){
             $(nologo).attr("checked", false)
         });
-        $('body').on('click', this.offClick);
-        $(this.refs.customer_select).on('changed.bs.select', (e, clickedIndex, isSelected, previousValue)=>{
-            this.setState(state=>{
-                if(isSelected) {
-                    state.deleted_customers = state.deleted_customers.filter(item=>item.id!=this.props.data.select_customers[clickedIndex].id)
-
-                }
-                else {
-                    state.deleted_customers.push(this.props.data.select_customers[clickedIndex])
-                }
-                return state
+        $(this.refs.agent_form).parsley({
+            excluded : ':hidden',
+        }).on('form:validate', formInstance=>{
+            $(window).off("beforeunload");
+            let errors = []
+            if(this.state.edis.length==0)
+                errors.push('edis')
+            if(!this.state.airport) {
+                errors.push('airport')
+            }
+            this.setState({
+                oncevalidate : true,
+                errors : errors
             })
-
-            if(this.request_stations)
-                this.request_stations.abort()
-
-            this.request_stations = $.ajax({
-                url : '/stations',
-                data : {
-                    customer_ids : $(e.target).val()
-                },
-                success : response=>{
-                    this.setState(state=>{
-                        state.select_airports = response
-                        return state
-                    })
-                    window.setTimeout(()=>{
-                        $(this.refs.airport_select).selectpicker("refresh")
-                    }, 1)
-                }
-            })
-        });
+            formInstance.validationResult = errors.length==0;
+        })
     }
 
     removeLogo() {
@@ -264,7 +234,7 @@ class Form extends AdminUser
     }
 
     render() {
-        return <form action={this.props.data.action} name="frm_user" method="post" className="col-md-12" encType="multipart/form-data">
+        return <form action={this.props.data.action} name="frm_user" method="post" className="col-md-12" encType="multipart/form-data" ref="agent_form">
             <input type="hidden" name="_token" value={$('meta[name="csrf-token"]').attr('content')}/>
             <div className="card">
                 <div className="body">
@@ -281,130 +251,135 @@ class Form extends AdminUser
                             <input type="checkbox" name="nophoto" ref="nophoto" value="1" className="d-none"/>
                         </div>
                         <div className="col-md-9">
-                            <div className="row">
-                                <div className="form-group col-3">
-                                    <label htmlFor="profile-gender" className="required">{trans("civilite")} <i className="alpha-80 fa fa-lock pl-2 text-orange"></i></label>
-                                    <select name="profile[gender]" className="form-control" id="profile-gender" defaultValue={this.props.data.profile?this.props.data.profile.gender:GENDERMAN} required>
-                                        <option value="mr">M</option>
-                                        <option value="mrs">Mme</option>
-                                        <option value="ms">Mlle</option>
-                                    </select>
+                            <div className="card">
+                                <div className="card-header">
+                                    <i className="fa fa-shield-alt"></i> {trans("informations_statuts")}
                                 </div>
-                                <div className="form-group col-5">
-                                    <label htmlFor="profile-firstname">{trans("prenom")}</label>
-                                    <input name="profile[firstname]" type="text" defaultValue={this.models('props.data.profile.firstname','')} className="form-control" id="profile-firstname" required/>
-                                </div>
-                                <div className="form-group col-4">
-                                    <label htmlFor="profile-lastname">{trans("nom")}</label>
-                                    <input type="text" name="profile[lastname]" defaultValue={this.models('props.data.profile.lastname','')} required className="form-control" id="profile-lastname"/>
-                                </div>
-                                <div className="card">
-                                    <div className="card-header">
-                                        <i className="fa fa-shield-alt"></i> {trans("informations_statuts")}
-                                    </div>
-                                    <div className="body">
-                                        <div className="row">
-                                            <div className="form-group col-md-6">
-                                                <label htmlFor="contacts-0-ndetail-value">{trans("telephone")}</label>
+                                <div className="body">
+                                    <div className="row">
+                                        <div className="col-md-8">
+                                            <div className="row">
+                                                <div className="form-group col-3">
+                                                    <label htmlFor="profile-gender" className="required">{trans("civilite")} <i className="alpha-80 fa fa-lock pl-2 text-orange"></i></label>
+                                                    <select name="profile[gender]" className="form-control" id="profile-gender" defaultValue={this.props.data.profile?this.props.data.profile.gender:GENDERMAN} required>
+                                                        <option value="mr">M</option>
+                                                        <option value="mrs">Mme</option>
+                                                        <option value="ms">Mlle</option>
+                                                    </select>
+                                                </div>
+                                                <div className="form-group col-5">
+                                                    <label htmlFor="profile-firstname">{trans("prenom")}</label>
+                                                    <input name="profile[firstname]" type="text" defaultValue={this.models('props.data.profile.firstname','')} className="form-control" id="profile-firstname" required/>
+                                                </div>
+                                                <div className="form-group col-4">
+                                                    <label htmlFor="profile-lastname">{trans("nom")}</label>
+                                                    <input type="text" name="profile[lastname]" defaultValue={this.models('props.data.profile.lastname','')} required className="form-control" id="profile-lastname"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="col-md-4">
+                                            <div className="custom-control custom-switch pt-4 text-right">
+                                                <input type="checkbox" className={`custom-control-input`} id={`user-toggle-active-${this.props.data.id}`} onChange={this.activeHandler} checked={this.models('state.active', false)}/>
+                                                <label className="custom-control-label" htmlFor={`user-toggle-active-${this.props.data.id}`}>{this.state.active?trans('compte_actif'):trans('compte_inactif')}</label>
+                                                <input type="hidden" name="active" value={this.models('state.active')?1:0}/>
+                                            </div>
+                                        </div>
+                                        <div className="row m-0">
+                                            <label className="col-md-2 text-capitalize text-right pt-2">{trans("code")}</label>
+                                            <div className="form-group col-md-4">
+                                                <input type="text" required defaultValue={this.models('props.data.profile.nsetup.code')} className="form-control" name="profile[nsetup][code]" />
+                                            </div>
+                                            <label className="text-capitalize col-md-2 text-right pt-2">{trans("pays")}</label>
+                                            <div className="form-group col-md-4">
+                                                <select required name="profile[adresse][ville][country][id]" defaultValue={this.models('props.data.profile.adresse.ville.country.id')} className="form-control">
+                                                    {this.props.data.countries.map(country=><option key={`country-${country.id}`} value={country.id}>{country.nom}</option>)}
+                                                </select>
+                                            </div>
+                                            <label className="text-capitalize col-md-2 text-right pt-2">{trans("adresse")}</label>
+                                            <div className="form-group col-md-4">
+                                                <input type="text" required defaultValue={this.models('props.data.profile.adresse.raw')} className="form-control" name="profile[adresse][raw]" />
+                                            </div>
+                                            <label className="col-md-2 text-right pt-2">{trans("telephone")}</label>
+                                            <div className="form-group col-md-4">
                                                 <input type="text" required defaultValue={this.models('props.data.contacts.bureau.ndetail.value')} className="form-control" id="contacts-0-ndetail-value" name="contacts[bureau][ndetail][value]" />
                                                 <input type="hidden" name="contacts[bureau][contact_type]" defaultValue={'phone'}/>
                                                 <input type="hidden" name="contacts[bureau][type]" defaultValue={'bureau'}/>
                                                 <input type="hidden" name="contacts[bureau][id]" defaultValue={this.models('props.data.contacts.bureau.id')}/>
                                             </div>
-                                            <div className="form-group col-md-6">
-                                                <label htmlFor="contacts-1-ndetail-value">{trans("mobile")}</label>
-                                                <input type="text" required className="form-control" id="contacts-1-ndetail-value" name="contacts[mobile][ndetail][value]" defaultValue={this.models('props.data.contacts.mobile.ndetail.value')}/>
-                                                <input type="hidden" name="contacts[mobile][contact_type]" defaultValue={'phone'}/>
-                                                <input type="hidden" name="contacts[mobile][type]" defaultValue={'mobile'}/>
-                                                <input type="hidden" name="contacts[mobile][id]" defaultValue={this.models('props.data.contacts.mobile.id')}/>
+                                            <label className="col-md-2 text-right pt-2">{trans("code_postal")}</label>
+                                            <div className="form-group col-md-4">
+                                                <input type="text" required defaultValue={this.models('props.data.profile.adresse.ville.cp')} className="form-control" name="profile[adresse][ville][cp]" />
                                             </div>
-                                            <input type="hidden" name="roles[]" value="4"/>
-                                            <div className="form-group col-12">
-                                                <label className="text-capitalize control-label">{trans('client')}</label>
-                                                <select name="customers[][id]" required multiple className="form-control" ref="customer_select" defaultValue={this.props.data.customers}>
-                                                    {this.props.data.select_customers.map(customer=><option key={`customer-${customer.id}`} value={customer.id}>{customer.facturable.name}</option>)}
-                                                </select>
-                                                {this.state.deleted_customers.map(deleted_customer=><input key={`deleted-customer-${deleted_customer.id}`} type="hidden" name="deleted_customers[][id]" value={deleted_customer.id}/>)}
+                                            <label className="col-md-2 text-right pt-2">{trans("fax")}</label>
+                                            <div className="form-group col-md-4">
+                                                <input type="text" className="form-control" id="contacts-1-ndetail-value" name="contacts[fax][ndetail][value]" defaultValue={this.models('props.data.contacts.fax.ndetail.value')}/>
+                                                <input type="hidden" name="contacts[fax][contact_type]" defaultValue={'phone'}/>
+                                                <input type="hidden" name="contacts[fax][type]" defaultValue={'fax'}/>
+                                                <input type="hidden" name="contacts[fax][id]" defaultValue={this.models('props.data.contacts.fax.id')}/>
                                             </div>
-                                            <div className="form-group col-12">
-                                                <label className="control-label text-capitalize">{trans('station')}</label>
-                                                <select className="form-control" name="profile[nsetup][airport_id]" required defaultValue={this.models('props.data.profile.nsetup.airport_id')} ref="airport_select">
-                                                    {this.state.select_airports.map(airport=><option key={`select-airport-${airport.id}`} value={airport.id}>{airport.name}</option>)}
-                                                </select>
+                                            <label className="col-md-2 text-right pt-2">{trans("boite_postale")}</label>
+                                            <div className="form-group col-md-4">
+                                                <input type="text" defaultValue={this.models('props.data.profile.adresse.raw2')} className="form-control" name="profile[adresse][raw2]" />
                                             </div>
+                                            <label htmlFor="email" className="col-md-2 text-right pt-2">{trans("e_mail")}</label>
+                                            <div className="form-group col-md-4">
+                                                <input type="email" className="form-control" id="email" name="email" defaultValue={this.models('props.data.email')} required/>
+                                            </div>
+                                            <label className="col-md-2 text-right pt-2">{trans("ville")}</label>
+                                            <div className="form-group col-md-4">
+                                                <input type="text" required defaultValue={this.models('props.data.profile.adresse.ville.nom')} className="form-control" name="profile[adresse][ville][nom]" />
+                                            </div>
+                                            <label htmlFor="password" className="col-md-2 text-right pt-2">{trans("mot_de_passe")}</label>
+                                            <div className="form-group col-md-4">
+                                                <input type="text" className="form-control" id="password" name="password" defaultValue={this.models('props.data.id', false)?'******':''} required/>
+                                            </div>
+                                            <input type="hidden" name="roles[]" value="3"/>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div className="row">
-                <div className="col-md-6">
-                    <div className="card">
-                        <div className="card-header">
-                            {trans('Adresses EDI')}
-                        </div>
-                        <div className="body">
-                            <table className="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th className="text-center">A</th>
-                                        <th className="text-center">B</th>
-                                        <th></th>
-                                    </tr>
-                                    <tr>
-                                        <th>
-                                            <div className="form-group position-relative">
-                                                <input type="text" className="form-control" value={this.state.search_ediA} onChange={this.handleEdiAChange} onClick={this.handleEdiAChange} autoComplete="astrict"/>
-                                                <div className={`dropdown-menu overflow-auto w-100 ${this.state.select_ediA?'show':''}`} style={{maxHeight:200}}>
-                                                    {this.state.select_ediAs.map(ediA=><a key={`ediA-${ediA.id}`} className="dropdown-item" href="#" onClick={e=>this.handleSelectEdiA(e, ediA)}>{ediA.edi_address} ({ediA.party_identifier})</a>)}
-                                                </div>
-                                            </div>
-                                        </th>
-                                        <th>
-                                            <div className="form-group position-relative">
-                                                <input type="text" className="form-control" value={this.state.search_ediB} onChange={this.handleEdiBChange} onClick={this.handleEdiBChange} autoComplete="bstrict"/>
-                                                <div className={`dropdown-menu overflow-auto w-100 ${this.state.select_ediB?'show':''}`} style={{maxHeight:200}}>
-                                                    {this.state.select_ediBs.map(ediB=><a key={`ediB-${ediB.id}`} className="dropdown-item" href="#" onClick={e=>this.handleSelectEdiB(e, ediB)}>{ediB.edi_address} ({ediB.party_identifier})</a>)}
-                                                </div>
-                                            </div>
-                                        </th>
-                                        <th className="text-center">
-                                            <button type="button" className="btn btn-success mb-3" onClick={this.saveCouple}><i className="fa fa-save"></i></button>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {this.state.edi_couples.map(edi_couple=><tr key={`edi-couple-${edi_couple.id}`}>
-                                        <td>{edi_couple.a.edi_address}</td>
-                                        <td>{edi_couple.b.edi_address}</td>
-                                        <td>
-                                            <input type="hidden" name={`edi_couples[${edi_couple.id}][a_id]`} value={edi_couple.a.id}/>
-                                            <input type="hidden" name={`edi_couples[${edi_couple.id}][b_id]`} value={edi_couple.b.id}/>
-                                            <button type="button" className="btn btn-danger" onClick={()=>this.removeCouple(edi_couple)}><i className="fa fa-times-circle"></i></button>
-                                        </td>
-                                    </tr>)}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div className="col-md-6">
-                    <div className="card">
-                        <div className="card-header">
-                            <i className="fa fa-lock"></i> {trans("informations_de_connexion")}
-                        </div>
-                        <div className="body">
-                            <div className="row">
-                                <div className="form-group col-md-6">
-                                    <label htmlFor="email">{trans("e_mail")}</label>
-                                    <input type="email" className="form-control" id="email" name="email" defaultValue={this.models('props.data.email')} required/>
+                            <div className="card">
+                                <div className="card-header">
+                                    <i className="fa fa-sitemap"></i> {trans("Stations & Schéma de liaison")}
                                 </div>
-                                <div className="form-group col-md-6">
-                                    <label htmlFor="password">{trans("mot_de_passe")}</label>
-                                    <input type="text" className="form-control" id="password" name="password" defaultValue={this.models('props.data.id', false)?'******':''} required/>
+                                <div className="body">
+                                    <div className="row">
+                                        <div className="col-md-6">
+                                            <div className="form-group position-relative">
+                                                <label className="control-label">{trans('Poste EDI')}</label>
+                                                <div onClick={()=>$(this.refs.search_edi).focus()} className={`border input-group m-0 rounded row ${(this.state.oncevalidate && !this.state.airport)?'border-danger':''}`} style={{minHeight:'35px', padding:7}}>
+                                                    {this.state.edis.filter(it=>!it.deleted).map((edi, edi_index)=><a key={`selected-edi-${edi.id}`} href="#" className="bg-light border pl-2 pr-2 rounded mr-1" onClick={e=>this.removeSelectedEdi(e, edi_index)}>{edi.edi_address} <i className="fa fa-times ml-2 text-danger"></i></a>)}
+                                                    <div className="position-relative">
+                                                        <input ref="search_edi" type="text" className="border-0 focus-outline-hidden" value={this.state.search_edi} onChange={this.handleEdiChange} onClick={this.handleEdiChange} autoComplete="astrict"/>
+                                                        <div className={`dropdown-menu overflow-auto w-100 ${this.state.select_edi?'show':''}`} style={{maxHeight:200}}>
+                                                            {this.state.select_edis.map(edi=><a key={`edi-${edi.id}`} className="dropdown-item" href="#" onClick={e=>this.handleSelectEdi(e, edi)}>{edi.edi_address} ({edi.party_identifier})</a>)}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {this.state.edis.map((edi, edi_index)=><input key={`edi-${edi.id}`} type="hidden" name={`edis[${edi_index}][${edi.deleted?'deleted_id':'id'}]`} value={edi.id}/>)}
+                                            </div>
+                                        </div>
+                                        <div className="col-md-6">
+                                            <div className="form-group">
+                                                <label className="control-label text-capitalize">{trans('station')} <i className="alpha-80 fa fa-lock pl-2 text-orange"></i></label>
+                                                <div className="position-relative">
+                                                    <div className={`border rounded mouse-pointable ${(this.state.oncevalidate && !this.state.airport)?'border-danger':''}`} onClick={this.editAirport} style={{minHeight:'35px', padding:7}}>
+                                                        {this.state.airport?<React.Fragment>
+                                                            <span className="text-orange">{this.state.airport.iata}</span> - {this.state.airport.name} - {this.models('state.airport.country.nom')}
+                                                        </React.Fragment>:null}
+                                                    </div>
+                                                    <div className={`position-absolute w-100 ${this.state.select_airport?'':'d-none'}`} style={{top:0}}>
+                                                        <input type="text" ref="airport_editor" className="form-control" value={this.state.search_airport} onChange={this.handleSearchAirport}/>
+                                                        <div className={`dropdown-menu overflow-auto w-100 ${this.state.select_airport?'show':''}`} style={{maxHeight:200}}>
+                                                            {this.state.select_airports.map(item=><a key={`agent-select-airport-${item.id}`} className="dropdown-item" href="#" onClick={e=>this.handleSelectAirport(e, item)}><span className="text-orange">{item.iata}</span> - {item.name} - {this.cast(item, 'country.nom')}</a>)}
+                                                        </div>
+                                                        <input type="hidden" name="profile[nsetup][airport_id]" value={this.models('state.airport.id')}/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {(this.state.airport && airportinfo)?this.state.airport.customers.map(customer=><Organisation key={`customer-${customer.id}`} data={{row:customer}} store={this.props.store} readOnly={true}/>):null}
                                 </div>
                             </div>
                         </div>

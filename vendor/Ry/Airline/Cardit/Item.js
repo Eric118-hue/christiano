@@ -65,6 +65,7 @@ class StepView extends Component
                         <i className="font-50 l2-receipt"></i>
                         <span className="text-capitalize">{trans('Réception')}</span>
                     </div>
+                    <i className="fa fa-circle"></i>
                 </div>
                 {this.props.data.nsetup.transports.map((transport, index)=><React.Fragment key={`cardit-${this.props.data.id}-transport-${index}`}>
                     <div className={`recipientList d-flex flex-column justify-content-between align-items-center ${(this.props.step=='assignation' && this.state.transportIndex==index)?'red':(this.state.resdits.find(item=>{
@@ -74,6 +75,7 @@ class StepView extends Component
                             <i className="font-50 l2-warehouse"></i>
                             <span className="text-capitalize">{trans('Assignation')}</span>
                         </div>
+                        <i className="fa fa-circle"></i>
                     </div>
                     <div className={`recipientList d-flex flex-column justify-content-between align-items-center  ${(this.props.step=='departure' && this.state.transportIndex==index)?'red':(this.state.resdits.find(item=>{
                         return item.event == 'departure' && item.transport_step==index
@@ -82,6 +84,7 @@ class StepView extends Component
                             <i className="font-50 l2-departure"></i>
                             <span className="text-capitalize">{trans('Départ')}</span>
                         </div>
+                        <i className="fa fa-circle"></i>
                     </div>
                     <div className={`recipientList d-flex flex-column justify-content-between align-items-center ${(this.props.step=='arrival' && this.state.transportIndex==index)?'red':(this.state.resdits.find(item=>{
                         return item.event == 'arrival' && item.transport_step==index
@@ -90,6 +93,7 @@ class StepView extends Component
                             <i className="font-50 l2-arrival"></i>
                             <span className="text-capitalize">{trans('Arrivée')}</span>
                         </div>
+                        <i className="fa fa-circle"></i>
                     </div>
                 </React.Fragment>)}
                 <div className={`recipientList d-flex flex-column justify-content-between align-items-center last ${this.props.step=='delivery'?'red':(this.state.resdits.find(item=>{
@@ -99,6 +103,7 @@ class StepView extends Component
                         <i className="font-50 l2-destination"></i>
                         <span className="text-capitalize">{trans('Livraison')}</span>
                     </div>
+                    <i className="fa fa-circle"></i>
                 </div>
                 <div className="asideList asideList2">{this.props.data.nsetup.handover_destination_location.iata}</div>
             </div>
@@ -106,7 +111,7 @@ class StepView extends Component
     }
 }
 
-class Item extends Component
+class FullDetail extends Component
 {
     constructor(props) {
         super(props)
@@ -337,129 +342,7 @@ class Item extends Component
                 </div>
                 break;
         }
-        return <React.Fragment><tr>
-        <td className="green">{moment.utc(this.props.data.nsetup.preparation_datetime).local().format('DD/MM/YYYY')}</td>
-        <td className="green">{moment.utc(this.props.data.nsetup.preparation_datetime).local().format('HH:mm')}</td>
-        <td>
-            <div className="d-flex align-items-center justify-content-center">
-                {this.props.data.nsetup.document_number}
-                <a href="#" className="btnAccord" data-toggle="collapse" href={`#collapsible${this.props.data.id}`} role="button" aria-expanded="false" aria-controls={`collapsible${this.props.data.id}`}><i className="fa fa-sort-down"></i></a>
-            </div>
-        </td>
-        <td>{this.props.data.nsetup.consignment_category.code}</td>
-        <td>{this.props.data.nsetup.mail_class.code}</td>
-        <td>{this.props.data.nsetup.nreceptacles}</td>
-        <td>{this.props.data.nsetup.wreceptacles}</td>
-        <td className="w-info">{this.props.data.nsetup.handover_origin_location.iata} <a href="#" onClick={e=>{
-            e.preventDefault()
-            $(`#origin-${this.props.data.id}`).modal('show')
-        }}><i className="icon-info"></i></a>
-            <Popup id={`origin-${this.props.data.id}`} className="airport-modal">
-                <PopupHeader className="pl-3 pb-2" closeButton={<span aria-hidden="true"  className="pb-1 pl-2 pr-2 rounded text-white" style={{background:'#170000'}}>&times;</span>}>
-                    <h5><img src="/medias/images/ico-airport.png" className="position-absolute"/> <span className="pl-5 text-body">Aéroport d'origine</span></h5>
-                </PopupHeader>
-                <hr className="border m-0 m-auto" style={{width:'calc(100% - 10px)', height:3}}/>
-                <PopupBody>
-                    <div className="row">
-                        <div className="col-5 text-right text-grey">
-                            Pays :
-                        </div>
-                        <div className="col-7 text-left">
-                            {this.props.data.nsetup.handover_origin_location.country.nom}
-                        </div>
-                        <div className="col-5 text-right text-grey">
-                            Code :
-                        </div>
-                        <div className="col-7 text-left">
-                            {this.props.data.nsetup.handover_origin_location.iata}
-                        </div>
-                        <div className="col-5 text-right text-grey">
-                            Aéroport :
-                        </div>
-                        <div className="col-7 text-left text-wrap">
-                            {this.props.data.nsetup.handover_origin_location.name}
-                        </div>
-                    </div>
-                </PopupBody>
-            </Popup></td>
-        <td className="p-2">{this.props.escales(this.props.data)}
-            <Popup id={`escales-${this.props.data.id}`}>
-                <PopupHeader>
-                    {trans('Escales')}
-                </PopupHeader>
-                <PopupBody>
-                    <table className="table">
-                        <thead>
-                            <tr>
-                                <th>{trans('Aéroport')}</th>
-                                <th>{trans('Arrivée')}</th>
-                                <th>{trans('Départ')}</th>
-                                <th>{trans('Vol')}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {this.props.data.nsetup.transports.slice(0, -1).map((transport, index)=><tr key={`escale-${this.props.data.id}-${index}`}>
-                                <td>{transport.arrival_location.iata} - {transport.arrival_location.name} - {transport.arrival_location.country.nom}</td>
-                                <td>{moment(transport.arrival_datetime_lt).format('DD/MM/YYYY HH:mm')}</td>
-                                <td>{moment(this.props.data.nsetup.transports[index+1].departure_datetime_lt).format('DD/MM/YYYY HH:mm')}</td>
-                                <td>{this.props.data.nsetup.transports[index+1].conveyence_reference}</td>
-                            </tr>)}
-                        </tbody>
-                    </table>
-                </PopupBody>
-            </Popup></td>
-        <td>{this.props.data.nsetup.handover_destination_location.iata} <a href="#" onClick={e=>{
-            e.preventDefault()
-            $(`#destination-${this.props.data.id}`).modal('show')
-        }}><i className="fa fa-info-circle text-turquoise"></i></a>
-            <Popup id={`destination-${this.props.data.id}`} className="airport-modal">
-                <PopupHeader className="pl-3 pb-2" closeButton={<span aria-hidden="true"  className="pb-1 pl-2 pr-2 rounded text-white" style={{background:'#170000'}}>&times;</span>}>
-                    <h5><img src="/medias/images/ico-airport.png" className="position-absolute"/> <span className="pl-5 text-body">{trans('Aéroport de destination')}</span></h5>
-                </PopupHeader>
-                <hr className="border m-0 m-auto" style={{width:'calc(100% - 10px)', height:3}}/>
-                <PopupBody>
-                    <div className="row">
-                        <div className="col-5 text-right text-grey">
-                            {trans('Pays')} :
-                        </div>
-                        <div className="col-7 text-left">
-                            {this.props.data.nsetup.handover_destination_location.country.nom}
-                        </div>
-                        <div className="col-5 text-right text-grey">
-                            {trans('Code')} :
-                        </div>
-                        <div className="col-7 text-left">
-                            {this.props.data.nsetup.handover_destination_location.iata}
-                        </div>
-                        <div className="col-5 text-right text-grey">
-                            {trans('Aéroport')} :
-                        </div>
-                        <div className="col-7 text-left text-wrap">
-                            {this.props.data.nsetup.handover_destination_location.name}
-                        </div>
-                    </div>
-                </PopupBody>
-            </Popup></td>
-        <td>
-            {this.props.data.nsetup.transports[0].conveyence_reference} <a href="#" onClick={e=>{
-            e.preventDefault()
-            $(`#conveyence-${this.props.data.id}`).modal('show')
-        }}><i className="fa fa-info-circle text-turquoise"></i></a>
-            <Popup id={`conveyence-${this.props.data.id}`} className="airport-modal">
-                <PopupHeader className="pl-3 pb-2" closeButton={<span aria-hidden="true"  className="pb-1 pl-2 pr-2 rounded text-white" style={{background:'#170000'}}>&times;</span>}>
-                    <h5><img src="/medias/images/ico-airport.png" className="position-absolute"/> <span className="pl-5 text-body">{trans('Premier vol')}</span></h5>
-                </PopupHeader>
-                <hr className="border m-0 m-auto" style={{width:'calc(100% - 10px)', height:3}}/>
-                <PopupBody>
-                    {this.props.data.nsetup.transports[0].airlines.join('<br/>')}
-                </PopupBody>
-            </Popup>
-        </td>
-        <td className="p-2">{this.props.irregularites()}</td>
-        <td className="p-2">{this.props.performances()}</td>
-        <td className="p-2">{this.props.completed()}</td>
-    </tr>
-    <tr className={`detail collapse`} id={`collapsible${this.props.data.id}`}>
+        return <tr className={`detail`}>
         <td colSpan="14" className="no-padding">
             <div className="bandeau">
                 <span className="title-bandeau">{trans('Liste des récipients')} </span>
@@ -469,7 +352,7 @@ class Item extends Component
             <div className="tableBottom">
                 {step}
             </div>
-            <Popup id={`transport_popup_${this.props.data.id}`}>
+            <Popup id={`transport_popup_${this.props.data.id}`} className="modal-sm">
                 <PopupBody>
                     <form className="text-left" ref="frm_add_transport">
                         <div className="form-group">
@@ -480,7 +363,7 @@ class Item extends Component
                         </div>
                         <div className="form-group">
                             <label className="control-label text-capitalize">
-                                {trans('date')}
+                                {trans("Date de départ")}
                             </label>
                             <div ref="departure_date" className="input-group date">
                                 <input type="text" className="form-control bs-default" required data-parsley-errors-container="#departure_date-error"/>
@@ -498,7 +381,7 @@ class Item extends Component
                         </div>
                         <div className="form-group">
                             <label className="control-label text-capitalize">
-                                {trans('date')}
+                                {trans("Date d'arrivée")}
                             </label>
                             <div ref="arrival_date" className="input-group date">
                                 <input type="text" className="form-control bs-default" required data-parsley-errors-container="#arrival_date-error"/>
@@ -532,7 +415,164 @@ class Item extends Component
             </Popup>
         </td>
     </tr>
-    </React.Fragment>
+    }
+}
+
+class Item extends Component
+{
+    constructor(props) {
+        super(props)
+        this.state = {
+            data : null
+        }
+        this.detail = this.detail.bind(this)
+    }
+
+    detail(e) {
+        e.preventDefault()
+        $.ajax({
+            url : '/cardit',
+            data : {
+                id : this.props.data.id,
+                json : true
+            },
+            success : response=>{
+                this.setState({
+                    data : response.data.data,
+                    delivery_consignment_events : response.delivery_consignment_events,
+                    consignment_events : response.consignment_events
+                })
+            }
+        })
+        return false
+    }
+
+    render() {
+        return <React.Fragment>
+            <tr>
+                <td className="green">{moment.utc(this.props.data.nsetup.preparation_datetime).local().format('DD/MM/YYYY')}</td>
+                <td className="green">{moment.utc(this.props.data.nsetup.preparation_datetime).local().format('HH:mm')}</td>
+                <td>
+                    <div className="d-flex align-items-center justify-content-center">
+                        {this.props.data.nsetup.document_number}
+                        <a href="#" onClick={this.detail} className="btnAccord"><i className="fa fa-sort-down"></i></a>
+                    </div>
+                </td>
+                <td>{this.props.data.nsetup.consignment_category.code}</td>
+                <td>{this.props.data.nsetup.mail_class.code}</td>
+                <td>{this.props.data.nsetup.nreceptacles}</td>
+                <td>{this.props.data.nsetup.wreceptacles}</td>
+                <td className="w-info">{this.props.data.nsetup.handover_origin_location.iata} <a href="#" onClick={e=>{
+                    e.preventDefault()
+                    $(`#origin-${this.props.data.id}`).modal('show')
+                }}><i className="icon-info"></i></a>
+                    <Popup id={`origin-${this.props.data.id}`} className="airport-modal">
+                        <PopupHeader className="pl-3 pb-2" closeButton={<span aria-hidden="true"  className="pb-1 pl-2 pr-2 rounded text-white" style={{background:'#170000'}}>&times;</span>}>
+                            <h5><img src="/medias/images/ico-airport.png" className="position-absolute"/> <span className="pl-5 text-body">Aéroport d'origine</span></h5>
+                        </PopupHeader>
+                        <hr className="border m-0 m-auto" style={{width:'calc(100% - 10px)', height:3}}/>
+                        <PopupBody>
+                            <div className="row">
+                                <div className="col-5 text-right text-grey">
+                                    Pays :
+                                </div>
+                                <div className="col-7 text-left">
+                                    {this.props.data.nsetup.handover_origin_location.country.nom}
+                                </div>
+                                <div className="col-5 text-right text-grey">
+                                    Code :
+                                </div>
+                                <div className="col-7 text-left">
+                                    {this.props.data.nsetup.handover_origin_location.iata}
+                                </div>
+                                <div className="col-5 text-right text-grey">
+                                    Aéroport :
+                                </div>
+                                <div className="col-7 text-left text-wrap">
+                                    {this.props.data.nsetup.handover_origin_location.name}
+                                </div>
+                            </div>
+                        </PopupBody>
+                    </Popup></td>
+                <td className="p-2">{this.props.escales(this.props.data)}
+                    <Popup id={`escales-${this.props.data.id}`}>
+                        <PopupHeader>
+                            {trans('Escales')}
+                        </PopupHeader>
+                        <PopupBody>
+                            <table className="table">
+                                <thead>
+                                    <tr>
+                                        <th>{trans('Aéroport')}</th>
+                                        <th>{trans('Arrivée')}</th>
+                                        <th>{trans('Départ')}</th>
+                                        <th>{trans('Vol')}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {this.props.data.nsetup.transports.slice(0, -1).map((transport, index)=><tr key={`escale-${this.props.data.id}-${index}`}>
+                                        <td>{transport.arrival_location.iata} - {transport.arrival_location.name} - {transport.arrival_location.country.nom}</td>
+                                        <td>{moment(transport.arrival_datetime_lt).format('DD/MM/YYYY HH:mm')}</td>
+                                        <td>{moment(this.props.data.nsetup.transports[index+1].departure_datetime_lt).format('DD/MM/YYYY HH:mm')}</td>
+                                        <td>{this.props.data.nsetup.transports[index+1].conveyence_reference}</td>
+                                    </tr>)}
+                                </tbody>
+                            </table>
+                        </PopupBody>
+                    </Popup></td>
+                <td>{this.props.data.nsetup.handover_destination_location.iata} <a href="#" onClick={e=>{
+                    e.preventDefault()
+                    $(`#destination-${this.props.data.id}`).modal('show')
+                }}><i className="fa fa-info-circle text-turquoise"></i></a>
+                    <Popup id={`destination-${this.props.data.id}`} className="airport-modal">
+                        <PopupHeader className="pl-3 pb-2" closeButton={<span aria-hidden="true"  className="pb-1 pl-2 pr-2 rounded text-white" style={{background:'#170000'}}>&times;</span>}>
+                            <h5><img src="/medias/images/ico-airport.png" className="position-absolute"/> <span className="pl-5 text-body">{trans('Aéroport de destination')}</span></h5>
+                        </PopupHeader>
+                        <hr className="border m-0 m-auto" style={{width:'calc(100% - 10px)', height:3}}/>
+                        <PopupBody>
+                            <div className="row">
+                                <div className="col-5 text-right text-grey">
+                                    {trans('Pays')} :
+                                </div>
+                                <div className="col-7 text-left">
+                                    {this.props.data.nsetup.handover_destination_location.country.nom}
+                                </div>
+                                <div className="col-5 text-right text-grey">
+                                    {trans('Code')} :
+                                </div>
+                                <div className="col-7 text-left">
+                                    {this.props.data.nsetup.handover_destination_location.iata}
+                                </div>
+                                <div className="col-5 text-right text-grey">
+                                    {trans('Aéroport')} :
+                                </div>
+                                <div className="col-7 text-left text-wrap">
+                                    {this.props.data.nsetup.handover_destination_location.name}
+                                </div>
+                            </div>
+                        </PopupBody>
+                    </Popup></td>
+                <td>
+                    {this.props.data.nsetup.transports[0].conveyence_reference} <a href="#" onClick={e=>{
+                    e.preventDefault()
+                    $(`#conveyence-${this.props.data.id}`).modal('show')
+                }}><i className="fa fa-info-circle text-turquoise"></i></a>
+                    <Popup id={`conveyence-${this.props.data.id}`} className="airport-modal">
+                        <PopupHeader className="pl-3 pb-2" closeButton={<span aria-hidden="true"  className="pb-1 pl-2 pr-2 rounded text-white" style={{background:'#170000'}}>&times;</span>}>
+                            <h5><img src="/medias/images/ico-airport.png" className="position-absolute"/> <span className="pl-5 text-body">{trans('Premier vol')}</span></h5>
+                        </PopupHeader>
+                        <hr className="border m-0 m-auto" style={{width:'calc(100% - 10px)', height:3}}/>
+                        <PopupBody>
+                            {this.props.data.nsetup.transports[0].airlines.join('<br/>')}
+                        </PopupBody>
+                    </Popup>
+                </td>
+                <td className="p-2">{this.props.irregularites()}</td>
+                <td className="p-2">{this.props.performances()}</td>
+                <td className="p-2">{this.props.completed()}</td>
+            </tr>
+            {this.state.data?<FullDetail data={this.state.data} consignmentEvents={this.state.consignment_events} deliveryConsignmentEvents={this.state.delivery_consignment_events} store={this.props.store}/>:null}
+        </React.Fragment>
     }
 }
 

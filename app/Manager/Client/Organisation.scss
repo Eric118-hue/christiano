@@ -30,10 +30,16 @@
 
         &::after {
             border-left: 1px solid #000;
-            height: 100%;
+            height: calc(100% + 16px);
             width: 0px;
             top: -16px;
             left: -50px;
+        }
+
+        &:last-child {
+            &::after {
+                height: 37px;
+            }
         }
 
         &:last-child::before {

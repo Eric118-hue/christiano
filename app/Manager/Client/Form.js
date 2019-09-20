@@ -4,12 +4,14 @@ import Modelizer from '../../../vendor/Ry/Core/Modelizer';
 import $ from 'jquery';
 import MultiForm from '../../../vendor/Ry/Admin/User/Multiform';
 import Organisation from './Organisation';
+import Pricing from './Pricing';
 
 class Form extends Component
 {
     constructor(props) {
         super(props)
         this.state = {
+            oncevalidate : false,
             type : this.models('props.data.row.type', 'airline'),
             name_search : this.models('props.data.row.facturable.name'),
             airlines : [],
@@ -84,11 +86,29 @@ class Form extends Component
         })
     }
 
+    componentDidMount() {
+        $(this.refs.client_form).parsley().on('form:validate', formInstance=>{
+            $(window).off("beforeunload");
+            if(this.refs.organisation) {
+                let errors = []
+                let organisation_errors = this.refs.organisation.validate()
+                if(organisation_errors.length>0) {
+                    errors = errors.concat(organisation_errors)
+                }
+                this.setState({
+                    oncevalidate : true,
+                    errors : errors
+                })
+                formInstance.validationResult = errors.length==0;
+            }
+        })
+    }
+
     render() {
         return <div className="col-md-12">
             <div className="card">
                 <div className="card-body">
-                    <form name="frm_client" autoComplete="off" method="post" action={this.props.data.action}>
+                    <form name="frm_client" autoComplete="off" method="post" action={this.props.data.action} ref="client_form">
                         <input type="hidden" value="nothing"/>
                         <input type="hidden" name="_token" value={$('meta[name="csrf-token"]').attr('content')}/>
                         <input type="hidden" name="facturable[id]" value={this.models('state.facturable.id')}/>
@@ -99,11 +119,23 @@ class Form extends Component
                         aria-controls="client-account"
                         aria-selected="true">{trans('Compte client')}</a>
                             </li>
-                            <li className="nav-item">
-                                <a className={`nav-link`}
-                        data-toggle="tab" href={`#organisation`} role="tab"
-                        aria-controls="organisation">{trans('Organisation')}</a>
-                            </li>
+                            {this.props.data.row.id?<React.Fragment>
+                                <li className="nav-item">
+                                    <a className={`nav-link`}
+                            data-toggle="tab" href={`#organisation`} role="tab"
+                            aria-controls="organisation">{trans('Organisation')}</a>
+                                </li>
+                                <li className="nav-item">
+                                    <a className={`nav-link`}
+                            data-toggle="tab" href={`#pricing`} role="tab"
+                            aria-controls="pricing">{trans('Tarifications')}</a>
+                                </li>
+                                {this.props.data.row.nsetup.invoice?<li className="nav-item">
+                                    <a className={`nav-link`}
+                            data-toggle="tab" href={`#invoices`} role="tab"
+                            aria-controls="invoices">{trans('Facturation')}</a>
+                                </li>:null}
+                            </React.Fragment>:null}
                         </ul>
                         <div className="tab-content border-bottom border-left border-right p-4 mb-4">
                             <div className={`tab-pane active`}
@@ -316,10 +348,7 @@ class Form extends Component
                                     </div>
                                 </div>
                             </div>
-                            <div className={`tab-pane`}
-                            id={`organisation`} role="tabpanel" aria-labelledby="organisation-tab">
-                                <Organisation data={this.props.data} store={this.props.store}/>
-                            </div>
+                            {this.props.data.row.id?<Organisation tabbed={true} ref="organisation" data={this.props.data} store={this.props.store}/>:null}
                         </div>
                         <input type="hidden" name="id" value={this.models('props.data.row.id')}/>
                         <button className="btn btn-primary">{trans('enregistrer')}</button>

@@ -10,6 +10,7 @@ class Item extends Component
         return <tr>
             <td>{this.props.data.iata_code}</td>
             <td>{this.props.data.icao_code}</td>
+            <td>{this.props.data.edi_code}</td>
             <td>{this.props.data.name}</td>
         </tr>
     }
@@ -21,6 +22,8 @@ class List extends NavigableModel
         super(props)
         this.state.filter = {
             iata_code : '',
+            edi_code : '',
+            icao_code : '',
             name : ''
         }
         this.model = 'airlines'
@@ -98,6 +101,7 @@ class List extends NavigableModel
                             <tr>
                                 <th className="text-capitalize">{trans('Code IATA')}</th>
                                 <th className="text-capitalize">{trans('Code ICAO')}</th>
+                                <th className="text-capitalize">{trans('Code EDI')} (160b)</th>
                                 <th className="text-capitalize">{trans('Nom')}</th>
                             </tr>
                             <tr className="bg-yellow">
@@ -106,6 +110,9 @@ class List extends NavigableModel
                                 </th>
                                 <th>
                                     <input type="search" value={this.state.filter.icao_code} onChange={e=>this.onFilter(e, 'icao_code')} className="form-control text-capitalize" placeholder={trans('filtre')}/>
+                                </th>
+                                <th>
+                                    <input type="search" value={this.state.filter.edi_code} onChange={e=>this.onFilter(e, 'edi_code')} className="form-control text-capitalize" placeholder={trans('filtre')}/>
                                 </th>
                                 <th>
                                     <input type="search" value={this.state.filter.name} onChange={e=>this.onFilter(e, 'name')} className="form-control text-capitalize" placeholder={trans('filtre')}/>
