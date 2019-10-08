@@ -7,7 +7,8 @@ class NavigableModel extends Component
     constructor(props) {
 		super(props);
 		this.state = {
-			data : this.props.data.data,
+            data : this.props.data.data,
+            total : this.props.data.total,
 			page : this.props.data.current_page ? this.props.data.current_page : 1
 		};
 		this.toFirst = this.toFirst.bind(this);
@@ -26,16 +27,24 @@ class NavigableModel extends Component
                 if(state.row && state.row.id) {
                     let prevState = this.state.data
                     const index = prevState.findIndex(item=> item.id===state.row.id)
+                    let total = this.state.total
                     if(index>=0) {
                         prevState[index] = state.row
                     }
                     else {
                         prevState.push(state.row)
+                        total++
                     }
-                    this.setState({data:prevState})
+                    this.setState({
+                        data:prevState,
+                        total:total
+                    })
                 }
                 else if(state.data && state.data.data) {
-                    this.setState({data:state.data.data})
+                    this.setState({
+                        data:state.data.data,
+                        total:state.data.total
+                    })
                 }
             }
         })
@@ -61,7 +70,10 @@ class NavigableModel extends Component
             success : ()=>{
                 let data = dis.state.data;
                 data.splice(index, 1);
-                dis.setState({data});
+                dis.setState({
+                    data : data,
+                    total : dis.state.total - 1
+                });
                 callbacks.success()
                 //refresh
                 if(dis.xhr)
@@ -75,7 +87,8 @@ class NavigableModel extends Component
                     url : endpoint,
                     success : function(response){
                         dis.setState({
-                            data : response.data.data
+                            data : response.data.data,
+                            total : response.data.total
                         });
                     }
                 });
@@ -95,6 +108,25 @@ class NavigableModel extends Component
 			success : function(response){
 				dis.setState({
 					page : 1,
+                    data : response.data.data,
+                    total : response.data.total
+				});
+			}
+        });
+        return false;
+    }
+
+    toPage(event, numpage) {
+        event.preventDefault();
+		if(this.xhr)
+            this.xhr.abort();
+		const dis = this;
+		this.xhr = $.ajax({
+            isPagination : true,
+			url : this.builPaginationFromQuery(numpage),
+			success : function(response){
+				dis.setState({
+					page : numpage,
 					data : response.data.data
 				});
 			}
@@ -113,7 +145,8 @@ class NavigableModel extends Component
 			success : function(response){
 				dis.setState({
 					page : dis.props.data.last_page,
-					data : response.data.data
+                    data : response.data.data,
+                    total : response.data.total
 				});
 			}
         });
@@ -131,7 +164,8 @@ class NavigableModel extends Component
 			success : function(response){
 				dis.setState({
 					page : dis.state.page - 1,
-					data : response.data.data
+                    data : response.data.data,
+                    total : response.data.total
 				});
 			}
         });
@@ -156,7 +190,8 @@ class NavigableModel extends Component
 			success : function(response){
 				dis.setState({
 					page : dis.state.page + 1,
-					data : response.data.data
+                    data : response.data.data,
+                    total: response.data.total
 				});
 			}
         });
@@ -168,7 +203,7 @@ class NavigableModel extends Component
     }
     
     render() {
-        let pagination = <ul className={`list-inline m-0 ${this.props.data.per_page>=this.props.data.total?'d-none':''}`}>
+        let pagination = <ul className={`list-inline m-0 ${this.props.data.per_page>=this.state.total?'d-none':''}`}>
             <li className="list-inline-item">
                 <a className={`btn btn-outline-primary ${this.state.page===1?'disabled':''}`} href="#" onClick={this.toFirst}><i className="fa fa-angle-double-left"></i></a>
             </li>

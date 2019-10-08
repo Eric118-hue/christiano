@@ -28,9 +28,9 @@
     padding: 14px;
     top: 100px;
     z-index: 100000;
-    color: #1fb5ac;
+    color: lighten($primary, 0.8);
     right: 0;
-    background: #000000bb;
+    background: transparentize($dark, 0.2);
     border-top-left-radius: 56px;
     border-bottom-left-radius: 56px;
 }

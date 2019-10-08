@@ -10,6 +10,9 @@ import 'sweetalert2/src/sweetalert2.scss';
 import trans, {LOADINGEND, LOADINGSTART} from '../../../app/translations';
 import qs from 'qs';
 import Dropzone from '../Core/dropzone';
+import __Core from './Core';
+
+export const Core = __Core;
 
 $(document).ajaxSend(function(event, state, ajax){
 	if(ajax.isPagination) {
@@ -43,7 +46,7 @@ $(document).ajaxError(function(event, response) {
 			break;
 	}
 	if(response.status) {
-		swal({
+		swal.fire({
 			title: (response.responseJSON && response.responseJSON.message) ? `Erreur ${response.status}!` : trans('Désolé'),
 			text: errorText,
 			type: 'error'

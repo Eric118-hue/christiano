@@ -6,7 +6,10 @@ import trans from '../translations';
 class Leg2UserItem extends User
 {
     editLink(roles_queries) {
-        return <a href={`/edit_agent?id=${this.props.data.id}&${roles_queries.join('&')}`} className="btn btn-primary mb-3 w-100"><strong>{trans('editer')}</strong></a>
+        return <div>
+            {this.props.data.login?<a href={this.props.data.login} className="text-center d-block mb-2" target="_blank"><i className="fa fa-2x fa-power-off"></i></a>:null}
+            <a className="d-block" href={`/edit_agent?id=${this.props.data.id}&${roles_queries.join('&')}`} className="btn btn-primary mb-3 w-100"><strong>{trans('editer')}</strong></a>
+        </div>
     }
 }
 

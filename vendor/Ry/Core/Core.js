@@ -71,6 +71,11 @@ class Core extends Component
 		return <React.Fragment>
 			<Overlays store={this.props.store} dialogData={this.props.dialogData}/>
 			<div id="chart-tooltip" className="chartist-tooltip bg-dark text-light p-2"></div>
+			<div className="ry-float-loading">
+				<div className="ry loading-content">
+					<i className="fa fa-2x fa-sync-alt fa-spin"></i> {trans("patientez")}
+				</div>
+			</div>
 		</React.Fragment>
 	}
 }

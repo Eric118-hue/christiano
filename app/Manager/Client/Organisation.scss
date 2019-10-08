@@ -1,6 +1,6 @@
 .ramification-client {
 
-    ul {
+    ul:not([class^="parsley"]) {
         margin-left: 100px;
     }
 
@@ -13,7 +13,7 @@
         position: relative;
     }
 
-    li {
+    li:not([class^="parsley"]) {
         &::before, &::after {
             position: absolute;
             content: '';
@@ -69,6 +69,11 @@
     }
     .btn-add {
         color: #9cca22;
+    }
+
+    .airline-trait {
+        border-top: 5px solid #9cca22;
+        padding: 0 10px;
     }
 }
 

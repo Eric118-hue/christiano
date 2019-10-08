@@ -91,7 +91,7 @@ class List extends NavigableModel
                 </label>
             </td>
             <td className="text-right">
-                <a className="btn btn-primary" href={`/client_edit?id=${customer.id}`}><i className="fa fa-edit"></i> {trans('modifier')}</a>
+                <a className="btn btn-primary" href={`/client_edit?id=${customer.id}`}><i className="fa fa-edit"></i> {trans('editer')}</a>
                 <button className="btn btn-danger ml-2" type="button" onClick={()=>this.remove(customer)}><i className="fa fa-remove"></i> {trans('supprimer')}</button>
             </td>
         </tr>

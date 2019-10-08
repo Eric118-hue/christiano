@@ -6,12 +6,34 @@ import qs from 'qs';
 
 class Item extends Component
 {
+    constructor(props) {
+        super(props)
+        this.setCountry = this.setCountry.bind(this)
+    }
+
+    setCountry(event) {
+        $.ajax({
+            url : '/airline_update',
+            type : 'post',
+            data : {
+                country_id : event.target.value,
+                id : this.props.data.id
+            }
+        })
+    }
+
     render() {
         return <tr>
             <td>{this.props.data.iata_code}</td>
             <td>{this.props.data.icao_code}</td>
             <td>{this.props.data.edi_code}</td>
             <td>{this.props.data.name}</td>
+            <td>
+                <select required onChange={this.setCountry} defaultValue={this.props.data.country_id} className="select-default">
+                    <option value=""></option>
+                    {this.props.countries.map(country=><option key={`country-${country.id}`} value={country.id}>{country.nom}</option>)}
+                </select>
+            </td>
         </tr>
     }
 }
@@ -24,7 +46,10 @@ class List extends NavigableModel
             iata_code : '',
             edi_code : '',
             icao_code : '',
-            name : ''
+            name : '',
+            country : {
+                nom : ''
+            }
         }
         this.model = 'airlines'
         this.endpoint = '/airlines'
@@ -63,7 +88,7 @@ class List extends NavigableModel
     }
 
     item(airline, key) {
-        return <Item key={`airline-${airline.id}`} data={airline}/>
+        return <Item key={`airline-${airline.id}`} data={airline} countries={this.props.countries}/>
     }
 
     builPaginationFromQuery(page) {
@@ -103,6 +128,7 @@ class List extends NavigableModel
                                 <th className="text-capitalize">{trans('Code ICAO')}</th>
                                 <th className="text-capitalize">{trans('Code EDI')} (160b)</th>
                                 <th className="text-capitalize">{trans('Nom')}</th>
+                                <th className="text-capitalize">{trans('Pays')}</th>
                             </tr>
                             <tr className="bg-yellow">
                                 <th>
@@ -116,6 +142,9 @@ class List extends NavigableModel
                                 </th>
                                 <th>
                                     <input type="search" value={this.state.filter.name} onChange={e=>this.onFilter(e, 'name')} className="form-control text-capitalize" placeholder={trans('filtre')}/>
+                                </th>
+                                <th>
+                                    <input type="search" value={this.state.filter.country.nom} onChange={e=>this.onFilter(e, 'country_nom')} className="form-control text-capitalize" placeholder={trans('filtre')}/>
                                 </th>
                             </tr>
                         </thead>
@@ -136,7 +165,7 @@ class List extends NavigableModel
 class Airline extends Component
 {
     render() {
-        return <List data={this.props.data.data} store={this.props.store}/>
+        return <List data={this.props.data.data} store={this.props.store} countries={this.props.data.countries}/>
     }
 }
 

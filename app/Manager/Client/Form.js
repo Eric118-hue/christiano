@@ -4,13 +4,15 @@ import Modelizer from '../../../vendor/Ry/Core/Modelizer';
 import $ from 'jquery';
 import MultiForm from '../../../vendor/Ry/Admin/User/Multiform';
 import Organisation from './Organisation';
-import Pricing from './Pricing';
 
 class Form extends Component
 {
     constructor(props) {
         super(props)
         this.state = {
+            tab : this.models('props.data.tab', 'client-account'),
+            errors : [],
+            errorMessages : [],
             oncevalidate : false,
             type : this.models('props.data.row.type', 'airline'),
             name_search : this.models('props.data.row.facturable.name'),
@@ -87,20 +89,53 @@ class Form extends Component
     }
 
     componentDidMount() {
+        $('[data-toggle="tab"]').on('shown.bs.tab', e=>{
+            this.setState({
+                tab : $(e.target).attr('href').replace('#', '')
+            })
+        })
         $(this.refs.client_form).parsley().on('form:validate', formInstance=>{
             $(window).off("beforeunload");
+            let errors = []
+            let errorMessages = []
+            let notabshown = true
+            let fsfields = $(".first-section input").parsley()
+            for(let i=0; i<fsfields.length; i++) {
+                if(!fsfields[i].isValid({force:true}))
+                    errors = errors.concat(fsfields[i].getErrorsMessages())
+            }
+            if(errors.length>0) {
+                errorMessages.push("Veuillez remplir le compte client.")
+                $('#tab-form a[href="#client-account"]').tab('show')
+                notabshown = false
+            }
+            if(this.refs.client_form) {
+                if(this.state.type=='airline' && !this.models('state.facturable.id', false)) {
+                    errors.push('no_airline_match')
+                    errorMessages.push(trans("La compagnie aérienne n'est pas valide."))
+                    if(!notabshown) {
+                        $('#tab-form a[href="#client-account"]').tab('show')
+                        notabshown = false
+                    }
+                }
+            }
             if(this.refs.organisation) {
-                let errors = []
                 let organisation_errors = this.refs.organisation.validate()
                 if(organisation_errors.length>0) {
                     errors = errors.concat(organisation_errors)
+                    errorMessages.push(trans("Veuillez remplir l'organisation."))
+                    if(!notabshown) {
+                        $('#tab-form a[href="#organisation"]').tab('show')
+                        notabshown = false
+                    }
                 }
-                this.setState({
-                    oncevalidate : true,
-                    errors : errors
-                })
-                formInstance.validationResult = errors.length==0;
             }
+            formInstance.validationResult = errors.length==0;
+            this.setState({
+                oncevalidate : true,
+                errors : errors,
+                errorMessages : errorMessages
+            })
         })
     }
 
@@ -108,37 +143,40 @@ class Form extends Component
         return <div className="col-md-12">
             <div className="card">
                 <div className="card-body">
+                    {this.state.errorMessages.length>0?<div className="alert alert-danger">
+                        {this.state.errorMessages.map((errorMessage, index)=><div key={`error-${index}`}>{errorMessage}</div>)}
+                    </div>:null}
                     <form name="frm_client" autoComplete="off" method="post" action={this.props.data.action} ref="client_form">
+                        <input type="hidden" name="tab" value={this.state.tab}/>
                         <input type="hidden" value="nothing"/>
                         <input type="hidden" name="_token" value={$('meta[name="csrf-token"]').attr('content')}/>
                         <input type="hidden" name="facturable[id]" value={this.models('state.facturable.id')}/>
-                        <ul className="nav nav-tabs" role="tablist">
+                        <ul className="nav nav-tabs" role="tablist" id="tab-form">
                             <li className="nav-item">
-                                <a className={`nav-link active`}
+                                <a className={`nav-link ${this.state.tab=='client-account'?'active':''}`}
                         data-toggle="tab" href={`#client-account`} role="tab"
                         aria-controls="client-account"
                         aria-selected="true">{trans('Compte client')}</a>
                             </li>
                             {this.props.data.row.id?<React.Fragment>
                                 <li className="nav-item">
-                                    <a className={`nav-link`}
+                                    <a className={`nav-link ${this.state.tab=='organisation'?'active':''}`}
                             data-toggle="tab" href={`#organisation`} role="tab"
                             aria-controls="organisation">{trans('Organisation')}</a>
                                 </li>
                                 <li className="nav-item">
-                                    <a className={`nav-link`}
+                                    <a className={`nav-link ${this.state.tab=='pricing'?'active':''}`}
                             data-toggle="tab" href={`#pricing`} role="tab"
                             aria-controls="pricing">{trans('Tarifications')}</a>
                                 </li>
-                                {this.props.data.row.nsetup.invoice?<li className="nav-item">
-                                    <a className={`nav-link`}
-                            data-toggle="tab" href={`#invoices`} role="tab"
-                            aria-controls="invoices">{trans('Facturation')}</a>
-                                </li>:null}
+                                <li className="nav-item">
+                                    <a className={`nav-link`} href={`/carts?customer_id=${this.props.data.row.id}`}
+                            aria-controls="invoices">{trans('Facturations')}</a>
+                                </li>
                             </React.Fragment>:null}
                         </ul>
                         <div className="tab-content border-bottom border-left border-right p-4 mb-4">
-                            <div className={`tab-pane active`}
+                            <div className={`tab-pane ${this.state.tab=='client-account'?'active':''} first-section`}
                             id={`client-account`} role="tabpanel" aria-labelledby="client-account-tab">
                                 <div className="row">
                                     <div className="col-md-3">
@@ -156,7 +194,7 @@ class Form extends Component
                                     <div className="col-md-6">
                                         {this.state.type=='airline'?<div className="form-group position-relative">
                                             <label className="control-label">{trans('nom')}</label>
-                                            <input type="text" className="form-control" value={this.state.name_search} onChange={this.handleSearch} onClick={this.handleSearch} name="name" autoComplete="bistrict" required/>
+                                            <input type="text" value={this.state.name_search} onChange={this.handleSearch} onClick={this.handleSearch} name="name" autoComplete="bistrict" required className={`form-control ${this.state.errors.indexOf('no_airline_match')>=0?'error':''}`}/>
                                             <div className={`dropdown-menu overflow-auto w-100 ${this.state.select_airline?'show':''}`} style={{maxHeight:200}}>
                                                 {this.state.airlines.map(airline=><a key={`airline-${airline.id}`} className="dropdown-item" href="#" onClick={e=>this.handleSelectAirline(e, airline)}>{airline.name}</a>)}
                                             </div>
@@ -198,7 +236,7 @@ class Form extends Component
                                                     <label htmlFor={`adresse-ville-cp`}
                                                         className="col-md-4 mt-3 text-right">{trans("code_postal")}</label>
                                                     <div className="col-md-8">
-                                                        <input name="adresse[ville][cp]" required type="text"
+                                                        <input name="adresse[ville][cp]" required maxLength="10" type="text"
                                                             defaultValue={this.models("props.data.row.facturable.adresse.ville.cp", '')}
                                                             className="form-control" id="adresse-ville-cp"/>
                                                     </div>

@@ -81,9 +81,9 @@ class Pricing extends Component
             <div className="row align-items-baseline">
                 <label className="control-label mr-2">{trans('Date de validité du tarif')} : </label>
                 <span className="text-info text-capitalize"> {trans('du')} </span>
-                <Datepicker name={`airlines[${this.props.indexes.airline_index}][edis][${this.props.indexes.edi_index}][routes][${this.props.indexes.route_index}][nsetup][pricing][start_date]`}  defaultValue={this.models("props.data.nsetup.pricing.start_date", "")} className="col-md-3"/>
+                <Datepicker name={`airlines[${this.props.indexes.airline_index}][edis][${this.props.indexes.edi_index}][routes][${this.props.indexes.route_index}][nsetup][pricing][start_date]`}  defaultValue={this.models("props.data.nsetup.pricing.start_date", "")} className="col-md-3" inputProps={{required:true}}/>
                 <span className="text-info"> {trans('au')} </span>
-                <Datepicker className="col-md-3" name={`airlines[${this.props.indexes.airline_index}][edis][${this.props.indexes.edi_index}][routes][${this.props.indexes.route_index}][nsetup][pricing][end_date]`} defaultValue={this.models("props.data.nsetup.pricing.end_date", "")}/>
+                <Datepicker className="col-md-3" name={`airlines[${this.props.indexes.airline_index}][edis][${this.props.indexes.edi_index}][routes][${this.props.indexes.route_index}][nsetup][pricing][end_date]`} defaultValue={this.models("props.data.nsetup.pricing.end_date", "")}inputProps={{required:true}}/>
             </div>
         </div>
     }
@@ -303,7 +303,7 @@ class Organisation extends Component
                 <ul className="list-unstyled ramification-airline" ref="organisation">
                     {this.state.customer.facturable.airlines.map((airline, airline_index)=>airline.deleted?<input key={`airline-${airline_index}`} type="hidden" name={`deleted_airlines[${airline_index}][id]`} value={airline.id}/>:<li key={`airline-${airline_index}`}>
                         <div className="row">
-                            <div className="col">
+                            <div className="col-8">
                                 <div className="alert font-24 d-flex justify-content-between">
                                     <Autocomplete onChange={item=>{
                                                 this.setState(state=>{
@@ -321,6 +321,17 @@ class Organisation extends Component
                                     </span>} param="q"/>
                                 </div>
                             </div>
+                            {this.props.pricing?<React.Fragment>
+                                <span className="airline-trait mt-4"></span>
+                                <div className="col-md-3">
+                                    <div className="alert align-items-center d-flex justify-content-between">
+                                        <label className="m-0 text-uppercase">{trans('Com. AD')} : </label>
+                                        <input className="bg-transparent form-control text-center text-white w-50" type="number" name={this.props.data.row.type=='gsa'?`airlines[${airline_index}][nsetup][commission][value]`:`nsetup[commission][value]`} step="0.01" defaultValue={this.cast(airline, 'commission.value')}/>
+                                        {this.props.data.default_currency.symbol}/Kg
+                                        <input type="hidden" name={this.props.data.row.type=='gsa'?`airlines[${airline_index}][nsetup][commission][currency_id]`:`nsetup[commission][currency_id]`} value={this.props.data.default_currency.id}/>
+                                    </div>
+                                </div>
+                            </React.Fragment>:null}
                             {(!this.props.readOnly &&  this.state.customer.facturable.airlines.filter(item=>!item.deleted).length>1)?<button className="btn" type="button" onClick={()=>{
                                 this.setState(state=>{
                                     state.customer.facturable.airlines[airline_index].deleted = true
@@ -366,6 +377,14 @@ class Organisation extends Component
                                             </span> } buttonClass="p-0"/>
                                         </div>
                                     </div>
+                                    {this.props.pricing?<React.Fragment>
+                                        <span className="edi-trait mt-3"></span>
+                                        <div className="col-3">
+                                            <select defaultValue={this.cast(edi, 'nsetup.currency.id')} className="form-control" name={`airlines[${airline_index}][edis][${edi_index}][nsetup][currency][id]`}>
+                                                {this.props.data.currencies.map(currency=><option key={`currency-${currency.id}`} value={currency.id}>{currency.iso_code}</option>)}
+                                            </select>
+                                        </div>
+                                    </React.Fragment>:null}
                                     <input type="hidden" name={`airlines[${airline_index}][edis][${edi_index}][id]`} value={edi.id}/>
                                     {(!this.props.readOnly && airline.edis.filter(item=>!item.deleted).length>1)?<button className="btn" onClick={()=>{
                                         this.setState(state=>{
@@ -407,7 +426,7 @@ class Organisation extends Component
                                                 </button>:null}
                                             </li>)}
                                             {this.props.readOnly?null:<li>
-                                                <button className="p-0 border-0 font-24 btn-add focus-outline-hidden" type="button" onClick={()=>this.addAgent(airline_index, edi_index)}><i className="fa fa-plus-circle"></i></button>
+                                                <button className="p-0 border-0 font-24 btn-add btn focus-outline-hidden" type="button" onClick={()=>this.addAgent(airline_index, edi_index)}><i className="fa fa-plus-circle"></i></button>
                                             </li>}
                                         </ul>
                                     </div>}
@@ -473,19 +492,19 @@ class Organisation extends Component
                                                 {this.props.pricing?<Pricing indexes={{airline_index,edi_index,route_index}} store={this.props.store} setup={this.props.setup} data={route}/>:null}
                                             </li>)}
                                             {this.props.readOnly?null:<li>
-                                                <button type="button" className="p-0 border-0 font-24 btn-add focus-outline-hidden" onClick={()=>this.addRoute(airline_index, edi_index)}><i className="fa fa-plus-circle"></i></button>
+                                                <button type="button" className="p-0 border-0 font-24 btn btn-add focus-outline-hidden" onClick={()=>this.addRoute(airline_index, edi_index)}><i className="fa fa-plus-circle"></i></button>
                                             </li>}
                                         </ul>
                                     </div>
                                 </div>
                             </li>)}
                             {this.props.readOnly?null:<li>
-                                <button className="p-0 border-0 font-24 btn-add focus-outline-hidden" type="button" onClick={()=>this.addEdi(airline_index)}><i className="fa fa-plus-circle"></i></button>
+                                <button className="p-0 border-0 font-24 btn btn-add focus-outline-hidden" type="button" onClick={()=>this.addEdi(airline_index)}><i className="fa fa-plus-circle"></i></button>
                             </li>}
                         </ul>
                     </li>)}
                     {(this.props.data.row.type=='airline'||this.props.readOnly)?null:<li>
-                        <button className="p-0 border-0 font-24 btn-add focus-outline-hidden" type="button" onClick={this.addAirline}><i className="fa fa-plus-circle"></i></button>
+                        <button className="p-0 btn border-0 font-24 btn-add focus-outline-hidden" type="button" onClick={this.addAirline}><i className="fa fa-plus-circle"></i></button>
                     </li>}
                 </ul>
             </li>
@@ -503,13 +522,13 @@ class Organisation extends Component
             return this.tree()
         }
         return <React.Fragment>
-            <div className={`tab-pane`}
+            <div className={`tab-pane ${this.props.data.tab=='organisation'?'active':''}`}
             id={`organisation`} role="tabpanel" aria-labelledby="organisation-tab">
                 {this.tree()}
             </div>
-            <div className={`tab-pane`}
+            <div className={`tab-pane ${this.props.data.tab=='pricing'?'active':''}`}
             id={`pricing`} role="tabpanel" aria-labelledby="pricing-tab">
-                <Organisation pricing={true} readOnly={true} ref="pricing" data={{row:this.state.customer}} store={this.props.store} setup={this.props.data.pricing}/>
+                <Organisation pricing={true} readOnly={true} ref="pricing" data={{row:this.state.customer,currencies:this.props.data.currencies,default_currency:this.props.data.default_currency}} store={this.props.store} setup={this.props.data.pricing}/>
             </div>
         </React.Fragment>
     }

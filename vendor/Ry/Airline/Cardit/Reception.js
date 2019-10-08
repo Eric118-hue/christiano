@@ -178,8 +178,8 @@ class Reception extends Component
                                     </td>)}
                                 </tr>)}
                                 <tr>
-                                    <td colSpan={this.props.consignmentEvents.length} className="border-right-0 noBg"></td>
-                                    <td colSpan="5" className="border-left-0 border-right-0">
+                                    <td colSpan="5" className="border-right-0 noBg"></td>
+                                    <td colSpan={this.props.consignmentEvents.length} className="border-left-0 border-right-0 p-0">
                                         {(this.models('state.updated_resdits.reception', false) || this.props.readOnly)?null:<button className="btn btn-orange rounded-0">{trans('STEP')} 1 :
                                             {trans('Valider')}</button>}
                                     </td>

@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import Modelizer from '../../vendor/Ry/Core/Modelizer';
 import Options from '../../vendor/Ry/Admin/Setup';
 import General from '../../vendor/Ry/Admin/GeneralSetup';
+import Currency from '../../vendor/Ry/Shop/Currency';
 
 class Setup extends Component
 {
@@ -13,7 +14,7 @@ class Setup extends Component
                         <a className="nav-link active" id="v-pills-general-tab" data-toggle="pill" href="#v-pills-general" role="tab" aria-controls="v-pills-general" aria-selected="true">Général</a>
                         <a className="nav-link" id="v-pills-legal_entities-tab" data-toggle="pill" href="#v-pills-legal_entities" role="tab" aria-controls="v-pills-legal_entities" aria-selected="false">Statuts d'une entreprise</a>
                         <a className="nav-link" id="v-pills-charges-tab" data-toggle="pill" href="#v-pills-charges" role="tab" aria-controls="v-pills-charges" aria-selected="false">Rôles d'utilisateurs</a>
-                    </div>
+                        <a className="nav-link" id="v-pills-currencies-tab" data-toggle="pill" href="#v-pills-currencies" role="tab" aria-controls="v-pills-currencies" aria-selected="false">Devises</a>                    </div>
                 </div>
                 <div className="col-10 border-left">
                     <div className="bg-white">
@@ -27,6 +28,9 @@ class Setup extends Component
                                 </div>
                                 <div className="tab-pane fade" id="v-pills-charges" role="tabpanel" aria-labelledby="v-pills-charges-tab">
                                     <Options pkey={`setup[charges]`} items={this.models('props.data.data.charges', [])} title="Rôles d'utilisateurs"/>
+                                </div>
+                                <div className="tab-pane fade" id="v-pills-currencies" role="tabpanel" aria-labelledby="v-pills-currencies-tab">
+                                    <Currency pkey={`currencies`} store={this.props.store} data={{data:{data:this.models('props.data.data.currencies', [])}}} title="Devises"/>
                                 </div>
                             </div>
                         </div>

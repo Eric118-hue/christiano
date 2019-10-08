@@ -251,6 +251,12 @@ class Pricing extends Component
                                             </span> } buttonClass="p-0"/>
                                         </div>
                                     </div>
+                                    <span className="edi-trait mt-3"></span>
+                                    <div className="col-3">
+                                        <select className="form-control" name={`airlines[${airline_index}][edis][${edi_index}][nsetup][currency][id]`} defaultValue={this.cast(edi, 'nsetup.currency.id')}>
+                                            {this.props.data.currencies.map(currency=><option key={`currency-${currency.id}`} value={currency.id}>{currency.iso_code}</option>)}
+                                        </select>
+                                    </div>
                                     <input type="hidden" name={`airlines[${airline_index}][edis][${edi_index}][id]`} value={edi.id}/>
                                     {airline.edis.filter(item=>!item.deleted).length>1?<button className="btn" onClick={()=>{
                                         this.setState(state=>{

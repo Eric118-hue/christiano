@@ -319,26 +319,30 @@ class FullDetail extends Component
             case 'delivery':
                 step = <Delivery readOnly={this.props.readOnly} data={this.props.data} consignmentEvents={this.props.deliveryConsignmentEvents} store={this.props.store}/>
                 headStep = <div className="centerText">
-                    {trans("Livraison : récipients à l'arrivée de l’aéroport de destination")} : {this.props.data.nsetup.handover_destination_location.country.nom} - {this.props.data.nsetup.handover_destination_location.iata} - {this.props.data.nsetup.handover_destination_location.name}
+                    {trans("Livraison des récipients à destination : :country_name - :iata - :airport_name", {
+                        country_name : this.props.data.nsetup.handover_destination_location.country.nom,
+                        iata : this.props.data.nsetup.handover_destination_location.iata,
+                        airport_name : this.props.data.nsetup.handover_destination_location.name
+                    })}
                 </div>
                 break;
             case 'assignation':
             //todo : choices available transport at same point
                 step = <Assignation key={`assignation-${this.props.data.id}-${this.state.transport_index}`} readOnly={this.props.readOnly} data={this.props.data} transportIndex={this.state.transport_index} selectTransports={this.state.select_transports[this.state.transport_index]} addTransport={this.addTransport} consignmentEvent="assignation" handleAllReceptacleTransportChange={transport=>this.handleAllReceptacleTransportChange(transport)} allTransport={this.state.allTransports[this.state.transport_index].assignation} store={this.props.store}/>
                 headStep = <div className="centerText">
-                    {trans("Assignation : récipients au vol Nº:vol au départ de l'aéroport", {vol:this.state.transport_index+1})} {this.props.data.nsetup.transports[this.state.transport_index].departure_location.country.nom} - {this.props.data.nsetup.transports[this.state.transport_index].departure_location.iata} - {this.props.data.nsetup.transports[this.state.transport_index].departure_location.name}
+                    {trans("Assignation : récipients assignés au vol :vol au départ de l'aéroport :country_name - :iata - :airport_name", {vol:this.props.data.nsetup.transports[this.state.transport_index].conveyence_reference, country_name:this.props.data.nsetup.transports[this.state.transport_index].departure_location.country.nom, iata:this.props.data.nsetup.transports[this.state.transport_index].departure_location.iata, airport_name:this.props.data.nsetup.transports[this.state.transport_index].departure_location.name})}
                 </div>
                 break;
             case 'departure':
                 step = <Status key={`departure-${this.props.data.id}-${this.state.transport_index}`} readOnly={this.props.readOnly} data={this.props.data} transportIndex={this.state.transport_index} selectTransports={this.state.select_transports[this.state.transport_index]} addTransport={this.addTransport} consignmentEvent="departure" handleAllReceptacleTransportChange={transport=>this.handleAllReceptacleTransportChange(transport)} allTransport={this.state.allTransports[this.state.transport_index].departure} store={this.props.store}/>
                 headStep = <div className="centerText">
-                    {trans("Départ : récipients sur le vol Nº:vol au départ de l'aéroport", {vol:this.state.transport_index+1})} {this.props.data.nsetup.transports[this.state.transport_index].departure_location.country.nom} - {this.props.data.nsetup.transports[this.state.transport_index].departure_location.iata} - {this.props.data.nsetup.transports[this.state.transport_index].departure_location.name}
+                    {trans("Départ des récipients sur le vol Nº:vol au départ de l'aéroport :country_name - :iata - :airport_name", {vol:this.props.data.nsetup.transports[this.state.transport_index].conveyence_reference, country_name:this.props.data.nsetup.transports[this.state.transport_index].departure_location.country.nom, iata:this.props.data.nsetup.transports[this.state.transport_index].departure_location.iata, airport_name:this.props.data.nsetup.transports[this.state.transport_index].departure_location.name})}
                 </div>
                 break;
             case 'arrival':
                 step = <Status key={`arrival-${this.props.data.id}-${this.state.transport_index}`} readOnly={this.props.readOnly} data={this.props.data} transportIndex={this.state.transport_index} selectTransports={this.state.select_transports[this.state.transport_index]} addTransport={this.addTransport} consignmentEvent="arrival" handleAllReceptacleTransportChange={transport=>this.handleAllReceptacleTransportChange(transport)} allTransport={this.state.allTransports[this.state.transport_index].arrival} store={this.props.store}/>
                 headStep = <div className="centerText">
-                    {trans("Arrivée : récipients du vol Nº:vol à l'arrivée à l'aéroport", {vol:this.state.transport_index+1})} {this.props.data.nsetup.transports[this.state.transport_index].departure_location.country.nom} - {this.props.data.nsetup.transports[this.state.transport_index].departure_location.iata} - {this.props.data.nsetup.transports[this.state.transport_index].departure_location.name}
+                    {trans("Arrivée des récipients à l'aéroport :airport_name (:iata) - :country_name - Vol :vol", {vol:this.props.data.nsetup.transports[this.state.transport_index].conveyence_reference, airport_name:this.props.data.nsetup.transports[this.state.transport_index].arrival_location.name, iata:this.props.data.nsetup.transports[this.state.transport_index].arrival_location.iata, country_name:this.props.data.nsetup.transports[this.state.transport_index].arrival_location.country.nom})}
                 </div>
                 break;
         }
@@ -423,13 +427,20 @@ class Item extends Component
     constructor(props) {
         super(props)
         this.state = {
-            data : null
+            data : null,
+            open : false
         }
         this.detail = this.detail.bind(this)
     }
 
     detail(e) {
         e.preventDefault()
+        if(this.state.data) {
+            this.setState({
+                open : !this.state.open
+            })
+            return false
+        }
         $.ajax({
             url : '/cardit',
             data : {
@@ -438,6 +449,7 @@ class Item extends Component
             },
             success : response=>{
                 this.setState({
+                    open : true,
                     data : response.data.data,
                     delivery_consignment_events : response.delivery_consignment_events,
                     consignment_events : response.consignment_events
@@ -455,7 +467,7 @@ class Item extends Component
                 <td>
                     <div className="d-flex align-items-center justify-content-center">
                         {this.props.data.nsetup.document_number}
-                        <a href="#" onClick={this.detail} className="btnAccord"><i className="fa fa-sort-down"></i></a>
+                        <a href="#" onClick={this.detail} className="btnAccord"><i className={`fa ${this.state.open?'fa-sort-up':'fa-sort-down'}`}></i></a>
                     </div>
                 </td>
                 <td>{this.props.data.nsetup.consignment_category.code}</td>
@@ -571,7 +583,7 @@ class Item extends Component
                 <td className="p-2">{this.props.performances()}</td>
                 <td className="p-2">{this.props.completed()}</td>
             </tr>
-            {this.state.data?<FullDetail data={this.state.data} consignmentEvents={this.state.consignment_events} deliveryConsignmentEvents={this.state.delivery_consignment_events} store={this.props.store}/>:null}
+            {(this.state.data && this.state.open)?<FullDetail data={this.state.data} consignmentEvents={this.state.consignment_events} deliveryConsignmentEvents={this.state.delivery_consignment_events} store={this.props.store}/>:null}
         </React.Fragment>
     }
 }
