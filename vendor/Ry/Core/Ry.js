@@ -47,7 +47,7 @@ $(document).ajaxError(function(event, response) {
 	}
 	if(response.status) {
 		swal.fire({
-			title: (response.responseJSON && response.responseJSON.message) ? `Erreur ${response.status}!` : trans('Désolé'),
+			title: (response.responseJSON && response.responseJSON.message) ? trans(`Désolé`) : trans('Désolé'),
 			text: errorText,
 			type: 'error'
 		});
@@ -82,7 +82,6 @@ $.fn.centraleValidate = function() {
         }
         else if($(this).hasClass("required")) {
             $(this).removeClass('required')
-            console.log($(this).find('i.fa'))
             $(this).find('i.fa').remove()
         }
     });
