@@ -132,19 +132,19 @@ class List extends NavigableModel
                             </tr>
                             <tr className="bg-yellow">
                                 <th>
-                                    <input type="search" value={this.state.filter.iata_code} onChange={e=>this.onFilter(e, 'iata_code')} className="form-control text-capitalize" placeholder={trans('filtre')}/>
+                                    <input type="search" value={this.state.filter.iata_code} onChange={e=>this.onFilter(e, 'iata_code')} className="form-control text-capitalize" placeholder={trans('Filtre')}/>
                                 </th>
                                 <th>
-                                    <input type="search" value={this.state.filter.icao_code} onChange={e=>this.onFilter(e, 'icao_code')} className="form-control text-capitalize" placeholder={trans('filtre')}/>
+                                    <input type="search" value={this.state.filter.icao_code} onChange={e=>this.onFilter(e, 'icao_code')} className="form-control text-capitalize" placeholder={trans('Filtre')}/>
                                 </th>
                                 <th>
-                                    <input type="search" value={this.state.filter.edi_code} onChange={e=>this.onFilter(e, 'edi_code')} className="form-control text-capitalize" placeholder={trans('filtre')}/>
+                                    <input type="search" value={this.state.filter.edi_code} onChange={e=>this.onFilter(e, 'edi_code')} className="form-control text-capitalize" placeholder={trans('Filtre')}/>
                                 </th>
                                 <th>
-                                    <input type="search" value={this.state.filter.name} onChange={e=>this.onFilter(e, 'name')} className="form-control text-capitalize" placeholder={trans('filtre')}/>
+                                    <input type="search" value={this.state.filter.name} onChange={e=>this.onFilter(e, 'name')} className="form-control text-capitalize" placeholder={trans('Filtre')}/>
                                 </th>
                                 <th>
-                                    <input type="search" value={this.state.filter.country.nom} onChange={e=>this.onFilter(e, 'country_nom')} className="form-control text-capitalize" placeholder={trans('filtre')}/>
+                                    <input type="search" value={this.state.filter.country.nom} onChange={e=>this.onFilter(e, 'country_nom')} className="form-control text-capitalize" placeholder={trans('Filtre')}/>
                                 </th>
                             </tr>
                         </thead>

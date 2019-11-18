@@ -242,25 +242,25 @@ class Form extends AdminUser
                         <div className="col-md-3 text-center">
                             <img src={this.props.data.thumb?this.props.data.thumb:((this.props.data.profile&&this.props.data.profile.gender!==GENDERMAN)?femme:homme)} className="img-fluid img-thumbnail rounded-circle icon-160" ref="userphoto"/><br/>
                             <input type="file" name="photo" id="photo" className="d-none"/>
-                            <label htmlFor="photo" className="bg-primary mouse-pointable mt-3 p-4 rounded text-white">{trans("choisir_une_photo")}</label><br/>
+                            <label htmlFor="photo" className="bg-primary mouse-pointable mt-3 p-4 rounded text-white">{trans("Choisir une photo")}</label><br/>
                             <div>
                                 <span className="badge badge-danger mr-15">NOTE!</span>
                                 <span>Formats : .jpg, .png, .gif</span>
                             </div>
-                            <button className="btn btn-danger btn-xs mt-2" type="button" onClick={this.removePhoto}>{trans('supprimer_la_photo')}</button>
+                            <button className="btn btn-danger btn-xs mt-2" type="button" onClick={this.removePhoto}>{trans('Supprimer la photo')}</button>
                             <input type="checkbox" name="nophoto" ref="nophoto" value="1" className="d-none"/>
                         </div>
                         <div className="col-md-9">
                             <div className="card">
                                 <div className="card-header">
-                                    <i className="fa fa-shield-alt"></i> {trans("informations_statuts")}
+                                    <i className="fa fa-shield-alt"></i> {trans("Informations & Statuts")}
                                 </div>
                                 <div className="body">
                                     <div className="row">
                                         <div className="col-md-8">
                                             <div className="row">
                                                 <div className="form-group col-3">
-                                                    <label htmlFor="profile-gender" className="required">{trans("civilite")} <i className="alpha-80 fa fa-lock pl-2 text-orange"></i></label>
+                                                    <label htmlFor="profile-gender" className="required">{trans("Civilité")} <i className="alpha-80 fa fa-lock pl-2 text-orange"></i></label>
                                                     <select name="profile[gender]" className="form-control" id="profile-gender" defaultValue={this.props.data.profile?this.props.data.profile.gender:GENDERMAN} required>
                                                         <option value="mr">M</option>
                                                         <option value="mrs">Mme</option>
@@ -268,11 +268,11 @@ class Form extends AdminUser
                                                     </select>
                                                 </div>
                                                 <div className="form-group col-5">
-                                                    <label htmlFor="profile-firstname">{trans("prenom")}</label>
+                                                    <label htmlFor="profile-firstname">{trans("Prénom")}</label>
                                                     <input name="profile[firstname]" type="text" defaultValue={this.models('props.data.profile.firstname','')} className="form-control" id="profile-firstname" required/>
                                                 </div>
                                                 <div className="form-group col-4">
-                                                    <label htmlFor="profile-lastname">{trans("nom")}</label>
+                                                    <label htmlFor="profile-lastname">{trans("Nom")}</label>
                                                     <input type="text" name="profile[lastname]" defaultValue={this.models('props.data.profile.lastname','')} required className="form-control" id="profile-lastname"/>
                                                 </div>
                                             </div>
@@ -280,60 +280,60 @@ class Form extends AdminUser
                                         <div className="col-md-4">
                                             <div className="custom-control custom-switch pt-4 text-right">
                                                 <input type="checkbox" className={`custom-control-input`} id={`user-toggle-active-${this.props.data.id}`} onChange={this.activeHandler} checked={this.models('state.active', false)}/>
-                                                <label className="custom-control-label" htmlFor={`user-toggle-active-${this.props.data.id}`}>{this.state.active?trans('compte_actif'):trans('compte_inactif')}</label>
+                                                <label className="custom-control-label" htmlFor={`user-toggle-active-${this.props.data.id}`}>{this.state.active?trans('Compte actif'):trans('Compte inactif')}</label>
                                                 <input type="hidden" name="active" value={this.models('state.active')?1:0}/>
                                             </div>
                                         </div>
                                         <div className="row m-0">
-                                            <label className="col-md-2 text-capitalize text-right pt-2">{trans("code")}</label>
+                                            <label className="col-md-2 text-capitalize text-right pt-2">{trans("Code")}</label>
                                             <div className="form-group col-md-4">
                                                 <input type="text" required defaultValue={this.models('props.data.profile.nsetup.code')} className="form-control" name="profile[nsetup][code]" />
                                             </div>
-                                            <label className="text-capitalize col-md-2 text-right pt-2">{trans("pays")}</label>
+                                            <label className="text-capitalize col-md-2 text-right pt-2">{trans("Pays")}</label>
                                             <div className="form-group col-md-4">
                                                 <select required name="profile[adresse][ville][country][id]" defaultValue={this.models('props.data.profile.adresse.ville.country.id')} className="form-control">
                                                     {this.props.data.countries.map(country=><option key={`country-${country.id}`} value={country.id}>{country.nom}</option>)}
                                                 </select>
                                             </div>
-                                            <label className="text-capitalize col-md-2 text-right pt-2">{trans("adresse")}</label>
+                                            <label className="text-capitalize col-md-2 text-right pt-2">{trans("Adresse")}</label>
                                             <div className="form-group col-md-4">
                                                 <input type="text" required defaultValue={this.models('props.data.profile.adresse.raw')} className="form-control" name="profile[adresse][raw]" />
                                             </div>
-                                            <label className="col-md-2 text-right pt-2">{trans("telephone")}</label>
+                                            <label className="col-md-2 text-right pt-2">{trans("Téléphone")}</label>
                                             <div className="form-group col-md-4">
                                                 <input type="text" required defaultValue={this.models('props.data.contacts.bureau.ndetail.value')} className="form-control" id="contacts-0-ndetail-value" name="contacts[bureau][ndetail][value]" />
                                                 <input type="hidden" name="contacts[bureau][contact_type]" defaultValue={'phone'}/>
                                                 <input type="hidden" name="contacts[bureau][type]" defaultValue={'bureau'}/>
                                                 <input type="hidden" name="contacts[bureau][id]" defaultValue={this.models('props.data.contacts.bureau.id')}/>
                                             </div>
-                                            <label className="col-md-2 text-right pt-2">{trans("code_postal")}</label>
+                                            <label className="col-md-2 text-right pt-2">{trans("Code postal")}</label>
                                             <div className="form-group col-md-4">
                                                 <input type="text" required defaultValue={this.models('props.data.profile.adresse.ville.cp')} className="form-control" name="profile[adresse][ville][cp]" />
                                             </div>
-                                            <label className="col-md-2 text-right pt-2">{trans("fax")}</label>
+                                            <label className="col-md-2 text-right pt-2">{trans("Fax")}</label>
                                             <div className="form-group col-md-4">
                                                 <input type="text" className="form-control" id="contacts-1-ndetail-value" name="contacts[fax][ndetail][value]" defaultValue={this.models('props.data.contacts.fax.ndetail.value')}/>
                                                 <input type="hidden" name="contacts[fax][contact_type]" defaultValue={'phone'}/>
                                                 <input type="hidden" name="contacts[fax][type]" defaultValue={'fax'}/>
                                                 <input type="hidden" name="contacts[fax][id]" defaultValue={this.models('props.data.contacts.fax.id')}/>
                                             </div>
-                                            <label className="col-md-2 text-right pt-2">{trans("boite_postale")}</label>
+                                            <label className="col-md-2 text-right pt-2">{trans("Boîte postale")}</label>
                                             <div className="form-group col-md-4">
                                                 <input type="text" defaultValue={this.models('props.data.profile.adresse.raw2')} className="form-control" name="profile[adresse][raw2]" />
                                             </div>
-                                            <label htmlFor="email" className="col-md-2 text-right pt-2">{trans("e_mail")}</label>
+                                            <label htmlFor="email" className="col-md-2 text-right pt-2">{trans("Email")}</label>
                                             <div className="form-group col-md-4">
                                                 <input type="email" className="form-control" id="email" name="email" defaultValue={this.models('props.data.email')} required/>
                                             </div>
-                                            <label className="col-md-2 text-right pt-2">{trans("ville")}</label>
+                                            <label className="col-md-2 text-right pt-2">{trans("Ville")}</label>
                                             <div className="form-group col-md-4">
                                                 <input type="text" required defaultValue={this.models('props.data.profile.adresse.ville.nom')} className="form-control" name="profile[adresse][ville][nom]" />
                                             </div>
-                                            <label htmlFor="password" className="col-md-2 text-right pt-2">{trans("mot_de_passe")}</label>
+                                            <label htmlFor="password" className="col-md-2 text-right pt-2">{trans("Mot de passe")}</label>
                                             <div className="form-group col-md-4">
                                                 <input type="text" className="form-control" id="password" name="password" defaultValue={this.models('props.data.id', false)?'******':''} required/>
                                             </div>
-                                            <input type="hidden" name="roles[]" value="3"/>
+                                            {this.props.data.select_roles.map(role=><input key={`role-${role.id}`} type="hidden" name="roles[]" value={role.id}/>)}
                                         </div>
                                     </div>
                                 </div>
@@ -361,7 +361,7 @@ class Form extends AdminUser
                                         </div>
                                         <div className="col-md-6">
                                             <div className="form-group">
-                                                <label className="control-label text-capitalize">{trans('station')} <i className="alpha-80 fa fa-lock pl-2 text-orange"></i></label>
+                                                <label className="control-label text-capitalize">{trans('Station')} <i className="alpha-80 fa fa-lock pl-2 text-orange"></i></label>
                                                 <div className="position-relative">
                                                     <div className={`border rounded mouse-pointable ${(this.state.oncevalidate && !this.state.airport)?'border-danger':''}`} onClick={this.editAirport} style={{minHeight:'35px', padding:7}}>
                                                         {this.state.airport?<React.Fragment>
@@ -389,12 +389,12 @@ class Form extends AdminUser
             <div className="justify-content-between m-0 mb-3 row">
                 <div className="col-auto">
                     <i className="alpha-80 fa fa-lock pl-2 pr-2 text-orange"></i>
-                    <span className="text-orange">{trans('champs_obligatoires')}</span>
+                    <span className="text-orange">{trans('Champs obligatoires')}</span>
                 </div>
                 <div className="col-auto">
                     <input type="hidden" name="customer_id" value={this.models('props.data.customer_id')}/>
                     <input type="hidden" name="id" value={this.models('props.data.id')}/>
-                    <button type="submit" className="btn btn-primary ml-2">{trans('enregistrer')}</button>
+                    <button type="submit" className="btn btn-primary ml-2">{trans('Enregistrer')}</button>
                 </div>
             </div>
         </form>

@@ -8,14 +8,15 @@ module.exports = {
     manager : './app/manager.js',
     cardit : './app/cardit.js',
     ryadmin : './app/admin.js',
-    airline : './app/airline.js'
+    airline : './app/airline.js',
+    agent : './app/agent.js'
   },
   plugins: [
     new CleanWebpackPlugin(['dist']),
     new HtmlWebpackPlugin({
       title: 'Leg 2',
       template : 'app/index.html',
-      filename : 'index.html'
+      filename : 'reactcomponents.html'
     }),
     new WorkboxPlugin.GenerateSW({
       clientsClaim: true,

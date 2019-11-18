@@ -88,7 +88,7 @@ class List extends NavigableModel
                             </tr>
                             <tr className="bg-yellow">
                                 {this.props.headers.map((header, key)=><th key={`header-${key}`}>
-                                    <input type="search" value={this.state.tfilter[key]?this.state.tfilter[key]:''} onChange={e=>this.onTfilter(e, key)} className="form-control text-capitalize" placeholder={trans('filtre')}/>
+                                    <input type="search" value={this.state.tfilter[key]?this.state.tfilter[key]:''} onChange={e=>this.onTfilter(e, key)} className="form-control text-capitalize" placeholder={trans('Filtre')}/>
                                 </th>)}
                             </tr>
                         </thead>

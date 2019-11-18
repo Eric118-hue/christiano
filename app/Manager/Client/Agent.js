@@ -48,11 +48,11 @@ class AgentItem extends Component
         event.preventDefault();
         const dis = this;
         swal({
-            title: trans('confirmez_vous_la_suppression_de_cet_utilisateur'),
-            text: trans('cet_utilisateur_sera_supprime_definitivement'),
+            title: trans("Confirmez-vous la suppression de cet utilisateur?"),
+            text: trans('Cet utilisateur sera supprimé définitivement'),
             type: 'warning',
             showCancelButton: true,
-            confirmButtonText: trans('oui_je_confirme'),
+            confirmButtonText: trans('Oui je confirme'),
             confirmButtonClass: 'bg-danger'
         }).then((result) => {
             if (result.value) {
@@ -62,8 +62,8 @@ class AgentItem extends Component
                 dis.props.remove({
                     success : ()=>{
                         swal(
-                            trans('supprime'),
-                            trans('lutilisateur_a_ete_supprime'),
+                            trans('Supprimé'),
+                            trans("L'utilisateur a été supprimé"),
                             'success'
                         )
                     },
@@ -107,10 +107,10 @@ class AgentItem extends Component
             <div className="col-md-3 position-absolute-sm">
                 <div className="custom-control custom-switch">
                     <input type="checkbox" className={`custom-control-input ${this.state.active?'':'disabled'}`} id={`user-toggle-active-${this.props.data.id}`} onChange={this.activeHandler} checked={this.state.active} value="1"/>
-                    <label className="custom-control-label" htmlFor={`user-toggle-active-${this.props.data.id}`}>{this.state.active?trans('compte_actif'):trans('compte_inactif')} <i className={`fa fa-sync-alt fa-spin ${this.state.loading?'':'d-none'}`}></i></label>
+                    <label className="custom-control-label" htmlFor={`user-toggle-active-${this.props.data.id}`}>{this.state.active?trans('Compte actif'):trans('Compte inactif')} <i className={`fa fa-sync-alt fa-spin ${this.state.loading?'':'d-none'}`}></i></label>
                 </div>
                 {this.props.data.nactivities.length>0?<React.Fragment>
-                    <label>{trans("derniere_connexion")} :</label> <span className="text-orange">{moment.utc(this.props.data.nactivities[this.props.data.nactivities.length-1].datetime).local().fromNow()}</span><br/>
+                    <label>{trans("Dernière connexion")} :</label> <span className="text-orange">{moment.utc(this.props.data.nactivities[this.props.data.nactivities.length-1].datetime).local().fromNow()}</span><br/>
                 </React.Fragment>:null}
             </div>
             <div className="col-md-2">
@@ -119,10 +119,10 @@ class AgentItem extends Component
             </div>
             <div className="col-md-2 text-right">
                 <div>
-                    <a href={`/edit_agent?id=${this.props.data.id}&customer_id=${this.props.customerId}&roles[]=4`} className="btn btn-primary mb-3 w-100"><strong>{trans('editer')}</strong></a>
+                    <a href={`/edit_agent?id=${this.props.data.id}&customer_id=${this.props.customerId}&roles[]=4`} className="btn btn-primary mb-3 w-100"><strong>{trans('Éditer')}</strong></a>
                 </div>
                 <div>
-                    <a href="#" onClick={this.promptRemove} className="btn btn-orange text-white mb-3 w-100"><strong>{trans('supprimer')}</strong></a>
+                    <a href="#" onClick={this.promptRemove} className="btn btn-orange text-white mb-3 w-100"><strong>{trans('Supprimer')}</strong></a>
                 </div>
             </div>
         </div>

@@ -36,20 +36,20 @@ export const DATES = {
     "shortDays": ["lu", "ma", "me", "je", "ve", "sa", "di"],
     months : ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Décembre"],
     shortMonths: ["Jan", "Fév", "Mar", "Avr", "Mai", "Jun", "Jul", "Aoû", "Sep", "Oct", "Nov", "Déc"]
-}
+};
 
 const body_initial_class = $("body").attr("class");
 
 export const LOADINGSTART = (id)=>{
     $( "body" ).addClass(id);
     $( "body" ).addClass("ry-loading");
-}
+};
 
 export const LOADINGEND = (id)=>{
     $("body").removeClass(id);
     if(/^\s*$/.test($('body').attr('class').replace("ry-loading", "").replace(body_initial_class, "")))
         $( "body" ).removeClass("ry-loading");
-}
+};
 
 moment.locale('fr', {
     months : DATES.months,
@@ -125,17 +125,17 @@ $.fn.datepicker.dates.fr = {
     clear: "Effacer",
     weekStart: 1,
     format: "dd/mm/yyyy"
-}
+};
 
-moment.locale('fr')
+moment.locale('fr');
 
-numeral.locale('fr')
+numeral.locale('fr');
 
 export const siteSetup = $("#site-setup").length>0? JSON.parse($("#site-setup").text()) : {
     general : {
         logo : ''
     }
-}
+};
 
 export const translations = new LocalizedStrings({
 	fr:frtranslations,
@@ -148,22 +148,22 @@ export const translations = new LocalizedStrings({
 translations.setLanguage(locale);
 
 export default function trans(input, replaces={}) {
-	let result = input
+	let result = input;
 	if(translations[input]) {
-        result = translations[input]
+        result = translations[input];
     }
     for(let repl in replaces) {
-        let by = replaces[repl]
+        let by = replaces[repl];
         let re = new RegExp(`:${repl}`, "g");
-        result = result.replace(re, by)
+        result = result.replace(re, by);
     }
 	return result;
-}
+};
 
-export const nophoto = siteSetup.general&&siteSetup.general.nophoto?(`/`+siteSetup.general.nophoto):'/medias/images/blank.png'
+export const nophoto = (siteSetup.general&&siteSetup.general.nophoto)?`/${siteSetup.general.nophoto}`:'/medias/images/blank.png';
 
 export const genders = {
-    mr : trans('mr'),
-    mrs : trans('mme'),
-    ms : trans('mlle')
-}
+    mr : trans('M'),
+    mrs : trans('Mme'),
+    ms : trans('Mlle')
+};

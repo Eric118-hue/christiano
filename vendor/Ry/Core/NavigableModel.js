@@ -9,6 +9,7 @@ class NavigableModel extends Component
 		this.state = {
             data : this.props.data.data,
             total : this.props.data.total,
+            last_page : this.props.data.last_page,
 			page : this.props.data.current_page ? this.props.data.current_page : 1
 		};
 		this.toFirst = this.toFirst.bind(this);
@@ -37,12 +38,14 @@ class NavigableModel extends Component
                     }
                     this.setState({
                         data:prevState,
+                        last_page : state.data.last_page,
                         total:total
                     })
                 }
                 else if(state.data && state.data.data) {
                     this.setState({
                         data:state.data.data,
+                        last_page : state.data.last_page,
                         total:state.data.total
                     })
                 }
@@ -72,6 +75,7 @@ class NavigableModel extends Component
                 data.splice(index, 1);
                 dis.setState({
                     data : data,
+                    last_page : dis.state.last_page,
                     total : dis.state.total - 1
                 });
                 callbacks.success()
@@ -88,6 +92,7 @@ class NavigableModel extends Component
                     success : function(response){
                         dis.setState({
                             data : response.data.data,
+                            last_page : response.data.last_page,
                             total : response.data.total
                         });
                     }
@@ -109,6 +114,7 @@ class NavigableModel extends Component
 				dis.setState({
 					page : 1,
                     data : response.data.data,
+                    last_page : response.data.last_page,
                     total : response.data.total
 				});
 			}
@@ -126,7 +132,8 @@ class NavigableModel extends Component
 			url : this.builPaginationFromQuery(numpage),
 			success : function(response){
 				dis.setState({
-					page : numpage,
+                    page : numpage,
+                    last_page : response.data.last_page,
 					data : response.data.data
 				});
 			}
@@ -146,6 +153,7 @@ class NavigableModel extends Component
 				dis.setState({
 					page : dis.props.data.last_page,
                     data : response.data.data,
+                    last_page : response.data.last_page,
                     total : response.data.total
 				});
 			}
@@ -165,6 +173,7 @@ class NavigableModel extends Component
 				dis.setState({
 					page : dis.state.page - 1,
                     data : response.data.data,
+                    last_page : response.data.last_page,
                     total : response.data.total
 				});
 			}
@@ -191,6 +200,7 @@ class NavigableModel extends Component
 				dis.setState({
 					page : dis.state.page + 1,
                     data : response.data.data,
+                    last_page : response.data.last_page,
                     total: response.data.total
 				});
 			}
@@ -211,10 +221,10 @@ class NavigableModel extends Component
                 <a className={`btn btn-outline-primary ${this.state.page===1?'disabled':''}`} href="#" onClick={this.toPrevious}><i className="fa fa-angle-left"></i></a>
             </li>
             <li className="list-inline-item">
-                <a className={`btn btn-outline-primary ${this.state.page===this.props.data.last_page?'disabled':''}`} href="#" onClick={this.toNext}><i className="fa fa-angle-right"></i></a>
+                <a className={`btn btn-outline-primary ${this.state.page===this.state.last_page?'disabled':''}`} href="#" onClick={this.toNext}><i className="fa fa-angle-right"></i></a>
             </li>
             <li className="list-inline-item">
-                <a className={`btn btn-outline-primary ${this.state.page===this.props.data.last_page?'disabled':''}`} href="#" onClick={this.toEnd}><i className="fa fa-angle-double-right"></i></a>
+                <a className={`btn btn-outline-primary ${this.state.page===this.state.last_page?'disabled':''}`} href="#" onClick={this.toEnd}><i className="fa fa-angle-double-right"></i></a>
             </li>
         </ul>
 

@@ -51,11 +51,11 @@ const Components = {
 class Leg2LucidWrapper extends LucidWrapper
 {
     render() {
-        return <Wrapper data={this.props.content} style={{minWidth:960}}>
+        return <Wrapper data={this.props.content} style={{minWidth:960}}altLogo="AIRMAILDATA">
             <Ry class={this.props.content.view} content={this.props.content} components={this.props.components}/>
             <div className="ry-float-loading">
 		    	<div className="ry loading-content">
-		    		<i className="fa fa-2x fa-sync-alt fa-spin"></i> {trans("patientez")}
+		    		<i className="fa fa-2x fa-sync-alt fa-spin"></i> {trans("Patientez")}
 		    	</div>
 		    </div>
         </Wrapper>

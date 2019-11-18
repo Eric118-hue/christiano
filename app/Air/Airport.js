@@ -98,13 +98,13 @@ class List extends NavigableModel
                             </tr>
                             <tr className="bg-yellow">
                                 <th>
-                                    <input type="search" value={this.state.filter.iata} onChange={e=>this.onFilter(e, 'iata')} className="form-control text-capitalize" placeholder={trans('filtre')}/>
+                                    <input type="search" value={this.state.filter.iata} onChange={e=>this.onFilter(e, 'iata')} className="form-control text-capitalize" placeholder={trans('Filtre')}/>
                                 </th>
                                 <th>
-                                    <input type="search" value={this.state.filter.name} onChange={e=>this.onFilter(e, 'name')} className="form-control text-capitalize" placeholder={trans('filtre')}/>
+                                    <input type="search" value={this.state.filter.name} onChange={e=>this.onFilter(e, 'name')} className="form-control text-capitalize" placeholder={trans('Filtre')}/>
                                 </th>
                                 <th>
-                                    <input type="search" value={this.state.filter.country_name} onChange={e=>this.onFilter(e, 'country_name')} className="form-control text-capitalize" placeholder={trans('filtre')}/>
+                                    <input type="search" value={this.state.filter.country_name} onChange={e=>this.onFilter(e, 'country_name')} className="form-control text-capitalize" placeholder={trans('Filtre')}/>
                                 </th>
                             </tr>
                         </thead>

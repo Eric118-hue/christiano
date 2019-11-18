@@ -162,15 +162,15 @@ class Countdown extends Component
         const seconds = moment.duration(ngiven - this.state.tick.diff(moment.utc(this.props.from).local())).seconds()
         return <div className="row">
             <Knob className="blue-0" step="hour" tick={this.state.tick} {...this.props}>
-                <span className="text-uppercase">{trans('heures')}</span>
+                <span className="text-uppercase">{trans('Heures')}</span>
                 <h3 className="mb-0" style={{lineHeight:'22px',fontWeight:'normal'}}>{hours>=0?hours:0}</h3>
             </Knob>
             <Knob className="success-0" step="minute" tick={this.state.tick} {...this.props}>
-                <span className="text-uppercase">{trans('minutes')}</span>
+                <span className="text-uppercase">{trans('Minutes')}</span>
                 <h3 className="mb-0" style={{lineHeight:'22px',fontWeight:'normal'}}>{minutes>=0?minutes:0}</h3>
             </Knob>
             <Knob className="beige-0" step="second" tick={this.state.tick} {...this.props}>
-                <span className="text-uppercase">{trans('secondes')}</span>
+                <span className="text-uppercase">{trans('Secondes')}</span>
                 <h3 className="mb-0" style={{lineHeight:'22px',fontWeight:'normal'}}>{seconds>=0?seconds:0}</h3>
             </Knob>
         </div>

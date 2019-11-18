@@ -21,12 +21,20 @@ class CarditInvoice extends Component
         this.setState(state=>{
             state.receptacles.find(item=>item.id==receptacle.id).nsetup.free = !checked
             receptacle.nsetup.free = !checked
+            if(!checked) {
+                receptacle.price_ht = 0 
+            }  
             $.ajax({
                 url : '/receptacle_update',
                 type : 'post',
                 data : {
                     id : receptacle.id,
                     nsetup : receptacle.nsetup
+                },
+                success : response=>{
+                    if(response.type) {
+                        this.props.store.dispatch(response)
+                    }
                 }
             })
             return state
@@ -59,13 +67,13 @@ class CarditInvoice extends Component
                         <table className="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th>Numéro du récipient</th>
-                                    <th>Flag <i className="icon-info"></i></th>
-                                    <th>Container Journey ID</th>
-                                    <th>Type de récipient</th>
-                                    <th>Poids (Kg)</th>
-                                    <th>Prix HT ({this.props.cart.currency.iso_code})</th>
-                                    <th></th>
+                                    <th>{trans('Numéro du récipient')}</th>
+                                    <th>{trans('Flag')} <i className="icon-info"></i></th>
+                                    <th>{trans('Container Journey ID')}</th>
+                                    <th>{trans('Type de récipient')}</th>
+                                    <th>{trans('Poids')} (Kg)</th>
+                                    <th>{trans('Prix HT')} ({this.props.cart.currency.iso_code})</th>
+                                    <th>{trans('Facturé')}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -88,7 +96,7 @@ class CarditInvoice extends Component
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <th colSpan="4" className="text-right text-uppercase">{trans('total')}</th>
+                                    <th colSpan="4" className="text-right text-uppercase">{trans('Total')}</th>
                                     <td className="bg-warning">
                                         {numeral(total_weight).format('0.0')}
                                     </td>
@@ -126,6 +134,12 @@ class Detail extends Component
 
     componentDidMount() {
         this.loadCardits()
+        this.props.store.subscribe(()=>{
+            const storeState = this.props.store.getState()
+            if(storeState.type=='receptacle_updates') {
+                this.loadCardits()
+            }
+        })
     }
 
     loadCardits() {
@@ -171,7 +185,7 @@ class Detail extends Component
             }
         })
         return <div className="p-3">
-            <button className="btn btn-primary" type="button" onClick={this.props.back}>{trans('retour')}</button>
+            <button className="btn btn-primary" type="button" onClick={this.props.back}>{trans('Retour')}</button>
             <div className="mt-3 mb-3">
                 <label>{trans('Pré-facture Nº')} : </label> 
                 <span className="font-weight-bold text-orange">{this.props.data.code}</span>
@@ -196,7 +210,7 @@ class Detail extends Component
                     </tr>
                 </thead>
                 <tbody>
-                    {this.state.cardits.map(cardit=><CarditInvoice key={`cardit-${cardit.id}`} data={cardit} cart={this.props.data}/>)}
+                    {this.state.cardits.map(cardit=><CarditInvoice key={`cardit-${cardit.id}`} data={cardit} cart={this.props.data} store={this.props.store}/>)}
                 </tbody>
                 <tfoot>
                     <tr>

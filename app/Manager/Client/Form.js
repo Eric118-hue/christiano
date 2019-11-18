@@ -4,12 +4,15 @@ import Modelizer from '../../../vendor/Ry/Core/Modelizer';
 import $ from 'jquery';
 import MultiForm from '../../../vendor/Ry/Admin/User/Multiform';
 import Organisation from './Organisation';
+import Repository from './Repository';
+import swal from 'sweetalert2';
 
 class Form extends Component
 {
     constructor(props) {
         super(props)
         this.state = {
+            confirmed : false,
             tab : this.models('props.data.tab', 'client-account'),
             errors : [],
             errorMessages : [],
@@ -136,6 +139,21 @@ class Form extends Component
                 errors : errors,
                 errorMessages : errorMessages
             })
+            if(this.state.tab=='pricing' && formInstance.validationResult && !this.state.confirmed) {
+                formInstance.validationResult = false
+                swal.fire({
+                    title : trans('Attention!'),
+                    text : trans('Les prix fournis seront définitifs sur la période renseignée.'),
+                    icon: 'warning',
+                    showCancelButton: true
+                }).then(result=>{
+                    this.setState({
+                        confirmed : result.value
+                    })
+                    if(result.value)
+                        $(this.refs.client_form).submit()
+                })
+            }
         })
     }
 
@@ -193,13 +211,13 @@ class Form extends Component
                                     </div>
                                     <div className="col-md-6">
                                         {this.state.type=='airline'?<div className="form-group position-relative">
-                                            <label className="control-label">{trans('nom')}</label>
+                                            <label className="control-label">{trans('Nom')}</label>
                                             <input type="text" value={this.state.name_search} onChange={this.handleSearch} onClick={this.handleSearch} name="name" autoComplete="bistrict" required className={`form-control ${this.state.errors.indexOf('no_airline_match')>=0?'error':''}`}/>
                                             <div className={`dropdown-menu overflow-auto w-100 ${this.state.select_airline?'show':''}`} style={{maxHeight:200}}>
                                                 {this.state.airlines.map(airline=><a key={`airline-${airline.id}`} className="dropdown-item" href="#" onClick={e=>this.handleSelectAirline(e, airline)}>{airline.name}</a>)}
                                             </div>
                                         </div>:<div className="form-group position-relative">
-                                            <label className="control-label">{trans('nom')}</label>
+                                            <label className="control-label">{trans('Nom')}</label>
                                             <input type="text" className="form-control" value={this.state.name_search} name="name" autoComplete="bistrict" onChange={this.handleNameChange} required/>
                                         </div>}
                                     </div>
@@ -209,12 +227,12 @@ class Form extends Component
                                     <div className="col-md-12">
                                     <div className="card">
                                             <div className="card-header">
-                                                {trans('coordonnees')}
+                                                {trans('Coordonnées')}
                                             </div>
                                             <div className="body">
                                                 <div className="form-group row">
                                                     <label htmlFor={`adresse-raw`}
-                                                        className="col-md-4 mt-3 text-right">{trans("adresse")}</label>
+                                                        className="col-md-4 mt-3 text-right">{trans("Adresse")}</label>
                                                     <div className="col-md-8">
                                                         <input name="adresse[raw]" required type="text"
                                                             defaultValue={this.models("props.data.row.facturable.adresse.raw", '')}
@@ -225,7 +243,7 @@ class Form extends Component
                                                 </div>
                                                 <div className="form-group row">
                                                     <label htmlFor={`adresse-raw2`}
-                                                        className="col-md-4 mt-3 text-right">{trans("adresse_complementaire")}</label>
+                                                        className="col-md-4 mt-3 text-right">{trans("Adresse complémentaire")}</label>
                                                     <div className="col-md-8">
                                                         <input name="adresse[raw2]" type="text"
                                                             defaultValue={this.models("props.data.row.facturable.adresse.raw2", '')}
@@ -234,7 +252,7 @@ class Form extends Component
                                                 </div>
                                                 <div className="form-group row">
                                                     <label htmlFor={`adresse-ville-cp`}
-                                                        className="col-md-4 mt-3 text-right">{trans("code_postal")}</label>
+                                                        className="col-md-4 mt-3 text-right">{trans("Code postal")}</label>
                                                     <div className="col-md-8">
                                                         <input name="adresse[ville][cp]" required maxLength="10" type="text"
                                                             defaultValue={this.models("props.data.row.facturable.adresse.ville.cp", '')}
@@ -243,7 +261,7 @@ class Form extends Component
                                                 </div>
                                                 <div className="form-group row">
                                                     <label htmlFor={`adresse-ville-nom`}
-                                                        className="col-md-4 mt-3 text-right">{trans("ville")}</label>
+                                                        className="col-md-4 mt-3 text-right">{trans("Ville")}</label>
                                                     <div className="col-md-8">
                                                         <input name="adresse[ville][nom]" required type="text"
                                                             defaultValue={this.models("props.data.row.facturable.adresse.ville.nom", '')}
@@ -252,7 +270,7 @@ class Form extends Component
                                                 </div>
                                                 <div className="form-group row">
                                                     <label htmlFor={`adresse-ville-country-id`}
-                                                        className="col-md-4 mt-3 text-right">{trans("pays")}</label>
+                                                        className="col-md-4 mt-3 text-right">{trans("Pays")}</label>
                                                     <div className="col-md-8">
                                                         <select name={`adresse[ville][country][id]`} className="form-control"
                                                                 id={`adresse-ville-country-id`} required
@@ -266,7 +284,7 @@ class Form extends Component
                                                 </div>
                                                 <div className="form-group row">
                                                     <label className="col-md-4 mt-3 text-right"
-                                                        htmlFor="contacts-fixe-ndetail-value">{trans("telephone")}</label>
+                                                        htmlFor="contacts-fixe-ndetail-value">{trans("Téléphone")}</label>
                                                     <div className="col-md-8">
                                                         <input type="text"
                                                             defaultValue={this.models("props.data.row.facturable.contacts.fixe.ndetail.value")}
@@ -279,7 +297,7 @@ class Form extends Component
                                                 </div>
                                                 <div className="form-group row">
                                                     <label className="col-md-4 mt-3 text-right"
-                                                        htmlFor="contacts-fax-ndetail-value">{trans("fax")}</label>
+                                                        htmlFor="contacts-fax-ndetail-value">{trans("Fax")}</label>
                                                     <div className="col-md-8">
                                                         <input type="text"
                                                             defaultValue={this.models('props.data.row.facturable.contacts.fax.ndetail.value','')}
@@ -293,7 +311,7 @@ class Form extends Component
                                                 </div>
                                                 <div className="form-group row">
                                                     <label className="col-md-4 mt-3 text-right"
-                                                        htmlFor="contacts-email-ndetail-value">{trans("e_mail")}</label>
+                                                        htmlFor="contacts-email-ndetail-value">{trans("Email")}</label>
                                                     <div className="col-md-8">
                                                         <input type="text" 
                                                             defaultValue={this.models("props.data.row.facturable.contacts.email.ndetail.value", '')}
@@ -309,13 +327,13 @@ class Form extends Component
                                         </div>
                                         <div className="card">
                                             <div className="card-header">
-                                                <span className="text-uppercase">{trans('mode_de_paiement')}</span>
+                                                <span className="text-uppercase">{trans('Mode de paiement')}</span>
                                             </div>
                                             <div className="body">
                                                 <div className="row">
                                                     <div className="form-group col-md-6">
                                                         <label className="control-label"
-                                                                    >{trans('blocage_de_paiement')}</label>
+                                                                    >{trans('Blocage de paiement')}</label>
                                                         <div className="custom-control custom-switch">
                                                             <input type="checkbox" className="custom-control-input" id="setup-payment-forbid"
                                                                     value="1"
@@ -326,7 +344,7 @@ class Form extends Component
                                                         </div>
                                                     </div>
                                                     <div className="form-group col-md-6">
-                                                        <label htmlFor="payment_modes">{trans("mode_de_paiement")}</label>
+                                                        <label htmlFor="payment_modes">{trans("Mode de paiement")}</label>
                                                         <select name={`nsetup[orders][payment_modes]`} className="form-control" id={`payment_modes`}
                                                                 defaultValue={this.models("props.data.row.nsetup.orders.payment_modes", '')}
                                                                 data-size="5">
@@ -340,42 +358,42 @@ class Form extends Component
                                         </div> 
                                         <div className="card">
                                             <div className="card-header">
-                                                {trans('informations_de_paiement')}
+                                                {trans('Informations de paiement')}
                                             </div>
                                             <div className="body">
                                                 <div className="row">
                                                     <div className="form-group col-md-6">
-                                                        <label htmlFor="bank_accounts-0-setup-owner">{trans("nom_titulaire")}</label>
+                                                        <label htmlFor="bank_accounts-0-setup-owner">{trans("Nom titulaire")}</label>
                                                         <input name="bank_accounts[0][nsetup][owner]" type="text"
                                                             defaultValue={(this.models('props.data.row.bank_accounts', false) && this.props.data.row.bank_accounts.length > 0) ? this.props.data.row.bank_accounts[0].nsetup.owner : ''}
                                                             className="form-control" id="bank_accounts-0-nsetup-owner"/>
                                                     </div>
                                                     <div className="form-group col-md-6">
-                                                        <label htmlFor="setup-payment-paypal-email">{trans("adresse_e_mail_paypal")}</label>
+                                                        <label htmlFor="setup-payment-paypal-email">{trans("Adresse email paypal")}</label>
                                                         <input name="nsetup[payment][paypal][email]" type="email"
                                                             defaultValue={this.models("props.data.row.nsetup.payment.paypal.email", '')}
                                                             className="form-control" id="setup-payment-paypal-email"/>
                                                     </div>
                                                     <div className="form-group col-md-6">
-                                                        <label htmlFor="bank_accounts-0-bank-name">{trans("banque")}</label>
+                                                        <label htmlFor="bank_accounts-0-bank-name">{trans("Banque")}</label>
                                                         <input name="bank_accounts[0][bank][name]" type="text"
                                                             defaultValue={(this.models('props.data.row.bank_accounts', false) && this.props.data.row.bank_accounts.length > 0) ? this.props.data.row.bank_accounts[0].bank.name : ''}
                                                             className="form-control" id="bank_accounts-0-bank-name"/>
                                                     </div>
                                                     <div className="form-group col-md-6">
-                                                        <label htmlFor="bank_accounts-0-setup-rib">{trans("rib")}</label>
+                                                        <label htmlFor="bank_accounts-0-setup-rib">{trans("RIB")}</label>
                                                         <input name="bank_accounts[0][nsetup][RIB]" type="text"
                                                             defaultValue={(this.models('props.data.row.bank_accounts', false) && this.props.data.row.bank_accounts.length > 0) ? this.props.data.row.bank_accounts[0].nsetup.RIB : ''}
                                                             className="form-control" id="bank_accounts-0-setup-rib"/>
                                                     </div>
                                                     <div className="form-group col-md-6">
-                                                        <label htmlFor="bank_accounts-0-setup-iban">{trans("iban")}</label>
+                                                        <label htmlFor="bank_accounts-0-setup-iban">{trans("IBAN")}</label>
                                                         <input name="bank_accounts[0][nsetup][IBAN]" type="text"
                                                             defaultValue={(this.models('props.data.row.bank_accounts', false) && this.props.data.row.bank_accounts.length > 0) ? this.props.data.row.bank_accounts[0].nsetup.IBAN : ''}
                                                             className="form-control" id="bank_accounts-0-setup-iban"/>
                                                     </div>
                                                     <div className="form-group col-md-6">
-                                                        <label htmlFor="bank_accounts-0-setup-bic">{trans("bic")}</label>
+                                                        <label htmlFor="bank_accounts-0-setup-bic">{trans("BIC")}</label>
                                                         <input name="bank_accounts[0][nsetup][BIC]" type="text"
                                                             defaultValue={(this.models('props.data.row.bank_accounts', false) && this.props.data.row.bank_accounts.length > 0) ? this.props.data.row.bank_accounts[0].nsetup.BIC : ''}
                                                             className="form-control" id="bank_accounts-0-setup-bic"/>
@@ -383,13 +401,16 @@ class Form extends Component
                                                 </div>
                                             </div>
                                         </div>
+                                        <Repository data={this.props.data}/>
                                     </div>
                                 </div>
                             </div>
                             {this.props.data.row.id?<Organisation tabbed={true} ref="organisation" data={this.props.data} store={this.props.store}/>:null}
                         </div>
                         <input type="hidden" name="id" value={this.models('props.data.row.id')}/>
-                        <button className="btn btn-primary">{trans('enregistrer')}</button>
+                        <div className="d-flex justify-content-end">
+                            <button className="btn btn-primary">{trans('Enregistrer')}</button>
+                        </div>
                     </form>
                 </div>
             </div>

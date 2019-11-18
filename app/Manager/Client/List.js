@@ -33,11 +33,11 @@ class List extends NavigableModel
     remove(customer) {
         const dis = this
         swal({
-            title: trans('confirmez_vous_la_suppression'),
-            text: trans('cet_enregistrement_sera_supprime_definitivement'),
+            title: trans('Confirmez-vous la suppression?'),
+            text: trans('Cet enregistrement sera supprimé definitivement'),
             type: 'warning',
             showCancelButton: true,
-            confirmButtonText: trans('oui_je_confirme'),
+            confirmButtonText: trans('Oui je confirme'),
             confirmButtonClass: 'bg-danger'
         }).then((result) => {
             if (result.value) {
@@ -91,8 +91,8 @@ class List extends NavigableModel
                 </label>
             </td>
             <td className="text-right">
-                <a className="btn btn-primary" href={`/client_edit?id=${customer.id}`}><i className="fa fa-edit"></i> {trans('editer')}</a>
-                <button className="btn btn-danger ml-2" type="button" onClick={()=>this.remove(customer)}><i className="fa fa-remove"></i> {trans('supprimer')}</button>
+                <a className="btn btn-primary" href={`/client_edit?id=${customer.id}`}><i className="fa fa-edit"></i> {trans('Éditer')}</a>
+                <button className="btn btn-danger ml-2" type="button" onClick={()=>this.remove(customer)}><i className="fa fa-remove"></i> {trans('Supprimer')}</button>
             </td>
         </tr>
     }
@@ -129,14 +129,14 @@ class List extends NavigableModel
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>{trans('nom')}</th>
-                                <th>{trans('type')}</th>
-                                <th>{trans('code OACI')}</th>
-                                <th>{trans('code IATA')}</th>
-                                <th>{trans('code GXS')}</th>
+                                <th>{trans('Nom')}</th>
+                                <th>{trans('Type')}</th>
+                                <th>{trans('Code OACI')}</th>
+                                <th>{trans('Code IATA')}</th>
+                                <th>{trans('Code GXS')}</th>
                                 <th className="text-uppercase">{trans('RESDIT')}</th>
-                                <th className="text-uppercase">{trans('facturation')}</th>
-                                <th className="text-uppercase">{trans('stats')}</th>
+                                <th className="text-uppercase">{trans('Facturation')}</th>
+                                <th className="text-uppercase">{trans('Stats')}</th>
                                 <th></th>
                             </tr>
                         </thead>

@@ -28,7 +28,7 @@ class AwareInput extends Component
 	save(event) {
 		const dis = this;
 		$.ajax({
-			url : `/${trans('get_translations')}`,
+			url : trans('/translations'),
 			type : 'post',
 			data : {
 				lang : this.props.language,

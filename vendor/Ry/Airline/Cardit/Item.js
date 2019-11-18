@@ -413,7 +413,7 @@ class FullDetail extends Component
                             </div>
                             
                         </div>
-                        <button className="btn btn-orange text-capitalize" type="button" onClick={this.saveTransport}>{trans('confirmer')}</button>
+                        <button className="btn btn-orange text-capitalize" type="button" onClick={this.saveTransport}>{trans('Confirmer')}</button>
                     </form>
                 </PopupBody>
             </Popup>

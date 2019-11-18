@@ -34,15 +34,15 @@ $(document).ajaxStart(function() {
 
 $(document).ajaxError(function(event, response) {
     $( "body" ).removeClass("ry-loading");
-    let errorText = (response.responseJSON && response.responseJSON.message) ? response.responseJSON.message : trans('une_erreur_sest_produite');
+    let errorText = (response.responseJSON && response.responseJSON.message) ? response.responseJSON.message : trans("Une erreur s'est produite");
     switch(response.status) {
     	case 403:
-    		errorText = trans("cette_action_nest_pas_autorisee_veuillez_contacter_ladministrateur_pour_vous_accorder_ce_droit");
+    		errorText = trans("Cette action n'est pas autorisée, veuillez contacter l'administrateur pour vous accorder ce droit");
 			break;
 		case 419:
 		case 401:
 			window.location.reload();
-			errorText = trans("cette_session_a_expire");
+			errorText = trans("Cette session a expiré");
 			break;
 	}
 	if(response.status) {
@@ -99,6 +99,12 @@ const AmDifferedState = (state = 0, action) => action;
 const AmDiffered = createStore(AmDifferedState);
 
 var dialogData = {};
+
+export const langUrl = function(lang){
+    let queries = qs.parse(document.location.search.replace(/^\?/, ''))
+    queries.lang = lang
+    return document.location.pathname + '?' + qs.stringify(queries)
+};
 
 export class Img extends Component
 {
@@ -206,24 +212,26 @@ class Ry extends Component {
             const dz = new Dropzone(this, {
                 url : $(this).data('dropzone-action'),
                 paramName : $(this).data('name'),
-                acceptedFiles: $(this).data('accepted-files') ? $(this).data('accepted-files') : '.png,.jpg,.jpeg,.gif',
-                dictCancelUpload: trans('annuler'),
-                dictCancelUploadConfirmation: trans('etes_vous_certain_dannuler_le_transfert'),
-                dictInvalidFileType: trans(`ce_type_de_fichier_nest_pas_autorise`),
+                acceptedFiles: $(this).data('accepted-files') ? $(this).data('accepted-files') : ($(this).data('any-file')?null:'.png,.jpg,.jpeg,.gif'),
+                dictCancelUpload: trans('Annuler'),
+                dictCancelUploadConfirmation: trans("Êtes-vous certain d'annuler le transfert?"),
+                dictInvalidFileType: trans(`Ce type de fichier n'est pas pris en charge`),
                 previewTemplate: `<div style="display: none;"></div>`,
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             })
             const LOGOadded = (file) => {
-                const imgContainer = $($(this).data("preview-target"));
-                var reader = new FileReader();
-    
-                reader.onload = function (e) {
-                    imgContainer.attr('src', e.target.result);
-                };
-    
-                reader.readAsDataURL(file);
+                if(/^image/.test(file.type)) {
+                    const imgContainer = $($(this).data("preview-target"));
+                    var reader = new FileReader();
+        
+                    reader.onload = function (e) {
+                        imgContainer.attr('src', e.target.result);
+                    };
+        
+                    reader.readAsDataURL(file);
+                }
             };
             dz.on('addedfile', LOGOadded);
             dz.on("sending", ()=>LOADINGSTART($(this).data('name')));

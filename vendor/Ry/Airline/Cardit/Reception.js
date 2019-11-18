@@ -25,7 +25,7 @@ class Reception extends Component
     componentDidMount() {
         this.unsubscribe = this.props.store.subscribe(()=>{
             const storeState = this.props.store.getState()
-            if(storeState.type=='resdit' && storeState.event=='reception') {
+            if(storeState.type=='resdit' && storeState.event=='reception' && storeState.cardit_id==this.props.data.id) {
                 this.setState(state => {
                     state.updated_resdits.reception = storeState
                     state.dialogs.push({})

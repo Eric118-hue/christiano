@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
-import Modelizer from '../../../vendor/Ry/Core/Modelizer';
-import './Organisation.scss';
-import trans from '../../translations';
+import Modelizer from '../../vendor/Ry/Core/Modelizer';
+import '../Manager/Client/Organisation';
+import trans from '../translations';
 import $ from 'jquery';
-import Pricing from './Pricing';
+import Pricing from '../Manager/Client/Pricing';
 
 const CUSTOMER_TYPES = {
     airline : trans('Compagnie aérienne'),
@@ -243,11 +243,10 @@ class Organisation extends Component
                             {this.props.pricing?<React.Fragment>
                                 <span className="airline-trait mt-4"></span>
                                 <div className="col-md-3">
-                                    <div className="alert align-items-center d-flex justify-content-between">
-                                        <label className="m-0 text-uppercase">{trans('Com. AD')} : </label>
-                                        <input className="bg-transparent form-control text-center text-white w-50" type="number" name={this.props.data.row.type=='gsa'?`airlines[${airline_index}][nsetup][commission][value]`:`nsetup[commission][value]`} step="0.01" defaultValue={this.cast(airline, 'commission.value')}/>
+                                    <div className="alert align-items-center d-flex">
+                                        <label className="m-0 text-uppercase mr-2">{trans('Com. AD')} : </label>
+                                        {this.cast(airline, 'commission.value')}
                                         {this.props.data.default_currency.symbol}/Kg
-                                        <input type="hidden" name={this.props.data.row.type=='gsa'?`airlines[${airline_index}][nsetup][commission][currency_id]`:`nsetup[commission][currency_id]`} value={this.props.data.default_currency.id}/>
                                     </div>
                                 </div>
                             </React.Fragment>:null}

@@ -6,7 +6,7 @@ import moment from 'moment';
 import numeral from 'numeral';
 import Detail from './Detail';
 
-class List extends BaseCart
+export class List extends BaseCart
 {
     constructor(props) {
         super(props)
@@ -31,7 +31,7 @@ class List extends BaseCart
                 <div className="col-md-7">
                     <div className="card">
                         <div className="card-header">
-                            {trans('recherche')}
+                            {trans('Recherche')}
                         </div>
                         <div className="body">
                             <form name="frm_search" className="form-inline" action="/carts">
@@ -51,7 +51,7 @@ class List extends BaseCart
                                     <input type="text" className="form-control col-md-7"/>
                                 </div>
                                 <div className="form-group col-md-6 justify-content-end">
-                                    <button className="btn btn-orange">{trans('rechercher')}</button>
+                                    <button className="btn btn-orange">{trans('Rechercher')}</button>
                                 </div>
                             </form>
                         </div>
@@ -60,7 +60,7 @@ class List extends BaseCart
                 <div className="col-md-5">
                     <div className="card">
                         <div className="card-header">
-                            Septembre 2019 - Airline : toutes
+                            {moment().year()} - {trans('Compagnie aérienne')} : {trans('toutes')}
                         </div>
                         <div className="body">
                             <div className="row">
@@ -71,12 +71,12 @@ class List extends BaseCart
                                 </div>
                                 <div className="col-md-4">
                                     <div className="alert bg-primary h-100 text-center text-white mb-1">
-                                        <span className="text-large">{numeral(this.state.total_ttc).format('0.00')}</span> <small className="d-block">{trans('Facturation')}</small>
+                                        <span className="text-large">{numeral(this.total_ttc).format('0.00')}</span> <small className="d-block">{trans('Facturation')}</small>
                                     </div>
                                 </div>
                                 <div className="col-md-4">
                                     <div className="alert bg-primary h-100 text-center text-white mb-1">
-                                        <span className="text-large">{numeral(this.state.total_commission).format('0.00')}</span> <small className="d-block">{trans('Commissions')}</small>
+                                        <span className="text-large">{numeral(this.total_commissions).format('0.00')}</span> <small className="d-block">{trans('Commissions')}</small>
                                     </div>
                                 </div>
                             </div>
@@ -91,7 +91,7 @@ class List extends BaseCart
                     </select>
                 </div>
                 <div className="col-3 form-inline">
-                    <label className="control-label col-md-4">{trans('Airline')}</label>
+                    <label className="control-label col-md-4">{trans('Compagnie aérienne')}</label>
                     <select className="form-control select-primary col-md-8" title={trans('Toutes')}>
 
                     </select>
@@ -117,13 +117,13 @@ class List extends BaseCart
         </ul>
         let wtotal = 0
         let total_ht = 0
-        let total_ttc = 0
-        let total_commissions = 0
+        this.total_ttc = 0
+        this.total_commissions = 0
         this.state.data.map((item, key)=>{
             wtotal += parseFloat(item.total_weight)
             total_ht += parseFloat(item.total_ht)
-            total_ttc += parseFloat(item.total_ttc)
-            total_commissions += parseFloat(item.total_commissions)
+            this.total_ttc += parseFloat(item.total_ttc)
+            this.total_commissions += parseFloat(item.total_commissions)
         })
         return this.state.list?<div className={`col-12`}>            
             <div className="justify-content-between m-0 row">
@@ -164,8 +164,8 @@ class List extends BaseCart
                         <td className="bg-warning">{numeral(wtotal).format('0.0')}</td>
                         <td></td>
                         <td className="bg-warning">{numeral(total_ht).format('0.00')}</td>
-                        <td className="bg-warning">{numeral(total_ttc).format('0.00')}</td>
-                        <td className="bg-warning">{numeral(total_commissions).format('0.00')}</td>
+                        <td className="bg-warning">{numeral(this.total_ttc).format('0.00')}</td>
+                        <td className="bg-warning">{numeral(this.total_commissions).format('0.00')}</td>
                         <td></td>
                     </tr>
                 </tfoot>
@@ -174,7 +174,7 @@ class List extends BaseCart
                 {this.afterlist()}
                 {this.nopaginate?null:pagination}
             </div>
-        </div>:<Detail ref="detail_view" data={this.state.detail} back={()=>this.setState({list:true})}/>
+        </div>:<Detail ref="detail_view" store={this.props.store} data={this.state.detail} back={()=>this.setState({list:true})}/>
     }
 }
 

@@ -96,9 +96,9 @@ class Cardit
 				url : $(this).data('dropzone-action'),
 				paramName : $(this).data('name'),
 				acceptedFiles: '.png,.jpg,.jpeg,.gif',
-				dictCancelUpload: trans('annuler'),
-            	dictCancelUploadConfirmation: trans('etes_vous_certain_dannuler_le_transfert'),
-				dictInvalidFileType: trans(`ce_type_de_fichier_nest_pas_autorise`),
+				dictCancelUpload: trans('Annuler'),
+            	dictCancelUploadConfirmation: trans("Êtes-vous certain d'annuler le transfert?"),
+				dictInvalidFileType: trans(`Ce type de fichier n'est pas pris en charge`),
 				previewTemplate: `<div style="display: none;"></div>`,
 				headers: {
 					'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

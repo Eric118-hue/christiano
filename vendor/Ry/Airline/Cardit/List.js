@@ -21,12 +21,12 @@ class List extends CarditList
                     <th>{trans('Dest.')}</th>
                     <th>{trans('Nº de vol')}</th>
                     <th>{trans('Réception')}</th>
-                    <th>{trans('Assignement')}</th>
+                    <th>{trans('Assignation')}</th>
                     <th>{trans('Trip completed')}</th>
                 </tr>
             </thead>
             <tbody>
-                {this.state.items.map(item=><Cardit readOnly={this.readOnly} key={`cardit-${item.id}`} escales={this.escales} data={item} irregularites={this.irregularites} performances={this.performances} completed={this.completed} consignmentEvents={this.props.data.consignment_events} deliveryConsignmentEvents={this.props.data.delivery_consignment_events} store={this.props.store}/>)}
+                {this.state.data.map(item=><Cardit readOnly={this.readOnly} key={`cardit-${item.id}`} escales={this.escales} data={item} irregularites={this.irregularites} performances={this.performances} completed={this.completed} consignmentEvents={this.props.data.consignment_events} deliveryConsignmentEvents={this.props.data.delivery_consignment_events} store={this.props.store}/>)}
             </tbody>
         </table>
     }

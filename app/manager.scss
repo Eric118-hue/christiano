@@ -152,40 +152,6 @@ $max-menu-level: 5;
 	padding-left: 24px;
 }
 
-.dropdown.bootstrap-select.form-control {
-	border: 1px solid #dee2e6;
-
-	button.btn.dropdown-toggle.btn-light {
-		border: none;
-		background: linear-gradient(-90deg, $orange 44px, transparent 1px, transparent 100%);
-
-		&::after {
-			color: #fff;
-			margin-right: 5px;
-			margin-left: 1.55em;
-		}
-
-		&:hover {
-			background: linear-gradient(-90deg, $orange 44px, transparent 1px, transparent 100%);
-		}
-	}
-}
-	
-@each $color, $value in $theme-colors {
-	.dropdown.bootstrap-select.form-control.select-#{$color} {
-		border: 1px solid #dee2e6;
-
-		button.btn.dropdown-toggle.btn-light {
-			border: none;
-			background: linear-gradient(-90deg, $value 44px, transparent 1px, transparent 100%) !important;
-
-			&:hover {
-				background: linear-gradient(-90deg, $value 44px, transparent 1px, transparent 100%) !important;
-			}
-		}
-	}
-}
-
 .custom-switch {
 	padding-left: 4.25rem;
 	min-height: calc(2rem + 2px);
@@ -272,4 +238,17 @@ $max-menu-level: 5;
 
 .error {
 	border: 1px solid $danger !important;
+}
+
+.fa-caret-down {
+	transition: .3s transform ease-in-out;
+}
+.collapsed {
+	.fa-caret-down {
+		transform: rotate(180deg);
+	}
+}
+.btn.collapsed {
+	background:$stone;
+    border-color: $stone;
 }

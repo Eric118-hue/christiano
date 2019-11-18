@@ -4,24 +4,24 @@ import moment from 'moment';
 import {Popup, PopupHeader, PopupBody} from '../../bs/bootstrap';
 import numeral from 'numeral';
 import trans from '../../../app/translations';
+import NavigableModel from '../../Ry/Core/NavigableModel';
 
-class List extends Component
+class List extends NavigableModel
 {
     constructor(props) {
         super(props)
+        this.endpoint = '/cardits'
+        this.model = 'cardit'
         this.readOnly = false
-        this.state = {
-            items : this.props.data.data.data,
-            date : moment().format('YYYY-MM-DD'),
-            filter : {
-                prepared_at : moment(),
-                airline_id : '',
-                perpage : 25,
-                handover_origin_location : '',
-                document_number : '',
-                handover_destination_location : '',
-                conveyence_reference : ''
-            }
+        this.state.date = moment().format('YYYY-MM-DD')
+        this.state.filter = {
+            prepared_at : moment(),
+            airline_id : '',
+            perpage : 25,
+            handover_origin_location : '',
+            document_number : '',
+            handover_destination_location : '',
+            conveyence_reference : ''
         }
         this.table = this.table.bind(this)
         this.beforelist = this.beforelist.bind(this)
@@ -42,7 +42,7 @@ class List extends Component
     handleCheck(event, receptacle, cardit) {
         const value = event.target.checked
         this.setState(state=>{
-            state.items.map(i_cardit=>{
+            state.data.map(i_cardit=>{
                 if(cardit.id==i_cardit.id) {
                     i_cardit.receptacles.map(i_receptacle=>{
                         if(i_receptacle.id==receptacle.id)
@@ -58,7 +58,7 @@ class List extends Component
         $.ajax({
             url : '/receptacles',
             type : 'post',
-            data : {...this.state.items.find(item=>item.id==cardit.id)},
+            data : {...this.state.data.find(item=>item.id==cardit.id)},
             success : ()=>{
                 $(`#receptacles-${cardit.id}`).modal('hide')
             }
@@ -68,7 +68,7 @@ class List extends Component
     handleCheckAll(event, cardit) {
         const value = event.target.checked
         this.setState(state=>{
-            state.items.map(i_cardit=>{
+            state.data.map(i_cardit=>{
                 if(cardit.id==i_cardit.id) {
                     i_cardit.selected = value
                     i_cardit.receptacles.map(i_receptacle=>{
@@ -138,6 +138,7 @@ class List extends Component
     }
 
     componentDidMount() {
+        super.componentDidMount()
         const opts = {
             //zIndexOffset : 100,
             language : 'fr',
@@ -151,11 +152,13 @@ class List extends Component
             })
             this.data.s.prepared_at = date
             $.ajax({
+                isPagination : true,
                 url : this.endpoint,
                 data : this.data,
                 success : response=>{
                     this.setState({
-                        items : response.data.data
+                        data : response.data.data,
+                        last_page : response.data.last_page
                     })
                 }
             })
@@ -165,7 +168,7 @@ class List extends Component
             if(storeState.type=='cardit') {
                 if(storeState.row) {
                     this.setState(state=>{
-                        state.items.push(storeState.row)
+                        state.data.push(storeState.row)
                         return state
                     })
                 }
@@ -255,7 +258,7 @@ class List extends Component
                 </tr>
             </thead>
             <tbody>
-                {this.state.items.map(item=><tr key={`cardit-${item.id}`} className="gradeA">
+                {this.state.data.map(item=><tr key={`cardit-${item.id}`} className="gradeA">
                     <td>{moment.utc(item.nsetup.preparation_datetime).local().format('DD/MM/YYYY')}</td>
                     <td>{moment.utc(item.nsetup.preparation_datetime).local().format('HH:mm')}</td>
                     <td className="actions">{item.nsetup.document_number} <a href="#" className="btn-sm btn-icon btn-pure btn-turquoise on-default ml-2 m-r-5 button-edit" onClick={e=>{
@@ -438,6 +441,13 @@ class List extends Component
     }
 
     render() {
+        let pagination = <React.Fragment>
+            <a href="#" onClick={this.toFirst} className={this.state.page===1?'disabled':''}><i className="fa fa-angle-double-left"></i></a>
+            <a href="#" onClick={this.toPrevious} className={this.state.page===1?'disabled':''}><i className="fa fa-angle-left"></i></a>
+            <a href="#" onClick={this.toNext} className={this.state.page===this.state.last_page?'disabled':''}><i className="fa fa-angle-right"></i></a>
+            <a href="#" onClick={this.toEnd} className={this.state.page===this.state.last_page?'disabled':''}><i className="fa fa-angle-double-right"></i></a>
+        </React.Fragment>
+
         return <div className="cardit-container vol-liste col-md-12">
             <div className="row clearfix align-items-stretch position-relative vol-container">
                 <div className="col-12">
@@ -452,21 +462,18 @@ class List extends Component
                                         </div>
                                     </div>
                                 </div>
-                                <div className="col-md-6">
+                                {this.props.data.customer_type=='gsa'?<div className="col-md-6">
                                     <div className="form-group ml-2" style={{width:300}}>
                                         <select className="form-control" value={this.state.filter.airline_id} onChange={e=>this.onFilter(e, 'airline_id')}>
                                             <option value="">Tous</option>
                                             {this.props.data.airlines.map(airline=><option key={`select-airline-${airline.id}`} value={airline.id}>{airline.name}</option>)}
                                         </select>
                                     </div>
-                                </div>
+                                </div>:null}
                             </div>
                         </div>
                         <div className="navPager d-flex align-items-center justify-content-end">
-                            <a href="#"><i className="fa fa-angle-double-left"></i></a>
-                            <a href="#"><i className="fa fa-angle-left"></i></a>
-                            <a href="#"><i className="fa fa-angle-right"></i></a>
-                            <a href="#"><i className="fa fa-angle-double-right"></i></a>
+                            {pagination}
                         </div>
                     </div>
                     {false?<div className="card mb-3">
@@ -522,10 +529,7 @@ class List extends Component
                     </div>
                     <div className="d-flex justify-content-end">
                         <div className="navPager d-flex align-items-center justify-content-end">
-                            <a href="#"><i className="fa fa-angle-double-left"></i></a>
-                            <a href="#"><i className="fa fa-angle-left"></i></a>
-                            <a href="#"><i className="fa fa-angle-right"></i></a>
-                            <a href="#"><i className="fa fa-angle-double-right"></i></a>
+                            {pagination}
                         </div>
                     </div>
                 </div>
@@ -534,4 +538,12 @@ class List extends Component
     }
 }
 
-export default List;
+class NavigableList extends List
+{
+    constructor(props) {
+        super(props)
+        this.state.data = this.props.data.data.data
+    }
+}
+
+export default NavigableList;

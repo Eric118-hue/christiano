@@ -16,7 +16,7 @@ export class Toast extends Component
 					name : 'Centrale',
 					thumb : logo
 				},
-				message : trans('vous_avez_un_message'),
+				message : trans('Vous avez un message'),
 				updated_at : '2019-01-18'
 			}
 		}
@@ -73,7 +73,7 @@ class Core extends Component
 			<div id="chart-tooltip" className="chartist-tooltip bg-dark text-light p-2"></div>
 			<div className="ry-float-loading">
 				<div className="ry loading-content">
-					<i className="fa fa-2x fa-sync-alt fa-spin"></i> {trans("patientez")}
+					<i className="fa fa-2x fa-sync-alt fa-spin"></i> {trans("Patientez")}
 				</div>
 			</div>
 		</React.Fragment>
