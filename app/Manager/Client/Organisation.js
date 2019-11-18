@@ -210,6 +210,8 @@ class Organisation extends Component
             $(this).parent().parent().addClass('border-danger')
             errors.push('required')
         })
+        if(this.refs.pricing)
+            errors.concat(this.refs.pricing.validate())
         return errors
     }
 

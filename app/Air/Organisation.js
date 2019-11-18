@@ -210,6 +210,8 @@ class Organisation extends Component
             $(this).parent().parent().addClass('border-danger')
             errors.push('required')
         })
+        if(this.refs.pricingform)
+            errors = errors.concat(this.refs.pricingform.validate())
         return errors
     }
 
@@ -407,7 +409,7 @@ class Organisation extends Component
                                                         <i className="fa fa-trash-alt"></i>
                                                     </button>:null}
                                                 </div>
-                                                {this.props.pricing?<Pricing indexes={{airline_index,edi_index,route_index}} store={this.props.store} setup={this.props.setup} data={route}/>:null}
+                                                {this.props.pricing?<Pricing indexes={{airline_index,edi_index,route_index}} store={this.props.store} setup={this.props.setup} ref="pricingform" data={route}/>:null}
                                             </li>)}
                                             {this.props.readOnly?null:<li>
                                                 <button type="button" className="p-0 border-0 font-24 btn btn-add focus-outline-hidden" onClick={()=>this.addRoute(airline_index, edi_index)}><i className="fa fa-plus-circle"></i></button>

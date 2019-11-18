@@ -11,7 +11,8 @@ class PricingRow extends Component
     constructor(props) {
         super(props)
         let prices = {
-            total : 0
+            total : 0,
+            invalid : false
         }
         this.props.setup.columns.map(column=>{
             prices[column.id] = this.props.data[column.id]
@@ -19,6 +20,7 @@ class PricingRow extends Component
         })
         this.state = prices
         this.handleChange = this.handleChange.bind(this)
+        this.validate = this.validate.bind(this)
     }
 
     handleChange(event, column) {
@@ -34,9 +36,21 @@ class PricingRow extends Component
         })
     }
 
+    validate() {
+        let valid = false
+        this.props.setup.columns.map(column=>{
+            if(this.state[column.id])
+                valid = true
+        })
+        this.setState({
+            invalid : !valid
+        })
+        return valid?[]:['pricingrow'];
+    }
+
     render() {
-        return <tr>
-            <th className="border p-0 bg-light">{this.props.row.title}</th>
+        return <tr ref="line">
+            <th className={`border p-0 ${this.state.invalid?'bg-danger text-light':'bg-light'}`}>{this.props.row.title}</th>
             {this.props.setup.columns.map(column=><td className="p-0 border" key={`row-${this.props.row.id}-column-${column.id}`}>
                 {this.props.readOnly?(this.state[column.id]?numeral(parseFloat(this.state[column.id])).format('0.00$'):''):<input type="number" name={`airlines[${this.props.indexes.airline_index}][edis][${this.props.indexes.edi_index}][routes][${this.props.indexes.route_index}][prices][${this.props.row.category.id}][${this.props.row.class.id}][${column.id}]`} onChange={e=>this.handleChange(e, column)} value={this.state[column.id]?this.state[column.id]:''} className="w-100 text-center border-0" step="0.001" min="0"/>}
             </td>)}
@@ -59,6 +73,7 @@ class PricingTable extends Component
             end_date : this.props.data.end_date,
             collapsed : (this.props.readOnly && !this.props.data.active)?true:false
         }
+        this.validate = this.validate.bind(this)
     }
 
     componentDidMount() {
@@ -72,6 +87,15 @@ class PricingTable extends Component
                 collapsed : false
             })
         })
+    }
+
+    validate() {
+        let errors = []
+        this.props.setup.rows.map(row=>{
+            let result = this.refs[`pricingrow${row.id}`].validate()
+            errors = errors.concat(result)
+        })
+        return errors
     }
 
     render() {
@@ -99,7 +123,7 @@ class PricingTable extends Component
                             <th width="100" className="text-uppercase p-0  bg-light border-right">{trans('Total HT')}</th>
                             <th width="100" className="text-uppercase p-0  bg-light">{trans('Total TTC')}</th>
                         </tr>
-                        {this.props.setup.rows.map(row=><PricingRow readOnly={this.props.readOnly} row={row} indexes={this.props.indexes} key={`row-${row.id}`} setup={this.props.setup} store={this.props.store} data={this.models(`props.data.nrates.${row.category.id}.${row.class.id}`)} vat={this.props.vat}/>)}
+                        {this.props.setup.rows.map(row=><PricingRow ref={`pricingrow${row.id}`} readOnly={this.props.readOnly} row={row} indexes={this.props.indexes} key={`row-${row.id}`} setup={this.props.setup} store={this.props.store} data={this.models(`props.data.nrates.${row.category.id}.${row.class.id}`)} vat={this.props.vat}/>)}
                     </tbody>
                 </table>
             </div>
@@ -116,6 +140,7 @@ class Pricing extends Component
         this.state = {
             show_form : false
         }
+        this.validate = this.validate.bind(this)
     }
 
     componentDidMount() {
@@ -129,6 +154,10 @@ class Pricing extends Component
                 show_form : false
             })
         })
+    }
+
+    validate() {
+        return this.refs.pricingtable.validate()
     }
 
     render() {
@@ -155,7 +184,7 @@ class Pricing extends Component
                 </div>
             </div>
             <div id={`newtimeline${this.props.data.id}`} ref="newtimeline" className="collapse">
-                <PricingTable className="border-orange" data={{}} indexes={this.props.indexes} setup={this.props.setup} vat={this.models("props.data.nsetup.vat", 0)}/>
+                <PricingTable ref="pricingtable" className="border-orange" data={{}} indexes={this.props.indexes} setup={this.props.setup} vat={this.models("props.data.nsetup.vat", 0)}/>
             </div>
         </div>
     }

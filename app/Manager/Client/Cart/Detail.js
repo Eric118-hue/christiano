@@ -22,7 +22,8 @@ class CarditInvoice extends Component
             state.receptacles.find(item=>item.id==receptacle.id).nsetup.free = !checked
             receptacle.nsetup.free = !checked
             if(!checked) {
-                receptacle.price_ht = 0 
+                receptacle.price_ht = 0
+                receptacle.nsetup.weight = 0
             }  
             $.ajax({
                 url : '/receptacle_update',
@@ -45,9 +46,10 @@ class CarditInvoice extends Component
         let total_weight = 0
         let total_ht = 0
         this.state.receptacles.map(receptacle=>{
-            total_weight += parseFloat(receptacle.nsetup.weight)
-            if(!receptacle.nsetup.free)
+            if(!receptacle.nsetup.free) {
+                total_weight += parseFloat(receptacle.nsetup.weight)
                 total_ht += parseFloat(receptacle.price_ht)
+            } 
         })
         return <tr>
             <td className="green">{moment.utc(this.props.data.nsetup.preparation_datetime).local().format('DD/MM/YYYY')}</td>

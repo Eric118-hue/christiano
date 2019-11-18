@@ -1,5 +1,4 @@
 import LocalizedStrings from 'react-localization';
-import { frtranslations, entranslations, estranslations } from '../env';
 import blank from '../medias/images/blank.png';
 import moment from 'moment';
 import $ from 'jquery';
@@ -137,25 +136,15 @@ export const siteSetup = $("#site-setup").length>0? JSON.parse($("#site-setup").
     }
 };
 
-export const translations = new LocalizedStrings({
-	fr:frtranslations,
-	en:entranslations,
-	es:estranslations
-}, {
-	logsEnabled : false
-});
-
-translations.setLanguage(locale);
-
 export default function trans(input, replaces={}) {
-	let result = input;
-	if(translations[input]) {
-        result = translations[input];
+	let result = input
+	if(('__' in window) && (input in __)) {
+        result = __[input]
     }
     for(let repl in replaces) {
-        let by = replaces[repl];
+        let by = replaces[repl]
         let re = new RegExp(`:${repl}`, "g");
-        result = result.replace(re, by);
+        result = result.replace(re, by)
     }
 	return result;
 };
