@@ -56,11 +56,19 @@ class Repository extends Component
         this.addInputline = this.addInputline.bind(this)
         this.addOutputline = this.addOutputline.bind(this)
         this.removeOutputline = this.removeOutputline.bind(this)
+        this.removeInputline = this.removeInputline.bind(this)
     }
 
     removeOutputline(index) {
         this.setState(state=>{
             state.output_repos[index].deleted = true
+            return state
+        })
+    }
+
+    removeInputline(index) {
+        this.setState(state=>{
+            state.input_repos[index].deleted = true
             return state
         })
     }
@@ -86,15 +94,26 @@ class Repository extends Component
     }
 
     render() {
-        return <div className="card">
-            <div className="card-header">
-                {trans('Dépôts RESDIT')}
+        return <React.Fragment>
+            <div className="card">
+                <div className="card-header">
+                    {trans('Dépôts CARDIT')}
+                </div>
+                <div className="body">
+                    {this.state.input_repos.filter(it=>!it.deleted).map((repo, index)=><RepoItem pkey={index} key={`repo-${index}`} name="in" data={repo} remove={()=>this.removeInputline(index)}/>)}
+                    <button type="button" className="btn btn-primary mb-4" onClick={this.addInputline}><i className="fa fa-plus"></i> {trans('Ajouter un dépôt')}</button>
+                </div>
             </div>
-            <div className="body">
-                {this.state.output_repos.filter(it=>!it.deleted).map((repo, index)=><RepoItem pkey={index} key={`repo-${index}`} name="out" data={repo} remove={()=>this.removeOutputline(index)}/>)}
-                <button type="button" className="btn btn-primary mb-4" onClick={this.addOutputline}><i className="fa fa-plus"></i> {trans('Ajouter un dépôt')}</button>
+            <div className="card">
+                <div className="card-header">
+                    {trans('Dépôts RESDIT')}
+                </div>
+                <div className="body">
+                    {this.state.output_repos.filter(it=>!it.deleted).map((repo, index)=><RepoItem pkey={index} key={`repo-${index}`} name="out" data={repo} remove={()=>this.removeOutputline(index)}/>)}
+                    <button type="button" className="btn btn-primary mb-4" onClick={this.addOutputline}><i className="fa fa-plus"></i> {trans('Ajouter un dépôt')}</button>
+                </div>
             </div>
-        </div>
+        </React.Fragment>
     }
 }
 

@@ -10,6 +10,7 @@ export class List extends BaseCart
 {
     constructor(props) {
         super(props)
+        this.nocommission = false
         this.nopaginate = true
         this.state.list = true
         this.detail = this.detail.bind(this)
@@ -40,16 +41,16 @@ export class List extends BaseCart
                                     <label className="control-label col-md-5">{trans('Pré-facture Nº')} :</label>
                                     <input type="text" className="form-control col-md-7"/>
                                 </div>
-                                <div className="form-group col-md-6 mb-2">
+                                {true?null:<div className="form-group col-md-6 mb-2">
                                     <label className="control-label col-md-5">{trans('Route')} :</label>
                                     <select className="form-control col-md-7 select-primary" title={trans('Toutes')}>
 
                                     </select>
-                                </div>
-                                <div className="form-group col-md-6">
+                                </div>}
+                                {true?null:<div className="form-group col-md-6">
                                     <label className="control-label col-md-5">{trans('Nº Expedition')} :</label>
                                     <input type="text" className="form-control col-md-7"/>
-                                </div>
+                                </div>}
                                 <div className="form-group col-md-6 justify-content-end">
                                     <button className="btn btn-orange">{trans('Rechercher')}</button>
                                 </div>
@@ -141,7 +142,7 @@ export class List extends BaseCart
                         <th>{trans('Devise')}</th>
                         <th>{trans('Total HT')}</th>
                         <th>{trans('Total TTC')}</th>
-                        <th>{trans('Com. AD')}</th>
+                        {this.nocommission?null:<th>{trans('Com. AD')}</th>}
                         <th>{trans('Editer')}</th>
                     </tr>
                 </thead>
@@ -154,7 +155,7 @@ export class List extends BaseCart
                         <td>{item.currency.iso_code}</td>
                         <td>{numeral(item.total_ht).format('0.00')}</td>
                         <td>{numeral(item.total_ttc).format('0.00')}</td>
-                        <td>{numeral(item.total_commissions).format('0.00')}</td>
+                        {this.nocommission?null:<td>{numeral(item.total_commissions).format('0.00')}</td>}
                         <td><a href={`/cart?id=${item.id}`} onClick={e=>this.detail(e, item)} className="btn btn-orange">{trans('Détail')}</a></td>
                     </tr>)}
                 </tbody>
@@ -165,7 +166,7 @@ export class List extends BaseCart
                         <td></td>
                         <td className="bg-warning">{numeral(total_ht).format('0.00')}</td>
                         <td className="bg-warning">{numeral(this.total_ttc).format('0.00')}</td>
-                        <td className="bg-warning">{numeral(this.total_commissions).format('0.00')}</td>
+                        {this.nocommission?null:<td className="bg-warning">{numeral(this.total_commissions).format('0.00')}</td>}
                         <td></td>
                     </tr>
                 </tfoot>
@@ -197,7 +198,7 @@ class Invoice extends Component
                         <a className={`nav-link`} href={`/client_edit?id=${this.props.data.row.id}&tab=pricing`}>{trans('Tarifications')}</a>
                     </li>
                     <li className="nav-item">
-                        <a className={`nav-link active`} href={`/client_edit_invoices?id=${this.props.data.row.id}`}
+                        <a className={`nav-link active`} href={`/carts?customer_id=${this.props.data.row.id}`}
                 aria-controls="invoices">{trans('Facturations')}</a>
                     </li>
                 </ul>

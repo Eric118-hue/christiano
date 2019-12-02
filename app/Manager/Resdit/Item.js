@@ -28,7 +28,7 @@ class Item extends Component
     render() {
         return <tr>
         <td className="green">{moment.utc(this.props.data.cardit.nsetup.preparation_datetime).local().format('DD/MM/YYYY')}</td>
-        <td className="green">{moment.utc(this.props.data.cardit.nsetup.preparation_datetime).local().format('HH:mm')}</td>
+        <td className="green">{moment(this.props.data.cardit.nsetup.preparation_datetime_lt).format('HH:mm')}</td>
         <td>
             {this.props.data.cardit.nsetup.document_number}
         </td>

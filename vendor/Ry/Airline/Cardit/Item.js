@@ -7,6 +7,7 @@ import Assignation from './Assignation';
 import Status from './Status';
 import Delivery from './Delivery';
 import trans from '../../../../app/translations';
+import Ry from '../../Core/Ry';
 
 class StepView extends Component
 {
@@ -461,12 +462,13 @@ class Item extends Component
 
     render() {
         return <React.Fragment>
+            <Ry/>
             <tr>
                 <td className="green">{moment.utc(this.props.data.nsetup.preparation_datetime).local().format('DD/MM/YYYY')}</td>
-                <td className="green">{moment.utc(this.props.data.nsetup.preparation_datetime).local().format('HH:mm')}</td>
+                <td className="green">{moment(this.props.data.nsetup.preparation_datetime_lt).format('HH:mm')}</td>
                 <td>
                     <div className="d-flex align-items-center justify-content-center">
-                        {this.props.data.nsetup.document_number}
+                        <a href={`#dialog/cardit_file?id=${this.props.data.id}`} className="mr-2"><i className="icon-info"></i></a> {this.props.data.nsetup.document_number}
                         <a href="#" onClick={this.detail} className="btnAccord"><i className={`fa ${this.state.open?'fa-sort-up':'fa-sort-down'}`}></i></a>
                     </div>
                 </td>
@@ -579,9 +581,9 @@ class Item extends Component
                         </PopupBody>
                     </Popup>
                 </td>
-                <td className="p-2">{this.props.irregularites()}</td>
-                <td className="p-2">{this.props.performances()}</td>
-                <td className="p-2">{this.props.completed()}</td>
+                <td className="p-2">{this.props.reception(this.props.data)}</td>
+                <td className="p-2">{this.props.assignation(this.props.data)}</td>
+                <td className="p-2">{this.props.completed(this.props.data)}</td>
             </tr>
             {(this.state.data && this.state.open)?<FullDetail data={this.state.data} consignmentEvents={this.state.consignment_events} deliveryConsignmentEvents={this.state.delivery_consignment_events} store={this.props.store}/>:null}
         </React.Fragment>

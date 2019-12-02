@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import Cardit from './Cardit';
 import Resdit from './Resdit';
 import Pricing from './Pricing';
-import {List} from '../../../app/Manager/Client/Cart/List';
+import List from '../../../app/Air/Cart/List';
 import Detail from '../../../app/Manager/Cardit/List';
 import Organisation from './Organisation';
 

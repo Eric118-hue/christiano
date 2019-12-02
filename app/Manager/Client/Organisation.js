@@ -237,7 +237,7 @@ class Organisation extends Component
                                                         this.refs.pricing.updateCustomer(state.customer)
                                                     return state
                                                 })
-                                            }} readOnly={this.props.readOnly} value={airline.id>0?airline:null} placeholder={trans('Ajouter une compagnie aérienne')} endpoint={`/airlines`} line={item=>item.name} selection={item=><span>{item.icao_code} / {item.iata_code} = {item.name} ({this.cast(item, 'adresse.ville.country.nom')})
+                                            }} readOnly={this.props.readOnly} value={airline.id>0?airline:null} placeholder={trans('Ajouter une compagnie aérienne')} endpoint={`/airlines`} line={item=>item.name} selection={item=><span>{item.icao_code} / {item.iata_code} = {item.name} ({this.cast(item, 'country.nom')})
                                         <input type="hidden" name={`airlines[${airline_index}][id]`} value={item.id}/>
                                     </span>} param="q"/>
                                 </div>

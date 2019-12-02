@@ -252,3 +252,9 @@ $max-menu-level: 5;
 	background:$stone;
     border-color: $stone;
 }
+
+@media screen and (max-width: 1024px) {
+	.navbar-fixed-top .navbar-right {
+		width: calc(100% - 290px) !important;
+	}
+}

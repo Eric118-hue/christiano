@@ -4,6 +4,8 @@ import Ry from '../../Core/Ry';
 import Countdown from './Countdown';
 import trans from '../../../../app/translations';
 import Modelizer from '../../Core/Modelizer';
+import Localtime from './Localtime';
+import {Route} from './Status';
 
 class Reception extends Component
 {
@@ -118,6 +120,7 @@ class Reception extends Component
                             {trans('Nombre de récipient')} :
                             <span>{this.props.data.nsetup.nreceptacles}</span>
                         </li>
+                        <Route data={this.props.data}/>
                     </ul>
                     {files}
                 </div>
@@ -186,6 +189,7 @@ class Reception extends Component
                                 </tr>
                             </tbody>
                         </table>
+                        <Localtime/>
                     </form>
                 </div>
             </div>

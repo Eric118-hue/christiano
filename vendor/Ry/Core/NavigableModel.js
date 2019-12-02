@@ -38,7 +38,6 @@ class NavigableModel extends Component
                     }
                     this.setState({
                         data:prevState,
-                        last_page : state.data.last_page,
                         total:total
                     })
                 }

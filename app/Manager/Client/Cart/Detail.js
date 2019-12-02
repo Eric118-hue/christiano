@@ -6,6 +6,31 @@ import $ from 'jquery';
 import {Popup, PopupHeader, PopupBody} from '../../../../vendor/bs/bootstrap';
 import numeral from 'numeral';
 
+class ReceptacleItem extends Component
+{
+    render() {
+        const disabled = this.models('props.data.statuses.reception', 82)==74?{}:{disabled:true}
+        return <tr >
+        <td className="text-left">
+            {this.props.data.nsetup.receptacle_id}
+        </td>
+        <td>{this.props.data.nsetup.handling}</td>
+        <td>{this.props.data.nsetup.nesting}</td>
+        <td>{this.props.data.nsetup.type.interpretation}</td>
+        <td>{(this.props.data.nsetup.free || disabled.disabled)?0:this.props.data.nsetup.weight}</td>
+        <td>{numeral(this.props.data.price_ht).format('0.00')}</td>
+        <td>
+            <label className="fancy-checkbox">
+                <input type="checkbox" checked={(this.props.data.nsetup.free || disabled.disabled)?false:true} onChange={e=>this.props.handleFree(e.target.checked)} value="1" {...disabled}/>
+                <span></span>
+            </label>
+        </td>
+    </tr>
+    }
+}
+
+Modelizer(ReceptacleItem)
+
 class CarditInvoice extends Component
 {
     constructor(props) {
@@ -16,14 +41,12 @@ class CarditInvoice extends Component
         this.handleFree = this.handleFree.bind(this)
     }
 
-    handleFree(event, receptacle) {
-        const checked = event.target.checked
+    handleFree(checked, receptacle) {
         this.setState(state=>{
             state.receptacles.find(item=>item.id==receptacle.id).nsetup.free = !checked
             receptacle.nsetup.free = !checked
             if(!checked) {
                 receptacle.price_ht = 0
-                receptacle.nsetup.weight = 0
             }  
             $.ajax({
                 url : '/receptacle_update',
@@ -46,14 +69,14 @@ class CarditInvoice extends Component
         let total_weight = 0
         let total_ht = 0
         this.state.receptacles.map(receptacle=>{
-            if(!receptacle.nsetup.free) {
+            if(!receptacle.nsetup.free && this.cast(receptacle, 'statuses.reception', 82)==74) {
                 total_weight += parseFloat(receptacle.nsetup.weight)
                 total_ht += parseFloat(receptacle.price_ht)
             } 
         })
         return <tr>
             <td className="green">{moment.utc(this.props.data.nsetup.preparation_datetime).local().format('DD/MM/YYYY')}</td>
-            <td className="green">{moment.utc(this.props.data.nsetup.preparation_datetime).local().format('HH:mm')}</td>
+            <td className="green">{moment(this.props.data.nsetup.preparation_datetime_lt).format('HH:mm')}</td>
             <td>
                 <div className="d-flex align-items-center justify-content-center">
                     <a href="#" onClick={e=>{
@@ -79,22 +102,7 @@ class CarditInvoice extends Component
                                 </tr>
                             </thead>
                             <tbody>
-                                {this.state.receptacles.map(receptacle=><tr key={`receptacle-${receptacle.id}`}>
-                                    <td className="text-left">
-                                        {receptacle.nsetup.receptacle_id}
-                                    </td>
-                                    <td>{receptacle.nsetup.handling}</td>
-                                    <td>{receptacle.nsetup.nesting}</td>
-                                    <td>{receptacle.nsetup.type.interpretation}</td>
-                                    <td>{receptacle.nsetup.weight}</td>
-                                    <td>{numeral(receptacle.price_ht).format('0.00')}</td>
-                                    <td>
-                                        <label className="fancy-checkbox">
-                                            <input type="checkbox" checked={receptacle.nsetup.free?false:true} onChange={e=>this.handleFree(e, receptacle)} value="1"/>
-                                            <span></span>
-                                        </label>
-                                    </td>
-                                </tr>)}
+                                {this.state.receptacles.map(receptacle=><ReceptacleItem key={`receptacle-${receptacle.id}`} handleFree={checked=>this.handleFree(checked, receptacle)} data={receptacle}/>)}
                             </tbody>
                             <tfoot>
                                 <tr>
@@ -122,6 +130,8 @@ class CarditInvoice extends Component
         </tr>
     }
 }
+
+Modelizer(CarditInvoice)
 
 class Detail extends Component
 {
@@ -177,7 +187,8 @@ class Detail extends Component
             total_commissions += parseFloat(cardit.commissions)
             total_nreceptacles += parseInt(cardit.nsetup.nreceptacles)
             cardit.receptacles.map(receptacle=>{
-                total_wreceptacles += parseFloat(receptacle.nsetup.weight)
+                if(!receptacle.nsetup.free && this.cast(receptacle, 'statuses.reception', 82)==74)
+                    total_wreceptacles += parseFloat(receptacle.nsetup.weight)
             })
             if(false) {
                 cardit.nsetup.transports.map(transport=>{
@@ -195,6 +206,8 @@ class Detail extends Component
                 <span className="font-weight-bold text-orange"> {this.props.data.airline.edi_code} {this.props.data.airline.name}</span>
                 <label className="ml-5">{trans('Mois')} : </label> 
                 <span className="font-weight-bold text-orange">{moment.utc(this.props.data.created_at).format('MMMM YYYY')}</span>
+                <label className="ml-5">{trans("Nombre d'expéditions")} : </label> 
+                <span className="font-weight-bold text-orange">{this.state.cardits.length}</span>
             </div>
             <table className="table table-bordered table-centerall">
                 <thead>

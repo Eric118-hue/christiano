@@ -101,10 +101,11 @@ class Knob extends Component
             .attr("d", this.arc);
 
         this.interval = d3.interval(()=>{
-            this.pathy.transition()
-            .duration(1000)
-            .ease(d3.easeLinear)
-            .attrTween("d", this.arcTween(Math.PI*2*(this.compute(moment()))))
+            if('transition' in this.pathy)
+                this.pathy.transition()
+                .duration(1000)
+                .ease(d3.easeLinear)
+                .attrTween("d", this.arcTween(Math.PI*2*(this.compute(moment()))))
         }, 1000)
     }
 

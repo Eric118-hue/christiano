@@ -28,6 +28,34 @@ class Form extends Component
         this.handleTypeChange = this.handleTypeChange.bind(this)
         this.handleNameChange = this.handleNameChange.bind(this)
         this.offClick = this.offClick.bind(this)
+        this.removeContact = this.removeContact.bind(this)
+    }
+
+    removeContact(contact, done) {
+        const dis = this
+        swal({
+            title: trans('Confirmez-vous la suppression?'),
+            text: trans('Cet enregistrement sera supprimé définitivement'),
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: trans('Oui je confirme')
+        }).then((result) => {
+            if (result.value) {
+                if(contact.id>0) {
+                    $.ajax({
+                        url : trans('/client_contacts'),
+                        type : 'delete',
+                        data : {
+                            user_id : contact.id,
+                            customer_id : dis.props.data.row.id
+                        },
+                        success : done
+                    })
+                }
+                else
+                    done()
+            }
+        })
     }
 
     offClick() {
@@ -222,7 +250,7 @@ class Form extends Component
                                         </div>}
                                     </div>
                                     <div className="col-md-12">
-                                        <MultiForm data={this.props.data}/>
+                                        <MultiForm data={this.props.data} remove={this.removeContact}/>
                                     </div>
                                     <div className="col-md-12">
                                     <div className="card">

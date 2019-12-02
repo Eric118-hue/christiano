@@ -12,6 +12,7 @@ class List extends NavigableModel
         super(props)
         this.endpoint = '/cardits'
         this.model = 'cardit'
+        this.nopaginate = true
         this.readOnly = false
         this.state.date = moment().format('YYYY-MM-DD')
         this.state.filter = {
@@ -163,18 +164,16 @@ class List extends NavigableModel
                 }
             })
         });
+        $(this.refs.frm_receptacles).ajaxForm()
         this.props.store.subscribe(()=>{
             const storeState = this.props.store.getState()
-            if(storeState.type=='cardit') {
-                if(storeState.row) {
-                    this.setState(state=>{
-                        state.data.push(storeState.row)
-                        return state
-                    })
-                }
+            if(storeState.type=='cardit' && storeState.row) {
+                this.setState(state=>{
+                    state.data = state.data.filter(it=>(it.nsetup.document_number!=storeState.row.nsetup.document_number || (it.nsetup.document_number==storeState.row.nsetup.document_number && it.id==storeState.row.id)))
+                    return state
+                })
             }
         })
-        $(this.refs.frm_receptacles).ajaxForm()
     }
 
     escales(cardit) {
@@ -196,41 +195,53 @@ class List extends NavigableModel
         }
     }
 
-    irregularites() {
-        let k = Math.floor(3 * Math.random())
+    reception(cardit) {
+        let k = 0
+        if(cardit.resdits && cardit.resdits.find(item=>{
+            return item.event == 'reception'
+        }))
+            k = 2
         switch(k) {
             case 0:
-                return <a className="btn btn-danger d-flex justify-content-between pr-1 align-items-center" href="#" style={{width:85,height:34}}><span></span><span>NT</span> <i className="icon-pencil"></i></a>
+                return <a className={`btn btn-danger d-flex ${true?'justify-content-center':'justify-content-between'} pr-1 align-items-center`} href="#" style={{height:34}}><span></span><span>NT</span> {true?null:<i className="icon-pencil"></i>}</a>
             case 1:
-                return <a className="btn d-flex text-white justify-content-between pr-1 align-items-center" href="#" style={{width:85,background:'#ff7c07',height:34}}><span></span><span>TP</span> <i className="icon-pencil"></i></a>
+                return <a className="btn d-flex text-white justify-content-between pr-1 align-items-center" href="#" style={{background:'#ff7c07',height:34}}><span></span><span>TP</span> <i className="icon-pencil"></i></a>
             case 2:
-                return <a className="btn btn-success d-flex justify-content-between pr-1 align-items-center" href="#" style={{width:85,height:34}}><span></span><i className="fa fa-check text-white"></i><i className="fa fa-info-circle text-white"></i></a>
+                return <a className={`btn btn-success d-flex ${true?'justify-content-center':'justify-content-between'} pr-1 align-items-center`} href="#" style={{height:34}}><span></span><i className="fa fa-check text-white"></i>{true?null:<i className="fa fa-info-circle text-white"></i>}</a>
             
         }
     }
 
-    performances() {
-        let k = Math.floor(3 * Math.random())
+    assignation(cardit) {
+        let k = 0
+        if(cardit.resdits && cardit.resdits.find(item=>{
+            return item.event == 'assignation'
+        }))
+            k = 2
         switch(k) {
             case 0:
-                return <a className="btn btn-danger d-flex justify-content-between pr-1 align-items-center" href="#" style={{width:85,height:34}}><span></span><span>&gt; 24h</span><i className="icon-pencil"></i></a>
+                return <a className={`btn btn-danger d-flex ${true?'justify-content-center':'justify-content-between'} pr-1 align-items-center`} href="#" style={{height:34}}><span></span><span>NT</span>{true?null:<i className="icon-pencil"></i>}</a>
             case 1:
-                return <a className="btn text-white d-flex justify-content-between pr-1 align-items-center" href="#" style={{width:85,background:'#ff7c07',height:34}}><span></span><span>&lt; 24h</span><i className="icon-pencil"></i></a>
+                return <a className="btn text-white d-flex justify-content-between pr-1 align-items-center" href="#" style={{background:'#ff7c07',height:34}}><span></span><span>NT</span><i className="icon-pencil"></i></a>
             case 2:
-                return <a className="btn btn-success d-flex justify-content-between pr-1 align-items-center" href="#" style={{width:85,height:34}}><span></span><i className="fa fa-check text-white"></i> <i className="fa fa-info-circle text-white"></i></a>
+                return <a className={`btn btn-success d-flex ${true?'justify-content-center':'justify-content-between'} pr-1 align-items-center`} href="#" style={{height:34}}><span></span><i className="fa fa-check text-white"></i> {true?null:<i className="fa fa-info-circle text-white"></i>}</a>
             
         }
     }
 
-    completed() {
-        let k = Math.floor(3 * Math.random())
+    completed(cardit) {
+        let k = 0
+        if(cardit.resdits && cardit.resdits.find(item=>{
+            return item.event == 'delivery'
+        }))
+            k = 2
         switch(k) {
             case 0:
-                return <a className="btn btn-danger d-flex justify-content-between pr-1 align-items-center" href="#" style={{width:85,height:34}}><span></span><span>{Math.floor(100*Math.random())}</span><i className="icon-pencil"></i></a>
+                return <a className={`btn btn-danger d-flex ${true?'justify-content-center':'justify-content-between'} pr-1 align-items-center`} href="#" style={{height:34}}><span>NT</span>{true?null:<i className="icon-pencil"></i>}</a>
             case 1:
-                return <a className="btn d-flex text-white justify-content-between pr-1 align-items-center" href="#" style={{width:85,background:'#ff7c07',height:34}}><span></span><span>{Math.floor(100*Math.random())}</span><i className="icon-pencil"></i></a>
+                return <a className="btn d-flex text-white justify-content-between pr-1 align-items-center" href="#" style={{background:'#ff7c07',height:34}}><i className="icon-pencil"></i></a>
             case 2:
-                return <a className="btn btn-success text-white d-flex justify-content-between pr-1 align-items-center" href="#" style={{width:85,height:34}}><span></span><span>{Math.floor(100*Math.random())}</span><i className="fa fa-check text-white"></i> <i className="fa fa-info-circle text-white"></i></a>
+                return <a className={`btn btn-success text-white d-flex ${true?'justify-content-center':'justify-content-between'} pr-1 align-items-center`} href="#" style={{height:34}}><i className="fa fa-check text-white"></i> {true?null:<i className="fa fa-info-circle text-white"></i>}</a>
             
         }
     }
@@ -251,36 +262,36 @@ class List extends NavigableModel
                     <th>{trans('Escale')}</th>
                     <th>{trans('Dest.')}</th>
                     <th>{trans('Nº de vol')}</th>
-                    <th style={{width:107}}>Irrégularités</th>
-                    <th style={{width:107}}>Performances</th>
-                    <th style={{width:107}}>Trip completed</th>
+                    <th style={{width:104}}>{trans('Irrégularités')}</th>
+                    <th style={{width:104}}>{trans('Performances')}</th>
+                    <th style={{width:104}}>{trans('Trip completed')}</th>
                     {this.afterTh()}
                 </tr>
             </thead>
             <tbody>
                 {this.state.data.map(item=><tr key={`cardit-${item.id}`} className="gradeA">
                     <td>{moment.utc(item.nsetup.preparation_datetime).local().format('DD/MM/YYYY')}</td>
-                    <td>{moment.utc(item.nsetup.preparation_datetime).local().format('HH:mm')}</td>
-                    <td className="actions">{item.nsetup.document_number} <a href="#" className="btn-sm btn-icon btn-pure btn-turquoise on-default ml-2 m-r-5 button-edit" onClick={e=>{
+                    <td>{moment(item.nsetup.preparation_datetime_lt).format('HH:mm')}</td>
+                    <td className="actions"><a href={`#dialog/cardit_file?id=${item.id}`}><i className="icon-info"></i></a> {item.nsetup.document_number} <a href="#" className="btn-sm btn-icon btn-pure btn-turquoise on-default ml-2 m-r-5 button-edit" onClick={e=>{
                         e.preventDefault()
                         $(`#receptacles-${item.id}`).modal('show')
                     }}>
                         <i className="icon-pencil" aria-hidden="true"></i></a>
                         <Popup id={`receptacles-${item.id}`} className="modal-xl">
                             <PopupHeader className="bg-info text-light">
-                                <h4>Liste des récipients - Expédition {item.nsetup.document_number}</h4>
+                                <h4>{trans('Liste des récipients')} - {trans('Expédition')} {item.nsetup.document_number}</h4>
                             </PopupHeader>
                             <PopupBody>
                                 <div className="col-md-12">
                                     <table className="table table-bordered table-centerall">
                                         <thead>
                                             <tr>
-                                                <th>N°</th>
-                                                <th>Numéro du récipient</th>
-                                                <th>Flag <i className="fa fa-info-circle"></i></th>
-                                                <th>Container Journey ID</th>
-                                                <th>Type de récipient</th>
-                                                <th>Poids (Kg)</th>
+                                                <th>{trans('N°')}</th>
+                                                <th>{trans('Numéro du récipient')}</th>
+                                                <th>{trans('Flag')} <i className="fa fa-info-circle"></i></th>
+                                                <th>{trans('Container Journey ID')}</th>
+                                                <th>{trans('Type de récipient')}</th>
+                                                <th>{trans('Poids (Kg)')}</th>
                                                 <th>
                                                     <div className="d-flex justify-content-center">
                                                         <div className="fancy-checkbox mr-0">
@@ -315,7 +326,7 @@ class List extends NavigableModel
                                         </tbody>
                                     </table>
                                     <input type="hidden" name="ry"/>
-                                    <button className="float-right btn btn-orange" type="button" onClick={()=>this.validateCardit(item)}>Validation</button>
+                                    <button className="float-right btn btn-orange" type="button" onClick={()=>this.validateCardit(item)}>{trans('Validation')}</button>
                                 </div>
                             </PopupBody>
                         </Popup>            
@@ -330,25 +341,25 @@ class List extends NavigableModel
                     }}><i className="fa fa-info-circle text-turquoise"></i></a>
                         <Popup id={`origin-${item.id}`} className="airport-modal">
                             <PopupHeader className="pl-3 pb-2" closeButton={<span aria-hidden="true"  className="pb-1 pl-2 pr-2 rounded text-white" style={{background:'#170000'}}>&times;</span>}>
-                                <h5><img src="/medias/images/ico-airport.png" className="position-absolute"/> <span className="pl-5 text-body">Aéroport d'origine</span></h5>
+                                <h5><img src="/medias/images/ico-airport.png" className="position-absolute"/> <span className="pl-5 text-body">{trans("Aéroport d'origine")}</span></h5>
                             </PopupHeader>
                             <hr className="border m-0 m-auto" style={{width:'calc(100% - 10px)', height:3}}/>
                             <PopupBody>
                                 <div className="row">
                                     <div className="col-5 text-right text-grey">
-                                        Pays :
+                                        {trans('Pays')} :
                                     </div>
                                     <div className="col-7 text-left">
                                         {item.nsetup.handover_origin_location.country.nom}
                                     </div>
                                     <div className="col-5 text-right text-grey">
-                                        Code :
+                                        {trans('Code')} :
                                     </div>
                                     <div className="col-7 text-left">
                                         {item.nsetup.handover_origin_location.iata}
                                     </div>
                                     <div className="col-5 text-right text-grey">
-                                        Aéroport :
+                                        {trans('Aéroport')} :
                                     </div>
                                     <div className="col-7 text-left text-wrap">
                                         {item.nsetup.handover_origin_location.name}
@@ -360,16 +371,16 @@ class List extends NavigableModel
                     <td className="p-2">{this.escales(item)}
                         <Popup id={`escales-${item.id}`}>
                             <PopupHeader>
-                                Escales
+                                {trans('Escales')}
                             </PopupHeader>
                             <PopupBody>
                                 <table className="table">
                                     <thead>
                                         <tr>
-                                            <th>Aéroport</th>
-                                            <th>Arrivée</th>
-                                            <th>Départ</th>
-                                            <th>Vol</th>
+                                            <th>{trans('Aéroport')}</th>
+                                            <th>{trans('Arrivée')}</th>
+                                            <th>{trans('Départ')}</th>
+                                            <th>{trans('Vol')}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -390,25 +401,25 @@ class List extends NavigableModel
                     }}><i className="fa fa-info-circle text-turquoise"></i></a>
                         <Popup id={`destination-${item.id}`} className="airport-modal">
                             <PopupHeader className="pl-3 pb-2" closeButton={<span aria-hidden="true"  className="pb-1 pl-2 pr-2 rounded text-white" style={{background:'#170000'}}>&times;</span>}>
-                                <h5><img src="/medias/images/ico-airport.png" className="position-absolute"/> <span className="pl-5 text-body">Aéroport de destination</span></h5>
+                                <h5><img src="/medias/images/ico-airport.png" className="position-absolute"/> <span className="pl-5 text-body">{trans('Aéroport de destination')}</span></h5>
                             </PopupHeader>
                             <hr className="border m-0 m-auto" style={{width:'calc(100% - 10px)', height:3}}/>
                             <PopupBody>
                                 <div className="row">
                                     <div className="col-5 text-right text-grey">
-                                        Pays :
+                                        {trans('Pays')} :
                                     </div>
                                     <div className="col-7 text-left">
                                         {item.nsetup.handover_destination_location.country.nom}
                                     </div>
                                     <div className="col-5 text-right text-grey">
-                                        Code :
+                                        {trans('Code')} :
                                     </div>
                                     <div className="col-7 text-left">
                                         {item.nsetup.handover_destination_location.iata}
                                     </div>
                                     <div className="col-5 text-right text-grey">
-                                        Aéroport :
+                                        {trans('Aéroport')} :
                                     </div>
                                     <div className="col-7 text-left text-wrap">
                                         {item.nsetup.handover_destination_location.name}
@@ -423,7 +434,7 @@ class List extends NavigableModel
                     }}><i className="fa fa-info-circle text-turquoise"></i></a>
                         <Popup id={`conveyence-${item.id}`} className="airport-modal">
                             <PopupHeader className="pl-3 pb-2" closeButton={<span aria-hidden="true"  className="pb-1 pl-2 pr-2 rounded text-white" style={{background:'#170000'}}>&times;</span>}>
-                                <h5><img src="/medias/images/ico-airport.png" className="position-absolute"/> <span className="pl-5 text-body">Premier vol</span></h5>
+                                <h5><img src="/medias/images/ico-airport.png" className="position-absolute"/> <span className="pl-5 text-body">{trans('Premier vol')}</span></h5>
                             </PopupHeader>
                             <hr className="border m-0 m-auto" style={{width:'calc(100% - 10px)', height:3}}/>
                             <PopupBody>
@@ -431,9 +442,9 @@ class List extends NavigableModel
                             </PopupBody>
                         </Popup>
                     </td>
-                    <td>{this.irregularites()}</td>
-                    <td>{this.performances()}</td>
-                    <td>{this.completed()}</td>
+                    <td>{this.reception(item)}</td>
+                    <td>{this.assignation(item)}</td>
+                    <td>{this.completed(item)}</td>
                     {this.afterTd(item)}
                 </tr>)}
             </tbody>
@@ -451,7 +462,7 @@ class List extends NavigableModel
         return <div className="cardit-container vol-liste col-md-12">
             <div className="row clearfix align-items-stretch position-relative vol-container">
                 <div className="col-12">
-                    <div className="topContainer d-flex justify-content-between align-items-center">
+                    <div className="topContainer mb-2 d-flex justify-content-between align-items-center">
                         <div className="col-md-4">
                             <div className="row">
                                 <div className="col-md-6">
@@ -465,7 +476,7 @@ class List extends NavigableModel
                                 {this.props.data.customer_type=='gsa'?<div className="col-md-6">
                                     <div className="form-group ml-2" style={{width:300}}>
                                         <select className="form-control" value={this.state.filter.airline_id} onChange={e=>this.onFilter(e, 'airline_id')}>
-                                            <option value="">Tous</option>
+                                            <option value="">{trans('Tous')}</option>
                                             {this.props.data.airlines.map(airline=><option key={`select-airline-${airline.id}`} value={airline.id}>{airline.name}</option>)}
                                         </select>
                                     </div>
@@ -473,33 +484,33 @@ class List extends NavigableModel
                             </div>
                         </div>
                         <div className="navPager d-flex align-items-center justify-content-end">
-                            {pagination}
+                            {this.nopaginate?null:pagination}
                         </div>
                     </div>
                     {false?<div className="card mb-3">
                         <div className="card-header">
-                            Search
+                            {trans("Rechercher")}
                         </div>
                         <div className="body">
                             <div className="row">
                                 <div className="col-md-3 form-group">
-                                    <label className="control-label">Nº d’expédition</label>
+                                    <label className="control-label">{trans("Nº d'expédition")}</label>
                                     <input type="search" value={this.state.filter.document_number} onChange={e=>this.handleFilter(e, 'document_number')} className="form-control"/>
                                 </div>
                                 <div className="col-md-3 form-group">
-                                    <label className="control-label">Aéroport ORIG.</label>
+                                    <label className="control-label">{trans('Aéroport ORIG.')}</label>
                                     <input type="search" value={this.state.filter.handover_origin_location} onChange={e=>this.handleFilter(e, 'handover_origin_location')} className="form-control"/>
                                 </div>
                                 <div className="col-md-3 form-group">
-                                    <label className="control-label">Aéroport DEST.</label>
+                                    <label className="control-label">{trans('Aéroport DEST.')}</label>
                                     <input type="search" value={this.state.filter.handover_destination_location} onChange={e=>this.handleFilter(e, 'handover_destination_location')} className="form-control"/>
                                 </div>
                                 <div className="col-md-2 form-group">
-                                    <label className="control-label">N° de vol</label>
+                                    <label className="control-label">{trans('N° de vol')}</label>
                                     <input type="search" value={this.state.filter.conveyence_reference} onChange={e=>this.handleFilter(e, 'conveyence_reference')} className="form-control"/>
                                 </div>
                                 <div className="col-md-1 form-group">
-                                    <button type="button" className="btn btn-orange mt-4" onClick={this.search}>Filtrer</button>
+                                    <button type="button" className="btn btn-orange mt-4" onClick={this.search}>{trans('Filtrer')}</button>
                                 </div>
                             </div>
                         </div>
@@ -508,15 +519,16 @@ class List extends NavigableModel
                         <div className="body">
                             <div className="row m-0 justify-content-between">
                                 <div className="filter d-flex align-items-center flex-wrap">
-                                    <div className="form-group d-flex align-items-center justify-content-start flex-nowrap" style={{width:220}}>
-                                        <label className="control-label">Show</label>
+                                    <div>{trans('Nombre de cardits')} : <strong>{this.state.data.length}</strong></div>
+                                    {this.nopaginate?null:<div className="form-group d-flex align-items-center justify-content-start flex-nowrap" style={{width:220}}>
+                                        <label className="control-label">{trans('Voir')}</label>
                                         <select className="form-control" value={this.state.filter.perpage} onChange={e=>this.onFilter(e, 'perpage')}>
                                             <option value="25">25</option>
                                             <option value="50">50</option>
                                             <option value="100">100</option>
                                         </select>
-                                        <label>entries</label>
-                                    </div>
+                                        <label>{trans('par page')}</label>
+                                    </div>}
                                 </div>
                                 {this.beforelist()}
                             </div>
@@ -529,7 +541,7 @@ class List extends NavigableModel
                     </div>
                     <div className="d-flex justify-content-end">
                         <div className="navPager d-flex align-items-center justify-content-end">
-                            {pagination}
+                            {this.nopaginate?null:pagination}
                         </div>
                     </div>
                 </div>

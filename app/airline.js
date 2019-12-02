@@ -21,8 +21,12 @@ import __CATEGORIES from '../vendor/Ry/Categories';
 import __TUTO from '../vendor/Ry/Core/Tuto';
 import __CARDIT from '../vendor/Ry/Cardit';
 import __AIRLINE from '../vendor/Ry/Airline';
+import CarditDetail from '../app/Manager/Cardit/Detail';
 
 const Components = {
+	App : {
+		Cardit : CarditDetail
+	},
     Ry : {
         Admin : {
             User : __USER,

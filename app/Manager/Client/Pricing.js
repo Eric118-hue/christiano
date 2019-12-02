@@ -171,10 +171,10 @@ class Pricing extends Component
                 </div>
             </div>
             <div id={`timelines${this.props.data.id}`} className="collapse" data-parent={`#pricing${this.props.data.id}`}>
-                {this.props.data.nrates.filter(it=>!it.active).map(timeline=><PricingTable className="border-orange" key={`timeline-${timeline.id}`} data={timeline} indexes={this.props.indexes} setup={this.props.setup} readOnly={true} vat={this.models("props.data.nsetup.vat", 0)}/>)}
+                {this.models('props.data.nrates', []).filter(it=>!it.active).map(timeline=><PricingTable className="border-orange" key={`timeline-${timeline.id}`} data={timeline} indexes={this.props.indexes} setup={this.props.setup} readOnly={true} vat={this.models("props.data.nsetup.vat", 0)}/>)}
             </div>
             <hr/>
-            {this.props.data.nrates.filter(it=>it.active).map(timeline=><PricingTable key={`timeline-${timeline.id}`} className="border-success" data={timeline} indexes={this.props.indexes} setup={this.props.setup} readOnly={true} vat={this.models("props.data.nsetup.vat", 0)}/>)}
+            {this.models('props.data.nrates', []).filter(it=>it.active).map(timeline=><PricingTable key={`timeline-${timeline.id}`} className="border-success" data={timeline} indexes={this.props.indexes} setup={this.props.setup} readOnly={true} vat={this.models("props.data.nsetup.vat", 0)}/>)}
             <div className="border bg-light rounded">
                 <div className="align-items-center justify-content-between m-0 p-1 pl-3 row">
                     <strong>{trans('Ajouter un tarif sur une autre période')}</strong>

@@ -26,7 +26,7 @@ class List extends CarditList
                 </tr>
             </thead>
             <tbody>
-                {this.state.data.map(item=><Cardit readOnly={this.readOnly} key={`cardit-${item.id}`} escales={this.escales} data={item} irregularites={this.irregularites} performances={this.performances} completed={this.completed} consignmentEvents={this.props.data.consignment_events} deliveryConsignmentEvents={this.props.data.delivery_consignment_events} store={this.props.store}/>)}
+                {this.state.data.map(item=><Cardit readOnly={this.readOnly} key={`cardit-${item.id}`} escales={this.escales} data={item} reception={this.reception} assignation={this.assignation} completed={this.completed} consignmentEvents={this.props.data.consignment_events} deliveryConsignmentEvents={this.props.data.delivery_consignment_events} store={this.props.store}/>)}
             </tbody>
         </table>
     }
