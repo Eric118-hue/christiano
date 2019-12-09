@@ -14,6 +14,14 @@ import __Core from './Core';
 
 export const Core = __Core;
 
+$( document ).ajaxComplete(function( event, xhr, settings ){
+    if (typeof phpdebugbar != "undefined") {
+        if (xhr.getAllResponseHeaders()) {
+            phpdebugbar.ajaxHandler.handle(xhr);
+        }
+    }
+});
+
 $(document).ajaxSend(function(event, state, ajax){
 	if(ajax.isPagination) {
 		let url = ajax.url
@@ -25,7 +33,7 @@ $(document).ajaxSend(function(event, state, ajax){
 			url = queryparts[0]+'?'+qs.stringify(queries)
 		}
 		window.history.pushState({},"", url)
-	}
+    }
 });
 
 $(document).ajaxStart(function() {

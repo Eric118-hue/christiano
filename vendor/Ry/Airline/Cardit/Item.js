@@ -8,6 +8,7 @@ import Status from './Status';
 import Delivery from './Delivery';
 import trans from '../../../../app/translations';
 import Ry from '../../Core/Ry';
+import Modelizer from '../../Core/Modelizer';
 
 class StepView extends Component
 {
@@ -468,12 +469,13 @@ class Item extends Component
                 <td className="green">{moment(this.props.data.nsetup.preparation_datetime_lt).format('HH:mm')}</td>
                 <td>
                     <div className="d-flex align-items-center justify-content-center">
+                        {this.models('props.data.nsetup.exceptions.bgms')?<i className="fa fa-2x fa-exclamation-triangle ml-2 text-danger"></i>:null}
                         <a href={`#dialog/cardit_file?id=${this.props.data.id}`} className="mr-2"><i className="icon-info"></i></a> {this.props.data.nsetup.document_number}
-                        <a href="#" onClick={this.detail} className="btnAccord"><i className={`fa ${this.state.open?'fa-sort-up':'fa-sort-down'}`}></i></a>
+                        {this.models('props.data.nsetup.exceptions.bgms')?null:<a href="#" onClick={this.detail} className="btnAccord"><i className={`fa ${this.state.open?'fa-sort-up':'fa-sort-down'}`}></i></a>}
                     </div>
                 </td>
-                <td>{this.props.data.nsetup.consignment_category.code}</td>
-                <td>{this.props.data.nsetup.mail_class.code}</td>
+                <td>{this.models('props.data.nsetup.consignment_category.code')}</td>
+                <td>{this.models('props.data.nsetup.mail_class.code')}</td>
                 <td>{this.props.data.nsetup.nreceptacles}</td>
                 <td>{this.props.data.nsetup.wreceptacles}</td>
                 <td className="w-info">{this.props.data.nsetup.handover_origin_location.iata} <a href="#" onClick={e=>{
@@ -482,25 +484,25 @@ class Item extends Component
                 }}><i className="icon-info"></i></a>
                     <Popup id={`origin-${this.props.data.id}`} className="airport-modal">
                         <PopupHeader className="pl-3 pb-2" closeButton={<span aria-hidden="true"  className="pb-1 pl-2 pr-2 rounded text-white" style={{background:'#170000'}}>&times;</span>}>
-                            <h5><img src="/medias/images/ico-airport.png" className="position-absolute"/> <span className="pl-5 text-body">Aéroport d'origine</span></h5>
+                            <h5><img src="/medias/images/ico-airport.png" className="position-absolute"/> <span className="pl-5 text-body">{trans("Aéroport d'origine")}</span></h5>
                         </PopupHeader>
                         <hr className="border m-0 m-auto" style={{width:'calc(100% - 10px)', height:3}}/>
                         <PopupBody>
                             <div className="row">
                                 <div className="col-5 text-right text-grey">
-                                    Pays :
+                                    {trans("Pays")} :
                                 </div>
                                 <div className="col-7 text-left">
                                     {this.props.data.nsetup.handover_origin_location.country.nom}
                                 </div>
                                 <div className="col-5 text-right text-grey">
-                                    Code :
+                                    {trans("Code")} :
                                 </div>
                                 <div className="col-7 text-left">
                                     {this.props.data.nsetup.handover_origin_location.iata}
                                 </div>
                                 <div className="col-5 text-right text-grey">
-                                    Aéroport :
+                                    {trans("Aéroport")} :
                                 </div>
                                 <div className="col-7 text-left text-wrap">
                                     {this.props.data.nsetup.handover_origin_location.name}
@@ -590,4 +592,4 @@ class Item extends Component
     }
 }
 
-export default Item;
+export default Modelizer(Item);

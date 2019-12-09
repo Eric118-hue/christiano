@@ -13,18 +13,19 @@ class CartList extends List
 
     searchEngine() {
         return <React.Fragment>
-            <div className="row">
+            <div className="row mb-4">
                 <div className="col-md-7">
-                    <div className="card">
+                    <div className="card h-100 mb-0">
                         <div className="card-header">
                             {trans('Recherche')}
                         </div>
                         <div className="body">
                             <form name="frm_search" className="form-inline" action="/carts">
                                 <input type="hidden" name="ry"/>
+                                <input type="hidden" name="json"/>
                                 <div className="form-group col-md-6 mb-2">
                                     <label className="control-label col-md-5">{trans('Pré-facture Nº')} :</label>
-                                    <input type="text" className="form-control col-md-7"/>
+                                    <input type="text" className="form-control col-md-7" name="s[code]"/>
                                 </div>
                                 {true?null:<div className="form-group col-md-6 mb-2">
                                     <label className="control-label col-md-5">{trans('Route')} :</label>
@@ -44,7 +45,7 @@ class CartList extends List
                     </div>
                 </div>
                 <div className="col-md-5">
-                    <div className="card">
+                    <div className="card h-100 mb-0">
                         <div className="card-header">
                             {moment().year()} - {trans('Compagnie aérienne')} : {trans('toutes')}
                         </div>
@@ -65,19 +66,6 @@ class CartList extends List
                     </div>
                 </div>
             </div>
-            <div className="row mb-5">
-                <div className="col-3">
-                    <select className="form-control select-primary">
-
-                    </select>
-                </div>
-                <div className="col-3 form-inline">
-                    <label className="control-label col-md-4">{trans('Compagnie aérienne')}</label>
-                    <select className="form-control select-primary col-md-8" title={trans('Toutes')}>
-
-                    </select>
-                </div>
-            </div>    
         </React.Fragment>
     }
 }

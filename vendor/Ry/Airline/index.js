@@ -12,7 +12,7 @@ class Invoice extends Component
         return <div className="col-md-12">
         <div className="card">
             <div className="card-body">
-                <List data={{data:this.props.data.row.carts}} store={this.props.store}/>
+                <List data={{data:this.props.data.row.carts}} customerId={this.props.data.row.id} store={this.props.store}/>
             </div>
         </div>
     </div>

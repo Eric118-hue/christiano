@@ -5,6 +5,7 @@ import moment from 'moment';
 import $ from 'jquery';
 import {Popup, PopupHeader, PopupBody} from '../../../../vendor/bs/bootstrap';
 import numeral from 'numeral';
+import Ry from '../../../../vendor/Ry/Core/Ry';
 
 class ReceptacleItem extends Component
 {
@@ -17,7 +18,7 @@ class ReceptacleItem extends Component
         <td>{this.props.data.nsetup.handling}</td>
         <td>{this.props.data.nsetup.nesting}</td>
         <td>{this.props.data.nsetup.type.interpretation}</td>
-        <td>{(this.props.data.nsetup.free || disabled.disabled)?0:this.props.data.nsetup.weight}</td>
+        <td>{this.props.data.nsetup.free?0:this.props.data.nsetup.weight}</td>
         <td>{numeral(this.props.data.price_ht).format('0.00')}</td>
         <td>
             <label className="fancy-checkbox">
@@ -31,12 +32,28 @@ class ReceptacleItem extends Component
 
 Modelizer(ReceptacleItem)
 
-class CarditInvoice extends Component
+class Receptacles extends Component
 {
     constructor(props) {
         super(props)
+        let total_ht = 0
+        let total_weight = 0
+        let commissions = 0
+        let total_ttc = 0
+        this.props.data.receptacles.map(receptacle=>{
+            if(!receptacle.nsetup.free && this.cast(receptacle, 'statuses.reception', 82)==74) {
+                total_weight += parseFloat(receptacle.nsetup.weight)
+                total_ht += parseFloat(receptacle.price_ht)
+                commissions += parseFloat(receptacle.commission)
+                total_ttc += parseFloat(receptacle.price_ttc)
+            }
+        })
         this.state = {
-            receptacles : this.props.data.receptacles
+            receptacles : this.props.data.receptacles,
+            total_weight : total_weight,
+            total_ht : total_ht,
+            commissions : commissions,
+            total_ttc : total_ttc
         }
         this.handleFree = this.handleFree.bind(this)
     }
@@ -47,7 +64,26 @@ class CarditInvoice extends Component
             receptacle.nsetup.free = !checked
             if(!checked) {
                 receptacle.price_ht = 0
-            }  
+                receptacle.commission = 0
+                receptacle.price_ttc = 0
+            }
+            else {
+                receptacle.price_ht = receptacle.calculated_price_ht
+                receptacle.commission = receptacle.calculated_commission
+                receptacle.price_ttc = receptacle.calculated_price_ttc
+            }
+            state.total_weight = 0
+            state.total_ht = 0
+            state.commissions = 0
+            state.total_ttc = 0
+            state.receptacles.map(receptacle=>{
+                if(this.cast(receptacle, 'statuses.reception', 82)==74) {
+                    state.total_weight += parseFloat(receptacle.nsetup.weight)
+                    state.total_ht += parseFloat(receptacle.price_ht)
+                    state.commissions += parseFloat(receptacle.commission)
+                    state.total_ttc += parseFloat(receptacle.price_ttc)
+                }
+            })
             $.ajax({
                 url : '/receptacle_update',
                 type : 'post',
@@ -59,6 +95,18 @@ class CarditInvoice extends Component
                     if(response.type) {
                         this.props.store.dispatch(response)
                     }
+                    else {
+                        this.props.store.dispatch({
+                            type : 'local_update',
+                            cardit : {
+                                id : this.props.data.id,
+                                total_weight : state.total_weight,
+                                total_ht : state.total_ht,
+                                commissions : state.commissions,
+                                total_ttc : state.total_ttc
+                            }
+                        })
+                    }
                 }
             })
             return state
@@ -66,59 +114,61 @@ class CarditInvoice extends Component
     }
 
     render() {
-        let total_weight = 0
-        let total_ht = 0
-        this.state.receptacles.map(receptacle=>{
-            if(!receptacle.nsetup.free && this.cast(receptacle, 'statuses.reception', 82)==74) {
-                total_weight += parseFloat(receptacle.nsetup.weight)
-                total_ht += parseFloat(receptacle.price_ht)
-            } 
-        })
+        return <React.Fragment>
+            <PopupHeader>
+                <h5>{trans('Liste des récipients')}</h5>
+            </PopupHeader>
+            <PopupBody>
+                <table className="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>{trans('Numéro du récipient')}</th>
+                            <th>{trans('Flag')} <i className="icon-info"></i></th>
+                            <th>{trans('Container Journey ID')}</th>
+                            <th>{trans('Type de récipient')}</th>
+                            <th>{trans('Poids')} (Kg)</th>
+                            <th>{trans('Prix HT')} ({this.props.cart.currency.iso_code})</th>
+                            <th>{trans('Facturé')}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {this.state.receptacles.map(receptacle=><ReceptacleItem key={`receptacle-${receptacle.id}`} handleFree={checked=>this.handleFree(checked, receptacle)} data={receptacle}/>)}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th colSpan="4" className="text-right text-uppercase">{trans('Total')}</th>
+                            <td className="bg-warning">
+                                {numeral(this.state.total_weight).format('0.0')}
+                            </td>
+                            <td className="bg-warning">
+                                {numeral(this.state.total_ht).format('0.00')}
+                            </td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </PopupBody>
+        </React.Fragment>
+    }
+}
+
+Modelizer(Receptacles)
+
+export class ReceptacleDialog extends Component
+{
+    render() {
+        return <Receptacles data={this.props.data.data} store={this.props.store} cart={this.props.data.cart}/>
+    }
+}
+
+export class CarditInvoice extends Component
+{
+    render() {
         return <tr>
-            <td className="green">{moment.utc(this.props.data.nsetup.preparation_datetime).local().format('DD/MM/YYYY')}</td>
+            <td className="green"><Ry/>{moment.utc(this.props.data.nsetup.preparation_datetime).local().format('DD/MM/YYYY')}</td>
             <td className="green">{moment(this.props.data.nsetup.preparation_datetime_lt).format('HH:mm')}</td>
             <td>
-                <div className="d-flex align-items-center justify-content-center">
-                    <a href="#" onClick={e=>{
-                e.preventDefault()
-                $(`#receptacles-${this.props.data.id}`).modal('show')
-            }} className="text-info">{this.props.data.nsetup.document_number}</a>
-                </div>
-                <Popup id={`receptacles-${this.props.data.id}`} className="modal-xl">
-                    <PopupHeader>
-                        <h5>{trans('Liste des récipients')}</h5>
-                    </PopupHeader>
-                    <PopupBody>
-                        <table className="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>{trans('Numéro du récipient')}</th>
-                                    <th>{trans('Flag')} <i className="icon-info"></i></th>
-                                    <th>{trans('Container Journey ID')}</th>
-                                    <th>{trans('Type de récipient')}</th>
-                                    <th>{trans('Poids')} (Kg)</th>
-                                    <th>{trans('Prix HT')} ({this.props.cart.currency.iso_code})</th>
-                                    <th>{trans('Facturé')}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {this.state.receptacles.map(receptacle=><ReceptacleItem key={`receptacle-${receptacle.id}`} handleFree={checked=>this.handleFree(checked, receptacle)} data={receptacle}/>)}
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th colSpan="4" className="text-right text-uppercase">{trans('Total')}</th>
-                                    <td className="bg-warning">
-                                        {numeral(total_weight).format('0.0')}
-                                    </td>
-                                    <td className="bg-warning">
-                                        {numeral(total_ht).format('0.00')}
-                                    </td>
-                                    <td></td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </PopupBody>
-                </Popup>
+                <a href={`#dialog/receptacle_invoices?cardit_id=${this.props.data.id}&customer_id=${this.props.cart.customer_id}`} className="text-info" data-display="modal-xl">{this.props.data.nsetup.document_number}</a>
             </td>
             <td>{this.props.data.nsetup.handover_origin_location.iata} - {this.props.data.nsetup.handover_destination_location.iata}</td>
             <td>{this.props.data.nsetup.nreceptacles}</td>
@@ -126,7 +176,7 @@ class CarditInvoice extends Component
             <td>{this.props.cart.currency.iso_code}</td>
             <td className="text-info">{numeral(this.props.data.total_ht).format('0.00')}</td>
             <td className="text-info">{numeral(this.props.data.total_ttc).format('0.00')}</td>
-            <td className="text-info">{numeral(this.props.data.commissions).format('0.00')}</td>
+            {this.props.nocommission?null:<td className="text-info">{numeral(this.props.data.commissions).format('0.00')}</td>}
         </tr>
     }
 }
@@ -146,24 +196,37 @@ class Detail extends Component
 
     componentDidMount() {
         this.loadCardits()
-        this.props.store.subscribe(()=>{
+        this.unsubscribe = this.props.store.subscribe(()=>{
             const storeState = this.props.store.getState()
             if(storeState.type=='receptacle_updates') {
                 this.loadCardits()
             }
+            else if(storeState.type=='local_update') {
+                this.setState(state=>{
+                    state.cardits.map(cardit=>{
+                        if(cardit.id==storeState.cardit.id) {
+                            cardit.total_ht = storeState.cardit.total_ht
+                            cardit.total_weight = storeState.cardit.total_weight
+                            cardit.commissions = storeState.cardit.commissions
+                            cardit.total_ttc = storeState.cardit.total_ttc
+                        }
+                    })
+                    return state
+                })
+            }
         })
     }
 
+    componentWillUnmount() {
+        this.unsubscribe()
+    }
+
     loadCardits() {
-        let cardits = {}
-        this.props.data.items.map(cart_item=>{
-            cardits[cart_item.sellable.cardit_id] = true
-        })
         $.ajax({
             url : '/cart_cardits',
             data : {
-                cardit_ids : Object.keys(cardits),
                 json : true,
+                cart_id : this.props.data.id,
                 airline_id : this.props.data.airline.id,
                 customer_id : this.props.data.customer_id
             },
@@ -186,10 +249,7 @@ class Detail extends Component
             total_ttc += parseFloat(cardit.total_ttc)
             total_commissions += parseFloat(cardit.commissions)
             total_nreceptacles += parseInt(cardit.nsetup.nreceptacles)
-            cardit.receptacles.map(receptacle=>{
-                if(!receptacle.nsetup.free && this.cast(receptacle, 'statuses.reception', 82)==74)
-                    total_wreceptacles += parseFloat(receptacle.nsetup.weight)
-            })
+            total_wreceptacles += parseFloat(cardit.total_weight)
             if(false) {
                 cardit.nsetup.transports.map(transport=>{
                     total_ht += parseFloat(transport.total_ht)
@@ -221,11 +281,11 @@ class Detail extends Component
                         <th>{trans('Devise')}</th>
                         <th>{trans('Total HT')}</th>
                         <th>{trans('Total TTC')}</th>
-                        <th>{trans('Com. AD')}</th>
+                        {this.props.nocommission?null:<th>{trans('Com. AD')}</th>}
                     </tr>
                 </thead>
                 <tbody>
-                    {this.state.cardits.map(cardit=><CarditInvoice key={`cardit-${cardit.id}`} data={cardit} cart={this.props.data} store={this.props.store}/>)}
+                    {this.state.cardits.map(cardit=><CarditInvoice key={`cardit-${cardit.id}`} data={cardit} cart={this.props.data} store={this.props.store} nocommission={this.props.nocommission}/>)}
                 </tbody>
                 <tfoot>
                     <tr>
@@ -235,7 +295,7 @@ class Detail extends Component
                         <td></td>
                         <td className="bg-warning">{numeral(total_ht).format('0.00')}</td>
                         <td className="bg-warning">{numeral(total_ttc).format('0.00')}</td>
-                        <td className="bg-warning">{numeral(total_commissions).format('0.00')}</td>
+                        {this.props.nocommission?null:<td className="bg-warning">{numeral(total_commissions).format('0.00')}</td>}
                     </tr>
                 </tfoot>
             </table>
