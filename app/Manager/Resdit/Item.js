@@ -10,17 +10,17 @@ class Item extends Component
         let k = cardit.nsetup.transports.length
         switch(k) {
             case 1:
-                return <div>Direct</div>
+                return <div>{trans('Direct')}</div>
             case 2:
                 return <a className="btn btn-turquoise d-flex justify-content-between pr-1 align-items-center" href="#" onClick={e=>{
                     e.preventDefault()
                     $(`#escales-${cardit.id}`).modal('show')
-                }}><span className="font-12">1 escale</span><i className="icon-pencil"></i></a>
+                }}><span className="font-12">{trans('1 escale')}</span><i className="icon-pencil"></i></a>
             case 3:
                 return <a className="btn btn-turquoise d-flex justify-content-between pr-1 align-items-center" href="#" onClick={e=>{
                     e.preventDefault()
                     $(`#escales-${cardit.id}`).modal('show')
-                }}><span className="font-12">2 escales</span><i className="icon-pencil"></i></a>
+                }}><span className="font-12">{trans(':n escales', {n:2})}</span><i className="icon-pencil"></i></a>
             
         }
     }

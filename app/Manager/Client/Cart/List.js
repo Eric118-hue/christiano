@@ -63,7 +63,7 @@ export class List extends BaseCart
                 <div className="col-md-5">
                     <div className="card h-100 mb-0">
                         <div className="card-header">
-                            {moment().year()} - {trans('Compagnie aérienne')} : {trans('toutes')}
+                            {moment().year()} - {this.props.me.type=='Airline'?`${trans('Compagnie aérienne')} : ${this.props.me.facturable.name}`:`${trans('GSA')} : ${trans('Toutes les compagnies aériennes')}`}
                         </div>
                         <div className="body">
                             <div className="row">
@@ -145,7 +145,19 @@ export class List extends BaseCart
                         <td>{numeral(item.total_ht).format('0.00')}</td>
                         <td>{numeral(item.total_ttc).format('0.00')}</td>
                         {this.nocommission?null:<td>{numeral(item.total_commissions).format('0.00')}</td>}
-                        <td><a href={`/cart?id=${item.id}`} onClick={e=>this.detail(e, item)} className="btn btn-orange">{trans('Détail')}</a></td>
+                        <td>
+                            <div className="dropdown show">
+                                <a className="btn btn-orange dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    {trans('Actions')}
+                                </a>
+
+                                <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                    <a className="dropdown-item" href={`/cart?id=${item.id}`} onClick={e=>this.detail(e, item)}>{trans('Détail')}</a>
+                                    <a className="dropdown-item" href={`/cn51?id=${item.id}`}>CN51</a>
+                                    <a className="dropdown-item" href={`/cn66?id=${item.id}`}>CN66</a>
+                                </div>
+                            </div>
+                        </td>
                     </tr>)}
                 </tbody>
                 <tfoot>
@@ -194,7 +206,7 @@ class Invoice extends Component
                 <div className="tab-content border-bottom border-left border-right p-4 mb-4">
                     <div className={`tab-pane active`}
                         id={`invoices`} role="tabpanel" aria-labelledby="invoices-tab">
-                            <List data={{data:this.props.data.row.carts}} store={this.props.store} customerId={this.props.data.row.id}/>
+                            <List data={{data:this.props.data.row.carts}} store={this.props.store} customerId={this.props.data.row.id} me={this.props.data.row}/>
                         </div>
                     </div>
                 </div>

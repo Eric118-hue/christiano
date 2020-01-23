@@ -253,3 +253,9 @@ $orange: #fc8269;
 		}
 	}
 }
+
+.error {
+    .bootstrap-select {
+        border-color: $danger !important;
+    }
+}

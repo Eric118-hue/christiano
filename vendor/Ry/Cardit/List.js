@@ -5,6 +5,8 @@ import {Popup, PopupHeader, PopupBody} from '../../bs/bootstrap';
 import numeral from 'numeral';
 import trans from '../../../app/translations';
 import NavigableModel from '../../Ry/Core/NavigableModel';
+import Modelizer from '../../Ry/Core/Modelizer';
+import { throws } from 'assert';
 
 class List extends NavigableModel
 {
@@ -15,21 +17,25 @@ class List extends NavigableModel
         this.nopaginate = true
         this.readOnly = false
         this.state.date = moment().format('YYYY-MM-DD')
+        this.state.datefilter = 'date'
         this.state.filter = {
-            prepared_at : moment(),
+            prepared_at : this.models('props.data.filter.prepared_at', moment()),
+            prepared_at_year : this.models('props.data.filter.prepared_at_year', moment().year()),
             airline_id : '',
-            perpage : 25,
-            handover_origin_location : '',
-            document_number : '',
-            handover_destination_location : '',
-            conveyence_reference : ''
+            handover_origin_location : this.models('props.data.handover_origin_location', ''),
+            document_number : this.models('props.data.document_number', ''),
+            //handover_destination_location : '',
+            //conveyence_reference : ''
         }
+        this.xhrdata = {...this.state.filter}
+        this.xhrdata.prepared_at = moment(this.xhrdata.prepared_at).format('YYYY-MM-DD')
         this.table = this.table.bind(this)
         this.beforelist = this.beforelist.bind(this)
         this.onFilter = this.onFilter.bind(this)
+        let criterias = this.models('props.data.filter', {})
         this.data = {
             json : true,
-            s : {}
+            s : Array.isArray(criterias) ? {} : criterias 
         }
         this.afterTd = this.afterTd.bind(this)
         this.afterTh = this.afterTh.bind(this)
@@ -38,6 +44,121 @@ class List extends NavigableModel
         this.handleCheck = this.handleCheck.bind(this)
         this.handleCheckAll = this.handleCheckAll.bind(this)
         this.validateCardit = this.validateCardit.bind(this)
+        this.documentSearch = this.documentSearch.bind(this)
+        this.handleDateChecked = this.handleDateChecked.bind(this)
+        this.handleYearChecked = this.handleYearChecked.bind(this)
+        this.handleYearChange = this.handleYearChange.bind(this)
+    }
+
+    handleYearChecked(event) {
+        if(event.target.checked) {
+            if(this.pxhr)
+                this.pxhr.abort()
+            this.setState({
+                data : [],
+                datefilter : event.target.value,
+                total : 0
+            })
+            this.urls = []
+            this.data.s = {...this.state.filter}
+            delete this.data.s.prepared_at
+            delete this.data.s.document_number
+            if(this.request) {
+                this.request.abort()
+            }
+            this.request = $.ajax({
+                isPagination : true,
+                url : this.endpoint,
+                data : this.data,
+                success : response=>{
+                    this.setState(state=>{
+                        state.data = response.data.data,
+                        state.last_page = response.data.last_page
+                        state.total = response.data.total
+                        state.page = response.data.current_page
+                        return state
+                    })
+                    window.setTimeout(this.progress, 100)
+                }
+            })
+        }
+    }
+
+    handleDateChecked(event) {
+        if(event.target.checked) {
+            if(this.pxhr)
+                this.pxhr.abort()
+            this.setState({
+                data : [],
+                datefilter : event.target.value,
+                total : 0
+            })
+            this.urls = []
+            this.data.s = {...this.state.filter}
+            if(this.data.s.prepared_at)
+                this.data.s.prepared_at = moment(this.data.s.prepared_at).format('YYYY-MM-DD')
+            delete this.data.s.document_number
+            delete this.data.s.prepared_at_year
+            if(this.request) {
+                this.request.abort()
+            }
+            this.request = $.ajax({
+                isPagination : true,
+                url : this.endpoint,
+                data : this.data,
+                success : response=>{
+                    this.setState(state=>{
+                        state.data = response.data.data,
+                        state.last_page = response.data.last_page
+                        state.page = response.data.current_page
+                        state.total = response.data.total
+                        return state
+                    })
+                    this.urls = []
+                    window.setTimeout(this.progress, 100)
+                }
+            })
+        }
+    }
+
+    handleYearChange(event) {
+        const value = event.target.value
+        this.setState(state=>{
+            state.filter.prepared_at_year = value
+            return state
+        })
+        if(this.state.datefilter=='year') {
+            if(this.pxhr)
+                this.pxhr.abort()
+            this.data.s = {...this.state.filter}
+            this.data.s.prepared_at_year = value
+            this.setState(state=>{
+                state.data = [],
+                state.total = 0
+                return state
+            })
+            this.urls = []
+            delete this.data.s.prepared_at
+            delete this.data.s.document_number
+            if(this.request) {
+                this.request.abort()
+            }
+            this.request = $.ajax({
+                isPagination : true,
+                url : this.endpoint,
+                data : this.data,
+                success : response=>{
+                    this.setState(state=>{
+                        state.data = response.data.data,
+                        state.last_page = response.data.last_page
+                        state.page = response.data.current_page
+                        state.total = response.data.total
+                        return state
+                    })
+                    window.setTimeout(this.progress, 100)
+                }
+            })
+        }
     }
 
     handleCheck(event, receptacle, cardit) {
@@ -115,21 +236,38 @@ class List extends NavigableModel
 
     onFilter(event, field) {
         const value = event.target.value
+        if(this.pxhr)
+            this.pxhr.abort()
         this.setState(state=>{
             state.filter[field] = value
+            state.data = []
+            state.total = 0
             return state
         })
+        this.urls = []
+        this.data.s = {...this.state.filter}
+        if(this.state.datefilter=='year')
+            delete this.data.s.prepared_at
+        if(this.state.datefilter=='date' && this.data.s.prepared_at)
+            this.data.s.prepared_at = moment(this.data.s.prepared_at).format('YYYY-MM-DD')
+        delete this.data.s.document_number
         this.data.s[field] = value
         if(this.request) {
             this.request.abort()
         }
         this.request = $.ajax({
+            isPagination : true,
             url : this.endpoint,
             data : this.data,
             success : response=>{
-                this.setState({
-                    items : response.data.data
+                this.setState(state=>{
+                    state.data = response.data.data,
+                    state.last_page = response.data.last_page
+                    state.page = response.data.current_page
+                    state.total = response.data.total
+                    return state
                 })
+                window.setTimeout(this.progress, 100)
             }
         })
     }
@@ -147,20 +285,35 @@ class List extends NavigableModel
         }
         const dp = $(this.refs.datepicker).datepicker(opts)
         dp.on("changeDate", ()=>{
+            if(this.state.datefilter!='date')
+                return
+
             const date = moment(dp.datepicker('getDate')).format('YYYY-MM-DD')
-            this.setState({
-                date : date
+            if(this.pxhr)
+                this.pxhr.abort()
+            this.setState(state=>{
+                state.filter.prepared_at = date
+                state.date = date
+                state.data = []
+                state.total = 0
+                return state
             })
+            this.urls = []
             this.data.s.prepared_at = date
+            delete this.data.s.prepared_at_year
             $.ajax({
                 isPagination : true,
                 url : this.endpoint,
                 data : this.data,
                 success : response=>{
-                    this.setState({
-                        data : response.data.data,
-                        last_page : response.data.last_page
+                    this.setState(state=>{
+                        state.data = response.data.data,
+                        state.last_page = response.data.last_page
+                        state.page = response.data.current_page
+                        state.total = response.data.total
+                        return state
                     })
+                    window.setTimeout(this.progress, 1)
                 }
             })
         });
@@ -176,38 +329,91 @@ class List extends NavigableModel
         })
     }
 
+    documentSearch() {
+        const field = 'document_number'
+        const value = this.refs.document_number.value
+        if(this.pxhr)
+            this.pxhr.abort()
+        this.setState(state=>{
+            state.filter.document_number = value
+            state.data = []
+            state.total = 0
+            return state
+        })
+        this.urls = []
+        this.data.s[field] = value
+        delete this.data.s.prepared_at
+        delete this.data.s.prepared_at_year
+        delete this.data.s.handover_origin_location
+        if(this.request) {
+            this.request.abort()
+        }
+        this.request = $.ajax({
+            isPagination : true,
+            url : this.endpoint,
+            data : this.data,
+            success : response=>{
+                this.setState({
+                    data : response.data.data,
+                    last_page : response.data.last_page,
+                    page : response.data.current_page,
+                    total : response.data.total
+                })
+                window.setTimeout(this.progress, 100)
+            }
+        })
+    }
+
     escales(cardit) {
         let k = cardit.nsetup.transports.length
         switch(k) {
             case 1:
-                return <div>Direct</div>
+                return <div>{trans('Direct')}</div>
             case 2:
-                return <a className="btn btn-turquoise d-flex justify-content-between pr-1 align-items-center" href="#" onClick={e=>{
+                return <a className="btn btn-turquoise cursor-default d-flex justify-content-between pr-1 align-items-center" href="#" onClick={e=>{
                     e.preventDefault()
                     $(`#escales-${cardit.id}`).modal('show')
-                }}><span className="font-12">1 escale</span><i className="icon-pencil"></i></a>
+                }}><span className="font-12">{trans('1 escale')}</span><i className="icon-pencil"></i></a>
             case 3:
-                return <a className="btn btn-turquoise d-flex justify-content-between pr-1 align-items-center" href="#" onClick={e=>{
+                return <a className="btn btn-turquoise cursor-default d-flex justify-content-between pr-1 align-items-center" href="#" onClick={e=>{
                     e.preventDefault()
                     $(`#escales-${cardit.id}`).modal('show')
-                }}><span className="font-12">2 escales</span><i className="icon-pencil"></i></a>
+                }}><span className="font-12">{trans(':n escales', {n:2})}</span><i className="icon-pencil"></i></a>
             
         }
     }
 
     reception(cardit) {
         let k = 0
+        let nmrd = 0
         if(cardit.resdits && cardit.resdits.find(item=>{
             return item.event == 'reception'
-        }))
+        })) {
             k = 2
+            let item = cardit.resdits.find(item=>{
+                return item.event == 'reception'
+            })
+            if(item.receptacles.find(receptacle=>{
+                return receptacle.nsetup.mrd
+            })) {
+                k = 1
+                nmrd = 0
+                cardit.resdits.map(resdit=>{
+                    resdit.receptacles.map(receptacle=>{
+                        if(receptacle.nsetup.mrd)
+                            nmrd++
+                    })
+                })
+            }
+        }
+            
         switch(k) {
             case 0:
-                return <a className={`btn btn-danger d-flex ${true?'justify-content-center':'justify-content-between'} pr-1 align-items-center`} href="#" style={{height:34}}><span></span><span>NT</span> {true?null:<i className="icon-pencil"></i>}</a>
+                return <a className={`btn btn-danger cursor-default d-flex ${true?'justify-content-center':'justify-content-between'} pr-1 align-items-center`} href="#" style={{height:34}}><span></span><span>NT</span> {true?null:<i className="icon-pencil"></i>}</a>
             case 1:
-                return <a className="btn d-flex text-white justify-content-between pr-1 align-items-center" href="#" style={{background:'#ff7c07',height:34}}><span></span><span>TP</span> <i className="icon-pencil"></i></a>
+                return <a className="btn btn-blue cursor-default d-flex text-white justify-content-center pr-1 align-items-center" href="#" style={{height:34}}>MRD</a>
             case 2:
-                return <a className={`btn btn-success d-flex ${true?'justify-content-center':'justify-content-between'} pr-1 align-items-center`} href="#" style={{height:34}}><span></span><i className="fa fa-check text-white"></i>{true?null:<i className="fa fa-info-circle text-white"></i>}</a>
+                return <a className={`btn btn-success cursor-default d-flex ${true?'justify-content-center':'justify-content-between'} pr-1 align-items-center`} href="#" style={{height:34}}><span></span><i className="fa fa-check text-white"></i>{true?null:<i className="fa fa-info-circle text-white"></i>}</a>
             
         }
     }
@@ -220,28 +426,45 @@ class List extends NavigableModel
             k = 2
         switch(k) {
             case 0:
-                return <a className={`btn btn-danger d-flex ${true?'justify-content-center':'justify-content-between'} pr-1 align-items-center`} href="#" style={{height:34}}><span></span><span>NT</span>{true?null:<i className="icon-pencil"></i>}</a>
+                return <a className={`btn btn-danger cursor-default d-flex ${true?'justify-content-center':'justify-content-between'} pr-1 align-items-center`} href="#" style={{height:34}}><span></span><span>NT</span>{true?null:<i className="icon-pencil"></i>}</a>
             case 1:
-                return <a className="btn text-white d-flex justify-content-between pr-1 align-items-center" href="#" style={{background:'#ff7c07',height:34}}><span></span><span>NT</span><i className="icon-pencil"></i></a>
+                return <a className="btn text-white cursor-default d-flex justify-content-between pr-1 align-items-center" href="#" style={{background:'#ff7c07',height:34}}><span></span><span>NT</span><i className="icon-pencil"></i></a>
             case 2:
-                return <a className={`btn btn-success d-flex ${true?'justify-content-center':'justify-content-between'} pr-1 align-items-center`} href="#" style={{height:34}}><span></span><i className="fa fa-check text-white"></i> {true?null:<i className="fa fa-info-circle text-white"></i>}</a>
+                return <a className={`btn btn-success cursor-default d-flex ${true?'justify-content-center':'justify-content-between'} pr-1 align-items-center`} href="#" style={{height:34}}><span></span><i className="fa fa-check text-white"></i> {true?null:<i className="fa fa-info-circle text-white"></i>}</a>
             
         }
     }
 
     completed(cardit) {
         let k = 0
+        let nmrd = 0
         if(cardit.resdits && cardit.resdits.find(item=>{
             return item.event == 'delivery'
-        }))
+        })) {
             k = 2
+            let item = cardit.resdits.find(item=>{
+                return item.event == 'delivery'
+            })
+            if(item.receptacles.find(receptacle=>{
+                return receptacle.nsetup.mrd
+            })) {
+                k = 1
+                nmrd = 0
+                cardit.resdits.map(resdit=>{
+                    resdit.receptacles.map(receptacle=>{
+                        if(receptacle.nsetup.mrd)
+                            nmrd++
+                    })
+                })
+            }
+        } 
         switch(k) {
             case 0:
-                return <a className={`btn btn-danger d-flex ${true?'justify-content-center':'justify-content-between'} pr-1 align-items-center`} href="#" style={{height:34}}><span>NT</span>{true?null:<i className="icon-pencil"></i>}</a>
+                return <a className={`btn btn-danger cursor-default d-flex ${true?'justify-content-center':'justify-content-between'} pr-1 align-items-center`} href="#" style={{height:34}}><span>NT</span>{true?null:<i className="icon-pencil"></i>}</a>
             case 1:
-                return <a className="btn d-flex text-white justify-content-between pr-1 align-items-center" href="#" style={{background:'#ff7c07',height:34}}><i className="icon-pencil"></i></a>
+                return <a className="btn btn-blue cursor-default d-flex text-white justify-content-center pr-1 align-items-center" href="#" style={{height:34}}>MRD</a>
             case 2:
-                return <a className={`btn btn-success text-white d-flex ${true?'justify-content-center':'justify-content-between'} pr-1 align-items-center`} href="#" style={{height:34}}><i className="fa fa-check text-white"></i> {true?null:<i className="fa fa-info-circle text-white"></i>}</a>
+                return <a className={`btn btn-success cursor-default text-white d-flex ${true?'justify-content-center':'justify-content-between'} pr-1 align-items-center`} href="#" style={{height:34}}><i className="fa fa-check text-white"></i> {true?null:<i className="fa fa-info-circle text-white"></i>}</a>
             
         }
     }
@@ -448,10 +671,19 @@ class List extends NavigableModel
                     {this.afterTd(item)}
                 </tr>)}
             </tbody>
+            <tfoot>
+                <tr>
+                    <td>{trans('Chargement...')}</td>
+                </tr>
+            </tfoot>
         </table>
     }
 
     render() {
+        let years = []
+        for(var i=moment().year();i>=2019;i--){
+             years.push(i)                                   
+        }
         let pagination = <React.Fragment>
             <a href="#" onClick={this.toFirst} className={this.state.page===1?'disabled':''}><i className="fa fa-angle-double-left"></i></a>
             <a href="#" onClick={this.toPrevious} className={this.state.page===1?'disabled':''}><i className="fa fa-angle-left"></i></a>
@@ -463,63 +695,75 @@ class List extends NavigableModel
             <div className="row clearfix align-items-stretch position-relative vol-container">
                 <div className="col-12">
                     <div className="topContainer mb-2 d-flex justify-content-between align-items-center">
-                        <div className="col-md-4">
-                            <div className="row">
-                                <div className="col-md-6">
-                                    <div ref="datepicker" className="input-group date">
-                                        <input type="text" className="form-control" defaultValue={moment(this.state.filter.prepared_at).format("DD/MM/YYYY")}/>
-                                        <div className="input-group-append"> 
-                                            <button className="btn-primary btn text-light" type="button"><i className="fa fa-calendar-alt"></i></button>
-                                        </div>
-                                    </div>
-                                </div>
-                                {this.props.data.customer_type=='gsa'?<div className="col-md-6">
-                                    <div className="form-group ml-2" style={{width:300}}>
+                        <div className="col-md-12">
+                            <div className="align-items-baseline row">
+                                {this.props.data.customer_type=='gsa'?<div className="col-md-2">
+                                    <div className="align-items-baseline d-flex form-group ml-2">
+                                        <label className="control-label mr-2">{trans('Airline')}</label>
                                         <select className="form-control" value={this.state.filter.airline_id} onChange={e=>this.onFilter(e, 'airline_id')}>
                                             <option value="">{trans('Tous')}</option>
                                             {this.props.data.airlines.map(airline=><option key={`select-airline-${airline.id}`} value={airline.id}>{airline.name}</option>)}
                                         </select>
                                     </div>
                                 </div>:null}
+                                <div className="col-md-2 pr-md-0">
+                                    <div className="align-items-baseline d-flex form-group ml-2">
+                                        <label className="control-label mr-2">{trans('Origine')}</label>
+                                        <select className="form-control" value={this.state.filter.handover_origin_location} onChange={e=>this.onFilter(e, 'handover_origin_location')} ref="origin">
+                                            <option value="">{trans('Tous')}</option>
+                                            {this.props.data.select_origins.map(handover_origin_location=><option key={`select-handover-origin-location-${handover_origin_location.iata}`} value={handover_origin_location.iata}>{handover_origin_location.iata}</option>)}
+                                        </select>
+                                        <div className="m-auto">
+                                            <i className="fa fa-2x mx-2 fa-caret-right"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="col-md-5 border rounded p-2">
+                                    <div className="d-flex">
+                                        <label className="fancy-radio m-auto custom-color-green">
+                                            <input name={`date-filter`} type="radio" value="date" onChange={this.handleDateChecked} checked={this.state.datefilter=='date'}/>
+                                            <span><i className="mr-0"></i></span>
+                                        </label>
+                                        <div ref="datepicker" className="input-group date mx-2">
+                                            <input type="text" className="form-control" defaultValue={moment(this.state.filter.prepared_at).format("DD/MM/YYYY")}/>
+                                            <div className="input-group-append"> 
+                                                <button className="btn-primary btn text-light" type="button"><i className="fa fa-calendar-alt"></i></button>
+                                            </div>
+                                        </div>
+                                        <div className="form-group m-auto">
+                                            <label className="control-label mx-2 mb-0">{trans('ou')}</label>
+                                        </div>
+                                        <label className="fancy-radio m-auto custom-color-green mx-2">
+                                            <input name={`date-filter`} type="radio" value="year" onChange={this.handleYearChecked} checked={this.state.datefilter=='year'}/>
+                                            <span><i className="mr-0"></i></span>
+                                        </label>
+                                        <select onChange={this.handleYearChange} className="form-control mx-2">
+                                            {years.map(year=><option key={year} value={year}>{year}</option>)}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className="col-md-3">
+                                    <div className="align-items-baseline d-flex form-group ml-2">
+                                        <label className="control-label mr-2 text-nowrap">{trans("Nº d'expédition")}</label>
+                                        <div className="input-group">
+                                            <input ref="document_number" type="search" defaultValue={this.state.filter.document_number} className="form-control"/>
+                                            <div className="input-group-append">
+                                                <button className="btn btn-primary" type="button" onClick={this.documentSearch}>{trans('OK')}</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div className="navPager d-flex align-items-center justify-content-end">
                             {this.nopaginate?null:pagination}
                         </div>
                     </div>
-                    {false?<div className="card mb-3">
-                        <div className="card-header">
-                            {trans("Rechercher")}
-                        </div>
-                        <div className="body">
-                            <div className="row">
-                                <div className="col-md-3 form-group">
-                                    <label className="control-label">{trans("Nº d'expédition")}</label>
-                                    <input type="search" value={this.state.filter.document_number} onChange={e=>this.handleFilter(e, 'document_number')} className="form-control"/>
-                                </div>
-                                <div className="col-md-3 form-group">
-                                    <label className="control-label">{trans('Aéroport ORIG.')}</label>
-                                    <input type="search" value={this.state.filter.handover_origin_location} onChange={e=>this.handleFilter(e, 'handover_origin_location')} className="form-control"/>
-                                </div>
-                                <div className="col-md-3 form-group">
-                                    <label className="control-label">{trans('Aéroport DEST.')}</label>
-                                    <input type="search" value={this.state.filter.handover_destination_location} onChange={e=>this.handleFilter(e, 'handover_destination_location')} className="form-control"/>
-                                </div>
-                                <div className="col-md-2 form-group">
-                                    <label className="control-label">{trans('N° de vol')}</label>
-                                    <input type="search" value={this.state.filter.conveyence_reference} onChange={e=>this.handleFilter(e, 'conveyence_reference')} className="form-control"/>
-                                </div>
-                                <div className="col-md-1 form-group">
-                                    <button type="button" className="btn btn-orange mt-4" onClick={this.search}>{trans('Filtrer')}</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>:null}
                     <div className="card overflowhidden">
                         <div className="body">
                             <div className="row m-0 justify-content-between">
                                 <div className="filter d-flex align-items-center flex-wrap">
-                                    <div>{trans('Nombre de cardits')} : <strong>{this.state.data.length}</strong></div>
+                                    <div>{trans('Nombre de cardits')} : <strong>{this.state.total}</strong></div>
                                     {this.nopaginate?null:<div className="form-group d-flex align-items-center justify-content-start flex-nowrap" style={{width:220}}>
                                         <label className="control-label">{trans('Voir')}</label>
                                         <select className="form-control" value={this.state.filter.perpage} onChange={e=>this.onFilter(e, 'perpage')}>
@@ -550,11 +794,16 @@ class List extends NavigableModel
     }
 }
 
+Modelizer(List)
+
 class NavigableList extends List
 {
     constructor(props) {
         super(props)
         this.state.data = this.props.data.data.data
+        this.state.total = this.props.data.data.total
+        this.state.last_page = this.props.data.data.last_page
+        this.state.page = this.props.data.data.current_page ? this.props.data.data.current_page : 1
     }
 }
 

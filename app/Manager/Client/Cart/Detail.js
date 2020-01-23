@@ -10,7 +10,7 @@ import Ry from '../../../../vendor/Ry/Core/Ry';
 class ReceptacleItem extends Component
 {
     render() {
-        const disabled = this.models('props.data.statuses.reception', 82)==74?{}:{disabled:true}
+        const disabled = {}
         return <tr >
         <td className="text-left">
             {this.props.data.nsetup.receptacle_id}
@@ -22,7 +22,7 @@ class ReceptacleItem extends Component
         <td>{numeral(this.props.data.price_ht).format('0.00')}</td>
         <td>
             <label className="fancy-checkbox">
-                <input type="checkbox" checked={(this.props.data.nsetup.free || disabled.disabled)?false:true} onChange={e=>this.props.handleFree(e.target.checked)} value="1" {...disabled}/>
+                <input type="checkbox" checked={this.props.data.nsetup.free?false:true} onChange={e=>this.props.handleFree(e.target.checked)} value="1" {...disabled}/>
                 <span></span>
             </label>
         </td>
@@ -41,7 +41,7 @@ class Receptacles extends Component
         let commissions = 0
         let total_ttc = 0
         this.props.data.receptacles.map(receptacle=>{
-            if(!receptacle.nsetup.free && this.cast(receptacle, 'statuses.reception', 82)==74) {
+            if(!receptacle.nsetup.free) {
                 total_weight += parseFloat(receptacle.nsetup.weight)
                 total_ht += parseFloat(receptacle.price_ht)
                 commissions += parseFloat(receptacle.commission)
@@ -77,12 +77,10 @@ class Receptacles extends Component
             state.commissions = 0
             state.total_ttc = 0
             state.receptacles.map(receptacle=>{
-                if(this.cast(receptacle, 'statuses.reception', 82)==74) {
-                    state.total_weight += parseFloat(receptacle.nsetup.weight)
-                    state.total_ht += parseFloat(receptacle.price_ht)
-                    state.commissions += parseFloat(receptacle.commission)
-                    state.total_ttc += parseFloat(receptacle.price_ttc)
-                }
+                state.total_weight += parseFloat(receptacle.nsetup.weight)
+                state.total_ht += parseFloat(receptacle.price_ht)
+                state.commissions += parseFloat(receptacle.commission)
+                state.total_ttc += parseFloat(receptacle.price_ttc)
             })
             $.ajax({
                 url : '/receptacle_update',
@@ -165,12 +163,12 @@ export class CarditInvoice extends Component
 {
     render() {
         return <tr>
-            <td className="green"><Ry/>{moment.utc(this.props.data.nsetup.preparation_datetime).local().format('DD/MM/YYYY')}</td>
+            <td className="green"><Ry/>{moment.utc(this.models('props.data.nsetup.preparation_datetime')).local().format('DD/MM/YYYY')}</td>
             <td className="green">{moment(this.props.data.nsetup.preparation_datetime_lt).format('HH:mm')}</td>
             <td>
                 <a href={`#dialog/receptacle_invoices?cardit_id=${this.props.data.id}&customer_id=${this.props.cart.customer_id}`} className="text-info" data-display="modal-xl">{this.props.data.nsetup.document_number}</a>
             </td>
-            <td>{this.props.data.nsetup.handover_origin_location.iata} - {this.props.data.nsetup.handover_destination_location.iata}</td>
+            <td>{this.models('props.data.nsetup.handover_origin_location.iata')} - {this.models('props.data.nsetup.handover_destination_location.iata')}</td>
             <td>{this.props.data.nsetup.nreceptacles}</td>
             <td>{numeral(this.props.data.total_weight).format('0.0')}</td>
             <td>{this.props.cart.currency.iso_code}</td>
@@ -187,15 +185,57 @@ class Detail extends Component
 {
     constructor(props) {
         super(props)
+        this.progressRunning = false
         this.state = {
             loading : false,
-            cardits : []
+            cardits : [],
+            page : 0,
+            last_page : 1
         }
         this.loadCardits = this.loadCardits.bind(this)
+        this.progress = this.progress.bind(this)
+        this.handleScroll = this.handleScroll.bind(this)
+    }
+
+    handleScroll() {
+        if(this.refs.overscroller && (window.scrollY + window.innerHeight - this.refs.overscroller.offsetTop) > 0) {
+            this.progress()
+        }
+    }
+
+    componentDidUpdate() {
+        this.progressRunning = false
+    }
+
+    progress() {
+        if(this.state.page+1<=this.state.last_page && !this.progressRunning) {
+            this.progressRunning = true
+            this.pxhr = $.ajax({
+                isProgressing : true,
+                url : `/cart_cardits?page=${this.state.page+1}`,
+                data : {
+                    json : true,
+                    cart_id : this.props.data.id,
+                    airline_id : this.props.data.airline.id,
+                    customer_id : this.props.data.customer_id
+                },
+                success : response => {
+                    this.setState(state=>{
+                        state.cardits = state.cardits.concat(response.data.data)
+                        state.page = response.data.current_page
+                        state.last_page = response.data.last_page
+                        return state
+                    })
+                    this.progressRunning = false
+                    this.progress()
+                }
+            })
+        }
     }
 
     componentDidMount() {
-        this.loadCardits()
+        window.addEventListener('scroll', this.handleScroll)
+        this.progress()
         this.unsubscribe = this.props.store.subscribe(()=>{
             const storeState = this.props.store.getState()
             if(storeState.type=='receptacle_updates') {
@@ -288,6 +328,9 @@ class Detail extends Component
                     {this.state.cardits.map(cardit=><CarditInvoice key={`cardit-${cardit.id}`} data={cardit} cart={this.props.data} store={this.props.store} nocommission={this.props.nocommission}/>)}
                 </tbody>
                 <tfoot>
+                    <tr className={this.state.page<this.state.last_page?'':'d-none'}>
+                        <td ref="overscroller" colSpan="14" className={`position-relative py-3`}><i className="spinner"></i></td>
+                    </tr>
                     <tr>
                         <td colSpan="4" className="text-right">{trans('Total')}</td>
                         <td className="bg-warning">{total_nreceptacles}</td>

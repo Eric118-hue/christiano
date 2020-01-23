@@ -47,7 +47,7 @@ class CartList extends List
                 <div className="col-md-5">
                     <div className="card h-100 mb-0">
                         <div className="card-header">
-                            {moment().year()} - {trans('Compagnie aérienne')} : {trans('toutes')}
+                            {moment().year()} - {this.props.me.type=='Airline'?`${trans('Compagnie aérienne')} : ${this.props.me.customer_account.facturable.name}`:`${trans('GSA')} : ${trans('Toutes les compagnies aériennes')}`}
                         </div>
                         <div className="body">
                             <div className="row">

@@ -9,8 +9,8 @@ class RepoItem extends Component
             <div className="form-group col-md-1">
                 <label className="control-label">&nbsp;</label>
                 <div className="custom-control custom-switch">
-                    <input type="checkbox" className="custom-control-input" id={`active-repo-${this.props.pkey}`} value="1" defaultChecked={this.props.data.active==1} name={`nsetup[repos][${this.props.name}][${this.props.pkey}][active]`}/>
-                    <label className="custom-control-label" htmlFor={`active-repo-${this.props.pkey}`}></label>
+                    <input type="checkbox" className="custom-control-input" id={`active-repo-${this.props.name}-${this.props.pkey}`} value="1" defaultChecked={this.props.data.active==1} name={`nsetup[repos][${this.props.name}][${this.props.pkey}][active]`}/>
+                    <label className="custom-control-label" htmlFor={`active-repo-${this.props.name}-${this.props.pkey}`}></label>
                 </div>
             </div>
             <div className="form-group col-md-2">
@@ -51,12 +51,22 @@ class Repository extends Component
         super(props)
         this.state = {
             input_repos : this.models(`props.data.row.nsetup.repos.in`, []),
-            output_repos : this.models(`props.data.row.nsetup.repos.out`, [])
+            output_repos : this.models(`props.data.row.nsetup.repos.out`, []),
+            mrd_repos : this.models('props.data.row.nsetup.repos.mrd', [])
         }
         this.addInputline = this.addInputline.bind(this)
         this.addOutputline = this.addOutputline.bind(this)
         this.removeOutputline = this.removeOutputline.bind(this)
         this.removeInputline = this.removeInputline.bind(this)
+        this.addMrdline = this.addMrdline.bind(this)
+        this.removeMrdline = this.removeMrdline.bind(this)
+    }
+
+    removeMrdline(index) {
+        this.setState(state=>{
+            state.mrd_repos[index].deleted = true
+            return state
+        })
     }
 
     removeOutputline(index) {
@@ -83,6 +93,16 @@ class Repository extends Component
         })
     }
 
+    addMrdline() {
+        this.setState(state=>{
+            state.mrd_repos.push({
+                active : 1,
+                type : 'sftp'
+            })
+            return state
+        })
+    }
+
     addOutputline() {
         this.setState(state=>{
             state.output_repos.push({
@@ -97,7 +117,7 @@ class Repository extends Component
         return <React.Fragment>
             <div className="card">
                 <div className="card-header">
-                    {trans('Dépôts CARDIT')}
+                    {trans('Réception CARDIT')}
                 </div>
                 <div className="body">
                     {this.state.input_repos.filter(it=>!it.deleted).map((repo, index)=><RepoItem pkey={index} key={`repo-${index}`} name="in" data={repo} remove={()=>this.removeInputline(index)}/>)}
@@ -111,6 +131,15 @@ class Repository extends Component
                 <div className="body">
                     {this.state.output_repos.filter(it=>!it.deleted).map((repo, index)=><RepoItem pkey={index} key={`repo-${index}`} name="out" data={repo} remove={()=>this.removeOutputline(index)}/>)}
                     <button type="button" className="btn btn-primary mb-4" onClick={this.addOutputline}><i className="fa fa-plus"></i> {trans('Ajouter un dépôt')}</button>
+                </div>
+            </div>
+            <div className="card">
+                <div className="card-header">
+                    {trans('Réception MRD')}
+                </div>
+                <div className="body">
+                    {this.state.mrd_repos.filter(it=>!it.deleted).map((repo, index)=><RepoItem pkey={index} key={`repo-${index}`} name="mrd" data={repo} remove={()=>this.removeMrdline(index)}/>)}
+                    <button type="button" className="btn btn-primary mb-4" onClick={this.addMrdline}><i className="fa fa-plus"></i> {trans('Ajouter un dépôt')}</button>
                 </div>
             </div>
         </React.Fragment>

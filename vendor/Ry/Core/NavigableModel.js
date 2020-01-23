@@ -5,7 +5,9 @@ import qs from 'qs';
 class NavigableModel extends Component
 {
     constructor(props) {
-		super(props);
+        super(props);
+        this.urls = []
+        this.progressRunning = false
 		this.state = {
             data : this.props.data.data,
             total : this.props.data.total,
@@ -19,9 +21,51 @@ class NavigableModel extends Component
         this.remove = this.remove.bind(this);
         this.searchEngine = this.searchEngine.bind(this);
         this.builPaginationFromQuery = this.builPaginationFromQuery.bind(this);
+        this.handleScroll = this.handleScroll.bind(this)
+        this.progress = this.progress.bind(this)
+    }
+
+    componentDidUpdate() {
+        this.progressRunning = false
+    }
+
+    progress() {
+        if(this.state.page+1<=this.state.last_page && !this.progressRunning) {
+            let url = this.builPaginationFromQuery(this.state.page+1)
+            if(this.urls.indexOf(url)>=0)
+                return
+            this.urls.push(url)
+            this.progressRunning = true
+            this.pxhr = $.ajax({
+                isProgressing : true,
+                url: url,
+                success : (response)=>{
+                    this.setState(state=>{
+                        state.page++
+                        state.data = state.data.concat(response.data.data)
+                        state.last_page = response.data.last_page
+                        state.total = response.data.total
+                        this.progressRunning = false
+                        if(state.page<state.last_page)
+                            this.progress()
+                        return state
+                    });
+                }
+            });
+        }
+    }
+        
+    handleScroll(event) {
+        if(this.refs.overscroller && (window.scrollY + window.innerHeight - this.refs.overscroller.offsetTop) > 0) {
+            this.progress()
+        }
     }
 
     componentDidMount() {
+        if(this.progressive) {
+            window.addEventListener('scroll', this.handleScroll)
+            this.progress()
+        }   
         this.props.store.subscribe(()=>{
             const state = this.props.store.getState()
             if(state.type===this.model) {
@@ -230,13 +274,13 @@ class NavigableModel extends Component
         return <div className="col-12">            
             <div className="justify-content-between m-0 row">
                 {this.beforelist()}
-                {this.nopaginate?null:pagination}
+                {(this.progressive || this.nopaginate)?null:pagination}
             </div>
             {this.searchEngine()}
             {this.state.data.map((item, key)=>this.item(item, key))}
-            <div className="justify-content-between m-0 row">
+            <div ref="overscroller" className="justify-content-between m-0 row">
                 {this.afterlist()}
-                {this.nopaginate?null:pagination}
+                {(this.progressive || this.nopaginate)?null:pagination}
             </div>
         </div>
     }

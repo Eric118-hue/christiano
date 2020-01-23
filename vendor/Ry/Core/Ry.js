@@ -11,6 +11,7 @@ import trans, {LOADINGEND, LOADINGSTART} from '../../../app/translations';
 import qs from 'qs';
 import Dropzone from '../Core/dropzone';
 import __Core from './Core';
+import blank from './medias/blank.png';
 
 export const Core = __Core;
 
@@ -34,13 +35,16 @@ $(document).ajaxSend(function(event, state, ajax){
 		}
 		window.history.pushState({},"", url)
     }
+    if(ajax.isProgressing) {
+        $( "body" ).removeClass("ry-loading");
+    }
 });
 
 $(document).ajaxStart(function() {
-    $( "body" ).addClass("ry-loading");
+    $("body").addClass("ry-loading");
 });
 
-$(document).ajaxError(function(event, response) {
+$(document).ajaxError(function(event, response, ajax) {
     $( "body" ).removeClass("ry-loading");
     let errorText = (response.responseJSON && response.responseJSON.message) ? response.responseJSON.message : trans("Une erreur s'est produite");
     switch(response.status) {
@@ -53,13 +57,16 @@ $(document).ajaxError(function(event, response) {
 			errorText = trans("Cette session a expiré");
 			break;
 	}
-	if(response.status) {
+	if(response.status && !ajax.isProgressing) {
 		swal.fire({
 			title: (response.responseJSON && response.responseJSON.message) ? trans(`Désolé`) : trans('Désolé'),
 			text: errorText,
 			type: 'error'
 		});
-	}
+    }
+    else if(response.status && ajax.isProgressing) {
+        
+    }
 });
 
 $(window).bind("beforeunload",function(event) {
@@ -123,9 +130,12 @@ export class Img extends Component
     }
 
     componentDidMount() {
-        const broken = this.props.broken
+        const broken = this.props.broken ? this.props.broken : blank
         $(this.refs.img).on('error', function(){
-            this.src = broken;
+            if(!this.broken) {
+                this.src = broken;
+                this.broken = true;
+            }
         });
     }
 
@@ -220,6 +230,9 @@ class Ry extends Component {
                 url : $(this).data('dropzone-action'),
                 paramName : $(this).data('name'),
                 acceptedFiles: $(this).data('accepted-files') ? $(this).data('accepted-files') : ($(this).data('any-file')?null:'.png,.jpg,.jpeg,.gif'),
+                params: {
+                    id: $(this).data('mediable-id')
+                },
                 dictCancelUpload: trans('Annuler'),
                 dictCancelUploadConfirmation: trans("Êtes-vous certain d'annuler le transfert?"),
                 dictInvalidFileType: trans(`Ce type de fichier n'est pas pris en charge`),

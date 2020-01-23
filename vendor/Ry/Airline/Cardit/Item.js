@@ -319,7 +319,7 @@ class FullDetail extends Component
                 </div>
                 break;
             case 'delivery':
-                step = <Delivery readOnly={this.props.readOnly} data={this.props.data} consignmentEvents={this.props.deliveryConsignmentEvents} store={this.props.store}/>
+                step = <Delivery readOnly={this.props.readOnly} data={this.props.data} consignmentEvents={this.props.deliveryConsignmentEvents} store={this.props.store} readOnly={this.props.readOnly}/>
                 headStep = <div className="centerText">
                     {trans("Livraison des récipients à destination : :country_name - :iata - :airport_name", {
                         country_name : this.props.data.nsetup.handover_destination_location.country.nom,
@@ -330,19 +330,19 @@ class FullDetail extends Component
                 break;
             case 'assignation':
             //todo : choices available transport at same point
-                step = <Assignation key={`assignation-${this.props.data.id}-${this.state.transport_index}`} readOnly={this.props.readOnly} data={this.props.data} transportIndex={this.state.transport_index} selectTransports={this.state.select_transports[this.state.transport_index]} addTransport={this.addTransport} consignmentEvent="assignation" handleAllReceptacleTransportChange={transport=>this.handleAllReceptacleTransportChange(transport)} allTransport={this.state.allTransports[this.state.transport_index].assignation} store={this.props.store}/>
+                step = <Assignation key={`assignation-${this.props.data.id}-${this.state.transport_index}`} readOnly={this.props.readOnly} data={this.props.data} transportIndex={this.state.transport_index} selectTransports={this.state.select_transports[this.state.transport_index]} addTransport={this.addTransport} consignmentEvent="assignation" handleAllReceptacleTransportChange={transport=>this.handleAllReceptacleTransportChange(transport)} allTransport={this.state.allTransports[this.state.transport_index].assignation} store={this.props.store} readOnly={this.props.readOnly}/>
                 headStep = <div className="centerText">
                     {trans("Assignation : récipients assignés au vol :vol au départ de l'aéroport :country_name - :iata - :airport_name", {vol:this.props.data.nsetup.transports[this.state.transport_index].conveyence_reference, country_name:this.props.data.nsetup.transports[this.state.transport_index].departure_location.country.nom, iata:this.props.data.nsetup.transports[this.state.transport_index].departure_location.iata, airport_name:this.props.data.nsetup.transports[this.state.transport_index].departure_location.name})}
                 </div>
                 break;
             case 'departure':
-                step = <Status key={`departure-${this.props.data.id}-${this.state.transport_index}`} readOnly={this.props.readOnly} data={this.props.data} transportIndex={this.state.transport_index} selectTransports={this.state.select_transports[this.state.transport_index]} addTransport={this.addTransport} consignmentEvent="departure" handleAllReceptacleTransportChange={transport=>this.handleAllReceptacleTransportChange(transport)} allTransport={this.state.allTransports[this.state.transport_index].departure} store={this.props.store}/>
+                step = <Status key={`departure-${this.props.data.id}-${this.state.transport_index}`} readOnly={this.props.readOnly} data={this.props.data} transportIndex={this.state.transport_index} selectTransports={this.state.select_transports[this.state.transport_index]} addTransport={this.addTransport} consignmentEvent="departure" handleAllReceptacleTransportChange={transport=>this.handleAllReceptacleTransportChange(transport)} allTransport={this.state.allTransports[this.state.transport_index].departure} store={this.props.store} readOnly={this.props.readOnly}/>
                 headStep = <div className="centerText">
                     {trans("Départ des récipients sur le vol Nº:vol au départ de l'aéroport :country_name - :iata - :airport_name", {vol:this.props.data.nsetup.transports[this.state.transport_index].conveyence_reference, country_name:this.props.data.nsetup.transports[this.state.transport_index].departure_location.country.nom, iata:this.props.data.nsetup.transports[this.state.transport_index].departure_location.iata, airport_name:this.props.data.nsetup.transports[this.state.transport_index].departure_location.name})}
                 </div>
                 break;
             case 'arrival':
-                step = <Status key={`arrival-${this.props.data.id}-${this.state.transport_index}`} readOnly={this.props.readOnly} data={this.props.data} transportIndex={this.state.transport_index} selectTransports={this.state.select_transports[this.state.transport_index]} addTransport={this.addTransport} consignmentEvent="arrival" handleAllReceptacleTransportChange={transport=>this.handleAllReceptacleTransportChange(transport)} allTransport={this.state.allTransports[this.state.transport_index].arrival} store={this.props.store}/>
+                step = <Status key={`arrival-${this.props.data.id}-${this.state.transport_index}`} readOnly={this.props.readOnly} data={this.props.data} transportIndex={this.state.transport_index} selectTransports={this.state.select_transports[this.state.transport_index]} addTransport={this.addTransport} consignmentEvent="arrival" handleAllReceptacleTransportChange={transport=>this.handleAllReceptacleTransportChange(transport)} allTransport={this.state.allTransports[this.state.transport_index].arrival} store={this.props.store} readOnly={this.props.readOnly}/>
                 headStep = <div className="centerText">
                     {trans("Arrivée des récipients à l'aéroport :airport_name (:iata) - :country_name - Vol :vol", {vol:this.props.data.nsetup.transports[this.state.transport_index].conveyence_reference, airport_name:this.props.data.nsetup.transports[this.state.transport_index].arrival_location.name, iata:this.props.data.nsetup.transports[this.state.transport_index].arrival_location.iata, country_name:this.props.data.nsetup.transports[this.state.transport_index].arrival_location.country.nom})}
                 </div>
@@ -465,12 +465,12 @@ class Item extends Component
         return <React.Fragment>
             <Ry/>
             <tr>
-                <td className="green">{moment.utc(this.props.data.nsetup.preparation_datetime).local().format('DD/MM/YYYY')}</td>
+                <td className="green">{moment(this.props.data.nsetup.preparation_datetime_lt).format('DD/MM/YYYY')}</td>
                 <td className="green">{moment(this.props.data.nsetup.preparation_datetime_lt).format('HH:mm')}</td>
                 <td>
                     <div className="d-flex align-items-center justify-content-center">
                         {this.models('props.data.nsetup.exceptions.bgms')?<i className="fa fa-2x fa-exclamation-triangle ml-2 text-danger"></i>:null}
-                        <a href={`#dialog/cardit_file?id=${this.props.data.id}`} className="mr-2"><i className="icon-info"></i></a> {this.props.data.nsetup.document_number}
+                        {this.props.readOnly?<a href={`#dialog/cardit_file?id=${this.props.data.id}`} className="mr-2"><i className="icon-info"></i></a>:null} {this.props.data.nsetup.document_number}
                         {this.models('props.data.nsetup.exceptions.bgms')?null:<a href="#" onClick={this.detail} className="btnAccord"><i className={`fa ${this.state.open?'fa-sort-up':'fa-sort-down'}`}></i></a>}
                     </div>
                 </td>
@@ -587,7 +587,7 @@ class Item extends Component
                 <td className="p-2">{this.props.assignation(this.props.data)}</td>
                 <td className="p-2">{this.props.completed(this.props.data)}</td>
             </tr>
-            {(this.state.data && this.state.open)?<FullDetail data={this.state.data} consignmentEvents={this.state.consignment_events} deliveryConsignmentEvents={this.state.delivery_consignment_events} store={this.props.store}/>:null}
+            {(this.state.data && this.state.open)?<FullDetail data={this.state.data} consignmentEvents={this.state.consignment_events} deliveryConsignmentEvents={this.state.delivery_consignment_events} store={this.props.store} readOnly={this.props.readOnly}/>:null}
         </React.Fragment>
     }
 }
