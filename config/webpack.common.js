@@ -11,6 +11,14 @@ module.exports = {
     airline : './app/airline.js',
     agent : './app/agent.js'
   },
+  resolve: {
+    alias : {
+      ryvendor : path.resolve(__dirname, '../vendor/'),
+      ryapp : path.resolve(__dirname, '../app/'),
+      Theme : path.resolve(__dirname, '../app'),
+      ThemeMedias : path.resolve(__dirname, '../medias')
+    }
+  },
   plugins: [
     new CleanWebpackPlugin(['dist']),
     new HtmlWebpackPlugin({
