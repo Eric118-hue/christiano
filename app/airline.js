@@ -22,10 +22,16 @@ import __TUTO from '../vendor/Ry/Core/Tuto';
 import __CARDIT from '../vendor/Ry/Cardit';
 import __AIRLINE from '../vendor/Ry/Airline';
 import CarditDetail from '../app/Manager/Cardit/Detail';
+import Cart from '../app/Manager/Client/Cart';
 
 const Components = {
 	App : {
-		Cardit : CarditDetail
+		Cardit : CarditDetail,
+		Manager : {
+			Client : {
+				Cart : Cart
+			}
+		}
 	},
     Ry : {
         Admin : {

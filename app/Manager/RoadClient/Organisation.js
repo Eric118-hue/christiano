@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import Modelizer from '../../../vendor/Ry/Core/Modelizer';
-import './Organisation.scss';
+import '../Client/Organisation.scss';
 import trans from '../../translations';
 import $ from 'jquery';
 import Pricing from './Pricing';
@@ -9,18 +9,6 @@ const CUSTOMER_TYPES = {
     airline : trans('Compagnie aérienne'),
     gsa : trans('GSA'),
     road : trans('Road')
-}
-
-const TRANSPORTERS = {
-    road : 'transporters',
-    airline : 'airlines',
-    gsa : 'airlines'
-}
-
-const TRANSPORTER = {
-    road : 'transporter',
-    airline : 'airline',
-    gsa : 'airline'
 }
 
 class Autocomplete extends Component
@@ -202,7 +190,7 @@ class Organisation extends Component
     }
 
     componentDidMount() {
-        if(this.state.customer.facturable[TRANSPORTERS[this.state.customer.type]].length==0 && !this.props.readOnly && !this.props.pricing)
+        if(this.state.customer.facturable.transporters.length==0 && !this.props.readOnly && !this.props.pricing)
             this.addAirline()
         this.props.store.subscribe(()=>{
             const storeState = this.props.store.getState()
@@ -235,7 +223,7 @@ class Organisation extends Component
                     {CUSTOMER_TYPES[this.state.customer.type]} : {this.state.customer.facturable.name}
                 </div>
                 <ul className="list-unstyled ramification-airline" ref="organisation">
-                    {this.state.customer.facturable[TRANSPORTERS[this.state.customer.type]].map((airline, airline_index)=>airline.deleted?<input key={`airline-${airline_index}`} type="hidden" name={`deleted_airlines[${airline_index}][id]`} value={airline.id}/>:<li key={`airline-${airline_index}`}>
+                    {this.state.customer.facturable.transporters.map((airline, airline_index)=>airline.deleted?<input key={`airline-${airline_index}`} type="hidden" name={`deleted_airlines[${airline_index}][id]`} value={airline.id}/>:<li key={`airline-${airline_index}`}>
                         <div className="row">
                             <div className="col-8">
                                 <div className="alert font-24 d-flex justify-content-between">
@@ -266,9 +254,9 @@ class Organisation extends Component
                                     </div>
                                 </div>
                             </React.Fragment>:null}
-                            {(!this.props.readOnly &&  this.state.customer.facturable[TRANSPORTERS[this.state.customer.type]].filter(item=>!item.deleted).length>1)?<button className="btn" type="button" onClick={()=>{
+                            {(!this.props.readOnly &&  this.state.customer.facturable.transporters.filter(item=>!item.deleted).length>1)?<button className="btn" type="button" onClick={()=>{
                                 this.setState(state=>{
-                                    state.customer.facturable.airlines[airline_index].deleted = true
+                                    state.customer.facturable.transporters[airline_index].deleted = true
                                     return state
                                 })
                             }} type="button">
@@ -305,7 +293,7 @@ class Organisation extends Component
                                                         this.refs.pricing.updateCustomer(state.customer)
                                                     return state
                                                 })
-                                            }} readOnly={this.props.readOnly} value={edi[TRANSPORTER[this.state.customer.type]].id>0?edi.airline:null} param="q" placeholder={trans("Ajouter la compagnie aérienne")} endpoint={`/airlines?with[]=edi_code`} line={item=>`${item.edi_code}`} selection={item=><span>
+                                            }} readOnly={this.props.readOnly} value={edi.transporter.id>0?edi.transporter:null} param="q" placeholder={trans("Ajouter la compagnie aérienne")} endpoint={`/airlines?with[]=edi_code`} line={item=>`${item.edi_code}`} selection={item=><span>
                                                 <strong>{item.edi_code}</strong>
                                                 <input type="hidden" name={`airlines[${airline_index}][edis][${edi_index}][to_id]`} value={item.id}/>
                                             </span> } buttonClass="p-0"/>

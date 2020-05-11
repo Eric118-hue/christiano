@@ -7,7 +7,8 @@ import Pricing from '../Manager/Client/Pricing';
 
 const CUSTOMER_TYPES = {
     airline : trans('Compagnie aérienne'),
-    gsa : trans('GSA')
+    gsa : trans('GSA'),
+    road : trans('Road')
 }
 
 class Autocomplete extends Component

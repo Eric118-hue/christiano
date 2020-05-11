@@ -4,7 +4,7 @@ import Modelizer from '../../../vendor/Ry/Core/Modelizer';
 import $ from 'jquery';
 import MultiForm from '../../../vendor/Ry/Admin/User/Multiform';
 import Organisation from './Organisation';
-import Repository from './Repository';
+import Repository from '../Client/Repository';
 import swal from 'sweetalert2';
 
 class Form extends Component
@@ -17,7 +17,7 @@ class Form extends Component
             errors : [],
             errorMessages : [],
             oncevalidate : false,
-            type : this.models('props.data.row.type', 'airline'),
+            type : this.models('props.data.row.type', 'road'),
             name_search : this.models('props.data.row.facturable.name'),
             airlines : [],
             select_airline : false,

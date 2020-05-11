@@ -258,3 +258,17 @@ $max-menu-level: 5;
 		width: calc(100% - 290px) !important;
 	}
 }
+
+.row-danger td {
+	color: $danger !important;
+}
+
+.row-success td {
+	color: $success !important;
+}
+
+.table-mini-padding {
+	td, th {
+		padding: 0.5rem;
+	}
+}

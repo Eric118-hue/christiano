@@ -305,3 +305,11 @@ table#recipientTable td .transport-datepicker .btn {
 .vol-container .card-bureau .popup-consignment-datetime .form-group label {
 	width: auto;
 }
+
+.row-danger td {
+	color: $danger !important;
+}
+
+.row-success td {
+	color: $success !important;
+}

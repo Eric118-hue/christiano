@@ -7,6 +7,48 @@ import {Popup, PopupHeader, PopupBody} from '../../../../vendor/bs/bootstrap';
 import numeral from 'numeral';
 import Ry from '../../../../vendor/Ry/Core/Ry';
 
+class DownloadReady extends Component
+{
+    constructor(props) {
+        super(props)
+        this.state = {
+            media : {}
+        }
+        this.load = this.load.bind(this)
+    }
+
+    load(t=1) {
+        let data = {...this.props.data}
+        if(t)
+            data.try = 1
+        $.ajax({
+            url : this.props.href,
+            type : 'post',
+            data : data,
+            success : response=>{
+                if(response.id) {
+                    this.setState({
+                        media : response
+                    })
+                }
+                else {
+                    this.load(0)
+                }
+            }
+        })
+    }
+
+    componentDidMount() {
+        this.load()
+    }
+
+    render() {
+        return <a className={`btn btn-secondary ${this.models('state.media.fullpath', false)?'':'disabled'}`} href={this.state.media.fullpath} target="_blank"><i className="fa fa-file-xls"></i> {trans('Télécharger')}</a>
+    }
+}
+
+Modelizer(DownloadReady)
+
 class ReceptacleItem extends Component
 {
     render() {
@@ -168,6 +210,8 @@ export class CarditInvoice extends Component
             <td>
                 <a href={`#dialog/receptacle_invoices?cardit_id=${this.props.data.id}&customer_id=${this.props.cart.customer_id}`} className="text-info" data-display="modal-xl">{this.props.data.nsetup.document_number}</a>
             </td>
+            <td>{this.props.data.nsetup.consignment_category.code}</td>
+            <td>{this.props.data.nsetup.mail_class.code}</td>
             <td>{this.models('props.data.nsetup.handover_origin_location.iata')} - {this.models('props.data.nsetup.handover_destination_location.iata')}</td>
             <td>{this.props.data.nsetup.nreceptacles}</td>
             <td>{numeral(this.props.data.total_weight).format('0.0')}</td>
@@ -221,13 +265,16 @@ class Detail extends Component
                 },
                 success : response => {
                     this.setState(state=>{
-                        state.cardits = state.cardits.concat(response.data.data)
+                        let cardits = state.cardits.concat(response.data.data)
+                        cardits = Array.from(new Set(cardits.map(it=>it.id))).map(id=>cardits.find(it=>it.id==id))
+                        state.cardits = cardits
                         state.page = response.data.current_page
                         state.last_page = response.data.last_page
                         return state
                     })
                     this.progressRunning = false
-                    this.progress()
+                    if(this.state.page<=this.state.last_page)
+                        this.progress()
                 }
             })
         }
@@ -298,7 +345,15 @@ class Detail extends Component
             }
         })
         return <div className="p-3">
-            <button className="btn btn-primary" type="button" onClick={this.props.back}>{trans('Retour')}</button>
+            <div className="row justify-content-between">
+                <button className="btn btn-primary" type="button" onClick={this.props.back}>{trans('Retour')}</button>
+                <DownloadReady href={trans('/cart_cardits')} data={{
+                    format:'xlsx',
+                    cart_id : this.props.data.id,
+                    airline_id : this.props.data.airline.id,
+                    customer_id : this.props.data.customer_id
+                }}/>
+            </div>
             <div className="mt-3 mb-3">
                 <label>{trans('Pré-facture Nº')} : </label> 
                 <span className="font-weight-bold text-orange">{this.props.data.code}</span>
@@ -315,6 +370,8 @@ class Detail extends Component
                         <th>{trans('CARDIT du')}</th>
                         <th>{trans('à')}</th>
                         <th>{trans("Nº d'expédition")}</th>
+                        <th>{trans("Cat.")}</th>
+                        <th>{trans("Class")}</th>
                         <th>{trans('Route')}</th>
                         <th>{trans('Qté')}</th>
                         <th>{trans('Poids')}</th>
@@ -329,10 +386,10 @@ class Detail extends Component
                 </tbody>
                 <tfoot>
                     <tr className={this.state.page<this.state.last_page?'':'d-none'}>
-                        <td ref="overscroller" colSpan="14" className={`position-relative py-3`}><i className="spinner"></i></td>
+                        <td ref="overscroller" colSpan="16" className={`position-relative py-3`}><i className="spinner"></i></td>
                     </tr>
                     <tr>
-                        <td colSpan="4" className="text-right">{trans('Total')}</td>
+                        <td colSpan="6" className="text-right">{trans('Total')}</td>
                         <td className="bg-warning">{total_nreceptacles}</td>
                         <td className="bg-warning">{numeral(total_wreceptacles).format('0.0')}</td>
                         <td></td>
