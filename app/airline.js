@@ -23,6 +23,11 @@ import __CARDIT from '../vendor/Ry/Cardit';
 import __AIRLINE from '../vendor/Ry/Airline';
 import CarditDetail from '../app/Manager/Cardit/Detail';
 import Cart from '../app/Manager/Client/Cart';
+import CarditList from './Air/Cardit/List';
+import Fwb from './Air/Fwb';
+import Amd from './Amd';
+
+__AIRLINE.Cardit.List = CarditList
 
 const Components = {
 	App : {
@@ -31,7 +36,9 @@ const Components = {
 			Client : {
 				Cart : Cart
 			}
-		}
+		},
+		Fwb,
+		Amd
 	},
     Ry : {
         Admin : {

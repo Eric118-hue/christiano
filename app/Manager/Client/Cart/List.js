@@ -139,7 +139,7 @@ export class List extends BaseCart
                     {this.state.data.map((item, key)=><tr key={`row=-${key}`}>
                         <td>{moment.utc(item.created_at).format('MMMM YYYY')}</td>
                         <td>{item.code}</td>
-                        <td>{item.airline.edi_code} {item.airline.name}</td>
+                        {item.airline?<td>{item.airline.edi_code} {item.airline.name}</td>:<td>{item.transporter.name}</td>}
                         <td>{numeral(item.total_weight).format('0.0')}</td>
                         <td>{item.currency.iso_code}</td>
                         <td>{numeral(item.total_ht).format('0.00')}</td>

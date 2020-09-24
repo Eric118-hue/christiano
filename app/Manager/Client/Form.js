@@ -4,6 +4,7 @@ import Modelizer from '../../../vendor/Ry/Core/Modelizer';
 import $ from 'jquery';
 import MultiForm from '../../../vendor/Ry/Admin/User/Multiform';
 import Organisation from './Organisation';
+import RouteOrganisation from './RouteOrganisation';
 import Repository from './Repository';
 import swal from 'sweetalert2';
 
@@ -225,37 +226,69 @@ class Form extends Component
                             <div className={`tab-pane ${this.state.tab=='client-account'?'active':''} first-section`}
                             id={`client-account`} role="tabpanel" aria-labelledby="client-account-tab">
                                 <div className="row">
-                                    <div className="col-md-2">
-                                        <div className="custom-control custom-radio">
-                                            <input type="radio" id="type-airline" name="type" className="custom-control-input" onChange={event=>this.handleTypeChange(event, 'airline')} checked={this.state.type=='airline'} value="airline"/>
-                                            <label className="custom-control-label" htmlFor="type-airline">{trans('Compagnie aérienne')}</label>
-                                        </div>
-                                    </div>
-                                    <div className="col-md-2">
-                                        <div className="custom-control custom-radio">
-                                            <input type="radio" id="type-gsa" name="type" className="custom-control-input" onChange={event=>this.handleTypeChange(event, 'gsa')} checked={this.state.type=='gsa'} value="gsa"/>
-                                            <label className="custom-control-label" htmlFor="type-gsa">{trans('GSA')}</label>
-                                        </div>
-                                    </div>
-                                    <div className="col-md-2">
-                                        <div className="custom-control custom-radio">
-                                            <input type="radio" id="type-road" name="type" className="custom-control-input" onChange={event=>this.handleTypeChange(event, 'road')} checked={this.state.type=='road'} value="road"/>
-                                            <label className="custom-control-label" htmlFor="type-road">{trans('Road')}</label>
-                                        </div>
-                                    </div>
                                     <div className="col-md-6">
-                                        {this.state.type=='airline'?<div className="form-group position-relative">
+                                        <div className="row">
+                                            <div className="col-md-4">
+                                                <div className="custom-control custom-radio">
+                                                    <input type="radio" id="type-airline" name="type" className="custom-control-input" onChange={event=>this.handleTypeChange(event, 'airline')} checked={this.state.type=='airline'} value="airline"/>
+                                                    <label className="custom-control-label" htmlFor="type-airline">{trans('Compagnie aérienne')}</label>
+                                                </div>
+                                            </div>
+                                            <div className="col-md-4">
+                                                <div className="custom-control custom-radio">
+                                                    <input type="radio" id="type-gsa" name="type" className="custom-control-input" onChange={event=>this.handleTypeChange(event, 'gsa')} checked={this.state.type=='gsa'} value="gsa"/>
+                                                    <label className="custom-control-label" htmlFor="type-gsa">{trans('GSA')}</label>
+                                                </div>
+                                            </div>
+                                            <div className="col-md-4">
+                                                <div className="custom-control custom-radio">
+                                                    <input type="radio" id="type-road" name="type" className="custom-control-input" onChange={event=>this.handleTypeChange(event, 'road')} checked={this.state.type=='road'} value="road"/>
+                                                    <label className="custom-control-label" htmlFor="type-road">{trans('Road')}</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {this.state.type=='airline'?<div className="form-group position-relative mt-2">
                                             <label className="control-label">{trans('Nom')}</label>
                                             <input type="text" value={this.state.name_search} onChange={this.handleSearch} onClick={this.handleSearch} name="name" autoComplete="bistrict" required className={`form-control ${this.state.errors.indexOf('no_airline_match')>=0?'error':''}`}/>
                                             <div className={`dropdown-menu overflow-auto w-100 ${this.state.select_airline?'show':''}`} style={{maxHeight:200}}>
                                                 {this.state.airlines.map(airline=><a key={`airline-${airline.id}`} className="dropdown-item" href="#" onClick={e=>this.handleSelectAirline(e, airline)}>{airline.name}</a>)}
                                             </div>
-                                        </div>:<div className="form-group position-relative">
+                                        </div>:<div className="form-group position-relative mt-2">
                                             <label className="control-label">{trans('Nom')}</label>
                                             <input type="text" className="form-control" value={this.state.name_search} name="name" autoComplete="bistrict" onChange={this.handleNameChange} required/>
                                         </div>}
                                     </div>
-                                    <div className="col-md-12">
+                                    <div className="col-md-6">
+                                        <label className="control-label">&nbsp;</label>
+                                        <div className="row border-left">
+                                            <div className="col-md-6">
+                                                <div className="form-group">
+                                                    <label className="control-label">{trans('Préfixe compagnie')}</label>
+                                                    <input type="number" className="form-control" name="nsetup[lta][prefix]" defaultValue={this.models('props.data.row.nsetup.lta.prefix')}/>
+                                                </div>
+                                            </div>
+                                            <div className="col-md-6">
+                                                <label className="control-label">
+                                                    {trans('FWB')}
+                                                </label>
+                                                <div className="row border-top pt-1">
+                                                    <div className="col-md-6">
+                                                        <div className="custom-control custom-radio">
+                                                            <input type="radio" id="nsetup-fwb-1" name="nsetup[fwb]" className="custom-control-input" defaultChecked={this.models('props.data.row.nsetup.fwb')==1} value="1"/>
+                                                            <label className="custom-control-label" htmlFor="nsetup-fwb-1">{trans('Oui')}</label>
+                                                        </div>
+                                                    </div>
+                                                    <div className="col-md-6">
+                                                        <div className="custom-control custom-radio">
+                                                            <input type="radio" id="nsetup-fwb-0" name="nsetup[fwb]" className="custom-control-input" defaultChecked={this.models('props.data.row.nsetup.fwb')!=1} value="0"/>
+                                                            <label className="custom-control-label" htmlFor="nsetup-fwb-0">{trans('Non')}</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="col-md-12 mt-2">
                                         <MultiForm data={this.props.data} remove={this.removeContact}/>
                                     </div>
                                     <div className="col-md-12">
@@ -321,12 +354,12 @@ class Form extends Component
                                                         htmlFor="contacts-fixe-ndetail-value">{trans("Téléphone")}</label>
                                                     <div className="col-md-8">
                                                         <input type="text"
-                                                            defaultValue={this.models("props.data.row.facturable.contacts.fixe.ndetail.value")}
+                                                            defaultValue={this.models("props.data.row.facturable.contacts.fixe_phone.ndetail.value")}
                                                             className="form-control" id="contacts-fixe-ndetail-value"
                                                             name="contacts[fixe][ndetail][value]"/>
                                                         <input type="hidden" name="contacts[fixe][contact_type]"
-                                                            defaultValue={this.models("props.data.row.facturable.contacts.fixe.ndetail.type", 'phone')}/>
-                                                        <input type="hidden" name="contacts[fixe][id]" value={this.models("props.data.row.facturable.contacts.fixe.id")}/>
+                                                            defaultValue={this.models("props.data.row.facturable.contacts.fixe_phone.ndetail.type", 'phone')}/>
+                                                        <input type="hidden" name="contacts[fixe][id]" value={this.models("props.data.row.facturable.contacts.fixe_phone.id")}/>
                                                     </div>
                                                 </div>
                                                 <div className="form-group row">
@@ -334,13 +367,13 @@ class Form extends Component
                                                         htmlFor="contacts-fax-ndetail-value">{trans("Fax")}</label>
                                                     <div className="col-md-8">
                                                         <input type="text"
-                                                            defaultValue={this.models('props.data.row.facturable.contacts.fax.ndetail.value','')}
+                                                            defaultValue={this.models('props.data.row.facturable.contacts.fax_fax.ndetail.value','')}
                                                             className="form-control" id="contacts-fax-ndetail-value"
                                                             name="contacts[fax][ndetail][value]"/>
                                                         <input type="hidden" name="contacts[fax][contact_type]"
-                                                            defaultValue={this.models("props.data.row.facturable.contacts.fax.ndetail.type", 'fax')}/>
+                                                            defaultValue={this.models("props.data.row.facturable.contacts.fax_fax.ndetail.type", 'fax')}/>
                                                         <input type="hidden" name="contacts[fax][id]"
-                                                            defaultValue={this.models("props.data.row.facturable.contacts.fax.id", '')}/>
+                                                            defaultValue={this.models("props.data.row.facturable.contacts.fax_fax.id", '')}/>
                                                     </div>
                                                 </div>
                                                 <div className="form-group row">
@@ -348,13 +381,13 @@ class Form extends Component
                                                         htmlFor="contacts-email-ndetail-value">{trans("Email")}</label>
                                                     <div className="col-md-8">
                                                         <input type="text" 
-                                                            defaultValue={this.models("props.data.row.facturable.contacts.email.ndetail.value", '')}
+                                                            defaultValue={this.models("props.data.row.facturable.contacts.email_email.ndetail.value", '')}
                                                             className="form-control" id="contacts-email-ndetail-value"
                                                             name="contacts[email][ndetail][value]"/>
                                                         <input type="hidden" name="contacts[email][contact_type]"
-                                                            defaultValue={this.models("props.data.row.facturable.contacts.email.ndetail.type", 'email')}/>
+                                                            defaultValue={this.models("props.data.row.facturable.contacts.email_email.ndetail.type", 'email')}/>
                                                         <input type="hidden" name="contacts[email][id]"
-                                                            defaultValue={this.models("props.data.row.facturable.contacts.email.id", '')}/>
+                                                            defaultValue={this.models("props.data.row.facturable.contacts.email_email.id", '')}/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -435,11 +468,11 @@ class Form extends Component
                                                 </div>
                                             </div>
                                         </div>
-                                        <Repository data={this.props.data}/>
+                                        <Repository data={this.props.data} type={this.state.type}/>
                                     </div>
                                 </div>
                             </div>
-                            {this.props.data.row.id?<Organisation tabbed={true} ref="organisation" data={this.props.data} store={this.props.store}/>:null}
+                            {this.props.data.row.id?(this.state.type=='road'?<RouteOrganisation tabbed={true} ref="organisation" data={this.props.data} store={this.props.store}/>:<Organisation tabbed={true} ref="organisation" data={this.props.data} store={this.props.store}/>):null}
                         </div>
                         <input type="hidden" name="id" value={this.models('props.data.row.id')}/>
                         <div className="d-flex justify-content-end">

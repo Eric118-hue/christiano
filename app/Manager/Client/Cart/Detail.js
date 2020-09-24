@@ -212,7 +212,7 @@ export class CarditInvoice extends Component
             </td>
             <td>{this.props.data.nsetup.consignment_category.code}</td>
             <td>{this.props.data.nsetup.mail_class.code}</td>
-            <td>{this.models('props.data.nsetup.handover_origin_location.iata')} - {this.models('props.data.nsetup.handover_destination_location.iata')}</td>
+            <td>{this.models('props.data.nsetup.handover_origin_location.iata')} - {this.models('props.data.nsetup.handover_destination_location.iata', this.models('props.data.nsetup.handover_destination_location.cardit'))}</td>
             <td>{this.props.data.nsetup.nreceptacles}</td>
             <td>{numeral(this.props.data.total_weight).format('0.0')}</td>
             <td>{this.props.cart.currency.iso_code}</td>
@@ -260,7 +260,7 @@ class Detail extends Component
                 data : {
                     json : true,
                     cart_id : this.props.data.id,
-                    airline_id : this.props.data.airline.id,
+                    airline_id : this.models('props.data.airline.id', this.models('props.data.transporter.id')),
                     customer_id : this.props.data.customer_id
                 },
                 success : response => {
@@ -350,7 +350,7 @@ class Detail extends Component
                 <DownloadReady href={trans('/cart_cardits')} data={{
                     format:'xlsx',
                     cart_id : this.props.data.id,
-                    airline_id : this.props.data.airline.id,
+                    airline_id : this.models('props.data.airline.id', this.models('props.data.transporter.id')),
                     customer_id : this.props.data.customer_id
                 }}/>
             </div>
@@ -358,7 +358,7 @@ class Detail extends Component
                 <label>{trans('Pré-facture Nº')} : </label> 
                 <span className="font-weight-bold text-orange">{this.props.data.code}</span>
                 <label className="ml-5">{trans('Compagnie aérienne')} : </label>
-                <span className="font-weight-bold text-orange"> {this.props.data.airline.edi_code} {this.props.data.airline.name}</span>
+                {this.models('props.data.airline')?<span className="font-weight-bold text-orange"> {this.props.data.airline.edi_code} {this.props.data.airline.name}</span>:<span className="font-weight-bold text-orange"> {this.props.data.transporter.name}</span>}
                 <label className="ml-5">{trans('Mois')} : </label> 
                 <span className="font-weight-bold text-orange">{moment.utc(this.props.data.created_at).format('MMMM YYYY')}</span>
                 <label className="ml-5">{trans("Nombre d'expéditions")} : </label> 

@@ -57,11 +57,23 @@ class List extends NavigableModel
     }
 
     item(customer, key) {
+        let badge = null
+        switch(customer.type) {
+            case 'airline':
+                badge = <div className={`badge badge-rose`}>{trans('Compagnie aérienne')}</div>
+                break;
+            case 'gsa':
+                badge = <div className={`badge badge-blue`}>{trans('GSA')}</div>
+                break;
+            case 'road':
+                badge = <div className={`badge badge-turquoise`}>{trans('Road')}</div>
+                break;
+        }
         return <tr key={`customer-${customer.id}`}>
             <td>{customer.id}</td>
             <td>{customer.facturable.name}</td>
             <td>
-                {customer.type=='airline'?<div className={`badge badge-rose`}>{trans('Compagnie aérienne')}</div>:<div className={`badge badge-blue`}>{trans('GSA')}</div>}
+                {badge}
             </td>
             <td className="text-center">
                 {customer.type=='airline'?customer.facturable.icao_code:'--'}
@@ -75,6 +87,12 @@ class List extends NavigableModel
             <td className="text-center">
                 <label className="fancy-checkbox">
                     <input type="checkbox" checked={customer.nsetup.resdit?true:false} onChange={e=>this.handleSetup(e, key, 'resdit')} value="1"/>
+                    <span></span>
+                </label>
+            </td>
+            <td className="text-center">
+                <label className="fancy-checkbox">
+                    <input type="checkbox" checked={customer.nsetup.fwb==1?true:false} onChange={e=>this.handleSetup(e, key, 'fwb')} value="1"/>
                     <span></span>
                 </label>
             </td>
@@ -135,6 +153,7 @@ class List extends NavigableModel
                                 <th>{trans('Code IATA')}</th>
                                 <th>{trans('Code GXS')}</th>
                                 <th className="text-uppercase">{trans('RESDIT')}</th>
+                                <th className="text-uppercase">{trans('AWB/FWB')}</th>
                                 <th className="text-uppercase">{trans('Facturation')}</th>
                                 <th className="text-uppercase">{trans('Stats')}</th>
                                 <th></th>

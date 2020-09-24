@@ -301,10 +301,10 @@ class Form extends AdminUser
                                             </div>
                                             <label className="col-md-2 text-right pt-2">{trans("Téléphone")}</label>
                                             <div className="form-group col-md-4">
-                                                <input type="text" required defaultValue={this.models('props.data.contacts.bureau.ndetail.value')} className="form-control" id="contacts-0-ndetail-value" name="contacts[bureau][ndetail][value]" />
+                                                <input type="text" required defaultValue={this.models('props.data.contacts.bureau_phone.ndetail.value')} className="form-control" id="contacts-0-ndetail-value" name="contacts[bureau][ndetail][value]" />
                                                 <input type="hidden" name="contacts[bureau][contact_type]" defaultValue={'phone'}/>
                                                 <input type="hidden" name="contacts[bureau][type]" defaultValue={'bureau'}/>
-                                                <input type="hidden" name="contacts[bureau][id]" defaultValue={this.models('props.data.contacts.bureau.id')}/>
+                                                <input type="hidden" name="contacts[bureau][id]" defaultValue={this.models('props.data.contacts.bureau_phone.id')}/>
                                             </div>
                                             <label className="col-md-2 text-right pt-2">{trans("Code postal")}</label>
                                             <div className="form-group col-md-4">
@@ -312,10 +312,10 @@ class Form extends AdminUser
                                             </div>
                                             <label className="col-md-2 text-right pt-2">{trans("Fax")}</label>
                                             <div className="form-group col-md-4">
-                                                <input type="text" className="form-control" id="contacts-1-ndetail-value" name="contacts[fax][ndetail][value]" defaultValue={this.models('props.data.contacts.fax.ndetail.value')}/>
+                                                <input type="text" className="form-control" id="contacts-1-ndetail-value" name="contacts[fax][ndetail][value]" defaultValue={this.models('props.data.contacts.fax_fax.ndetail.value')}/>
                                                 <input type="hidden" name="contacts[fax][contact_type]" defaultValue={'phone'}/>
                                                 <input type="hidden" name="contacts[fax][type]" defaultValue={'fax'}/>
-                                                <input type="hidden" name="contacts[fax][id]" defaultValue={this.models('props.data.contacts.fax.id')}/>
+                                                <input type="hidden" name="contacts[fax][id]" defaultValue={this.models('props.data.contacts.fax_fax.id')}/>
                                             </div>
                                             <label className="col-md-2 text-right pt-2">{trans("Boîte postale")}</label>
                                             <div className="form-group col-md-4">

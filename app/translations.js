@@ -156,3 +156,20 @@ export const genders = {
     mrs : trans('Mme'),
     ms : trans('Mlle')
 };
+
+export function plural(word, params, ifplural=null, ifnone=null){
+    let number = 0
+    if(typeof params == 'object')
+        number = params.n
+    else {
+        number = params
+        params = {n:number}
+    }
+    if(number==0 && ifnone) {
+        return trans(ifnone, params)
+    }
+    const isPlural = (number>1)
+    if(isPlural)
+        return ifplural ? trans(ifplural, params) : `${trans(word, params)}s`
+    return trans(word, params)
+}

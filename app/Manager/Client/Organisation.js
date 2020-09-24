@@ -1,126 +1,28 @@
 import React, {Component} from 'react';
-import Modelizer from '../../../vendor/Ry/Core/Modelizer';
+import Modelizer from 'ryvendor/Ry/Core/Modelizer';
 import './Organisation.scss';
-import trans from '../../translations';
+import trans from 'ryapp/translations';
 import $ from 'jquery';
 import Pricing from './Pricing';
+import Autocomplete from './Autocomplete';
 
-const CUSTOMER_TYPES = {
+export const CUSTOMER_TYPES = {
     airline : trans('Compagnie aérienne'),
     gsa : trans('GSA'),
     road : trans('Road')
 }
 
-const TRANSPORTERS = {
+export const TRANSPORTERS = {
     road : 'transporters',
     airline : 'airlines',
     gsa : 'airlines'
 }
 
-const TRANSPORTER = {
+export const TRANSPORTER = {
     road : 'transporter',
     airline : 'airline',
     gsa : 'airline'
 }
-
-class Autocomplete extends Component
-{
-    constructor(props) {
-        super(props)
-        this.state = {
-            search : '',
-            show : false,
-            items : [],
-            selection : this.props.value
-        }
-        this.handleSelection = this.handleSelection.bind(this)
-        this.handleSearch = this.handleSearch.bind(this)
-        this.toggle = this.toggle.bind(this)
-    }
-
-    toggle() {
-        this.setState({
-            show : !this.state.show
-        })
-    }
-
-    handleSelection(event, item) {
-        event.preventDefault()
-        this.setState({
-            search : '',
-            show : false,
-            selection : item
-        })
-        if(this.props.onChange) {
-            this.props.onChange(item)
-        }
-        return false
-    }
-
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        if(!this.props.readOnly)
-            this.refs.input.focus()
-        if(this.models('props.value.id', false) && this.cast(prevProps, 'value.id')!=this.models('props.value.id')) {
-            this.setState({
-                selection : this.props.value
-            })
-        }
-    }
-
-    handleSearch(event) {
-        const value = event.target.value
-        this.setState({
-            search : value
-        })
-
-        if(value.length>1) {
-            if(this.ax) {
-                this.ax.abort()
-            }
-            let data = {
-                json : true
-            }
-            data[this.props.param?this.props.param:'q'] = value
-            this.ax = $.ajax({
-                url : this.props.endpoint,
-                data : data,
-                success : response=>{
-                    if(response.data && 'data' in response.data) {
-                        this.setState({
-                            show : true,
-                            items : response.data.data
-                        })
-                    }
-                    else {
-                        this.setState({
-                            show : true,
-                            items : response
-                        })
-                    }
-                }
-            })
-        }
-    }
-
-    render() {
-        return <React.Fragment>
-            {this.state.selection?this.props.selection(this.state.selection):<span onClick={this.toggle} className="mouse-pointable">{this.props.placeholder}<input type="hidden" value="" required/></span>}
-            {this.props.readOnly?null:<React.Fragment>
-                <button className={`btn ${this.props.buttonClass} ${this.state.show?'btn-outline-dark':''}`} type="button" onClick={this.toggle}><i className="fa fa-pencil-alt text-body"></i></button>
-                <div className={`dropdown-menu w-100 ${this.state.show?'show':''}`}>
-                    <div className="form-group pl-2 pr-2">
-                        <input type="text" ref="input" className="form-control" placeholder={this.props.placeholder} value={this.state.search} onChange={this.handleSearch}/>
-                    </div>
-                    <div className="overflow-auto" style={{maxHeight:200}}>
-                        {this.state.items.map(item=><a key={`${this.id}-${item.id}`} className="dropdown-item" href="#" onClick={e=>this.handleSelection(e, item)}>{this.props.line(item)}</a>)}
-                    </div>
-                </div>
-            </React.Fragment>}
-        </React.Fragment>
-    }
-}
-
-Modelizer(Autocomplete)
 
 class Organisation extends Component
 {
@@ -142,7 +44,7 @@ class Organisation extends Component
 
     addRoute(airline_index, edi_index) {
         this.setState(state=>{
-            state.customer.facturable.airlines[airline_index].edis[edi_index].routes.push({
+            state.customer.facturable[TRANSPORTERS[state.customer.type]][airline_index].edis[edi_index].routes.push({
                 departure : {},
                 arrival : {}
             })
@@ -152,42 +54,15 @@ class Organisation extends Component
 
     addAgent(airline_index, edi_index) {
         this.setState(state=>{
-            state.customer.facturable.airlines[airline_index].edis[edi_index].agents.push({})
+            state.customer.facturable[TRANSPORTERS[state.customer.type]][airline_index].edis[edi_index].agents.push({})
             return state
         })
     }
 
     addAirline() {
         this.setState(state=>{
-            state.customer.facturable.airlines.push({
-                edis : [{
-                    departure : {},
-                    airline : {},
-                    agents : [{
-
-                    }],
-                    routes : [{
-                        departure : {},
-                        arrival : {},
-                        nsetup : {}
-                    }]
-                }]
-            })
-            return state
-        })
-    }
-
-    addEdi(airline_index) {
-        this.setState(state=>{
-            state.customer.facturable.airlines[airline_index].edis.push({
+            let proto = {
                 departure : {},
-                airline : {
-                    id: state.customer.facturable.airlines[airline_index].id,
-                    iata_code: state.customer.facturable.airlines[airline_index].iata_code,
-                    icao_code: state.customer.facturable.airlines[airline_index].icao_code,
-                    edi_code: state.customer.facturable.airlines[airline_index].edi_code,
-                    name: state.customer.facturable.airlines[airline_index].name
-                },
                 agents : [{
 
                 }],
@@ -196,7 +71,44 @@ class Organisation extends Component
                     arrival : {},
                     nsetup : {}
                 }]
+            }
+            proto[TRANSPORTER[state.customer.type]] = {}
+            state.customer.facturable[TRANSPORTERS[state.customer.type]].push({
+                edis : [proto]
             })
+            return state
+        })
+    }
+
+    addEdi(airline_index) {
+        this.setState(state=>{
+            let proto = {
+                departure : {},
+                agents : [{
+
+                }],
+                routes : [{
+                    departure : {},
+                    arrival : {},
+                    nsetup : {}
+                }]
+            }
+            if(state.customer.type=='road') {
+                proto[TRANSPORTER[state.customer.type]] = {
+                    id: state.customer.facturable[TRANSPORTERS[state.customer.type]][airline_index].id,
+                    name: state.customer.facturable[TRANSPORTERS[state.customer.type]][airline_index].name
+                }
+            }
+            else {
+                proto[TRANSPORTER[state.customer.type]] = {
+                    id: state.customer.facturable[TRANSPORTERS[state.customer.type]][airline_index].id,
+                    iata_code: state.customer.facturable[TRANSPORTERS[state.customer.type]][airline_index].iata_code,
+                    icao_code: state.customer.facturable[TRANSPORTERS[state.customer.type]][airline_index].icao_code,
+                    edi_code: state.customer.facturable[TRANSPORTERS[state.customer.type]][airline_index].edi_code,
+                    name: state.customer.facturable[TRANSPORTERS[state.customer.type]][airline_index].name
+                }
+            }
+            state.customer.facturable[TRANSPORTERS[state.customer.type]][airline_index].edis.push(proto)
             return state
         })
     }
@@ -241,11 +153,11 @@ class Organisation extends Component
                                 <div className="alert font-24 d-flex justify-content-between">
                                     <Autocomplete onChange={item=>{
                                                 this.setState(state=>{
-                                                    state.customer.facturable.airlines[airline_index].id = item.id
-                                                    state.customer.facturable.airlines[airline_index].name = item.name
-                                                    state.customer.facturable.airlines[airline_index].icao_code = item.icao_code
-                                                    state.customer.facturable.airlines[airline_index].iata_code = item.iata_code
-                                                    state.customer.facturable.airlines[airline_index].adresse = item.adresse
+                                                    state.customer.facturable[TRANSPORTERS[state.customer.type]][airline_index].id = item.id
+                                                    state.customer.facturable[TRANSPORTERS[state.customer.type]][airline_index].name = item.name
+                                                    state.customer.facturable[TRANSPORTERS[state.customer.type]][airline_index].icao_code = item.icao_code
+                                                    state.customer.facturable[TRANSPORTERS[state.customer.type]][airline_index].iata_code = item.iata_code
+                                                    state.customer.facturable[TRANSPORTERS[state.customer.type]][airline_index].adresse = item.adresse
                                                     if(this.refs.pricing)
                                                         this.refs.pricing.updateCustomer(state.customer)
                                                     return state
@@ -268,7 +180,7 @@ class Organisation extends Component
                             </React.Fragment>:null}
                             {(!this.props.readOnly &&  this.state.customer.facturable[TRANSPORTERS[this.state.customer.type]].filter(item=>!item.deleted).length>1)?<button className="btn" type="button" onClick={()=>{
                                 this.setState(state=>{
-                                    state.customer.facturable.airlines[airline_index].deleted = true
+                                    state.customer.facturable[TRANSPORTERS[state.customer.type]][airline_index].deleted = true
                                     return state
                                 })
                             }} type="button">
@@ -284,7 +196,7 @@ class Organisation extends Component
                                         <div className="alert d-flex justify-content-between p-2">
                                             <Autocomplete readOnly={this.props.readOnly} onChange={item=>{
                                                 this.setState(state=>{
-                                                    state.customer.facturable.airlines[airline_index].edis[edi_index].departure = item
+                                                    state.customer.facturable[TRANSPORTERS[state.customer.type]][airline_index].edis[edi_index].departure = item
                                                     if(this.refs.pricing)
                                                         this.refs.pricing.updateCustomer(state.customer)
                                                     return state
@@ -300,7 +212,7 @@ class Organisation extends Component
                                         <div className="alert d-flex justify-content-between p-2">
                                             <Autocomplete onChange={item=>{
                                                 this.setState(state=>{
-                                                    state.customer.facturable.airlines[airline_index].edis[edi_index].airline = item
+                                                    state.customer.facturable[TRANSPORTERS[state.customer.type]][airline_index].edis[edi_index].airline = item
                                                     if(this.refs.pricing)
                                                         this.refs.pricing.updateCustomer(state.customer)
                                                     return state
@@ -322,7 +234,7 @@ class Organisation extends Component
                                     <input type="hidden" name={`airlines[${airline_index}][edis][${edi_index}][id]`} value={edi.id}/>
                                     {(!this.props.readOnly && airline.edis.filter(item=>!item.deleted).length>1)?<button className="btn" onClick={()=>{
                                         this.setState(state=>{
-                                            state.customer.facturable.airlines[airline_index].edis[edi_index].deleted = true
+                                            state.customer.facturable[TRANSPORTERS[state.customer.type]][airline_index].edis[edi_index].deleted = true
                                             return state
                                         })
                                     }} type="button" style={{right:24}}>
@@ -336,13 +248,13 @@ class Organisation extends Component
                                                 <div className="alert d-flex justify-content-between mb-0 p-2">
                                                     <Autocomplete onChange={item=>{
                                                 this.setState(state=>{
-                                                    state.customer.facturable.airlines[airline_index].edis[edi_index].agents[agent_index] = item
+                                                    state.customer.facturable[TRANSPORTERS[state.customer.type]][airline_index].edis[edi_index].agents[agent_index] = item
                                                     if(this.refs.pricing)
                                                         this.refs.pricing.updateCustomer(state.customer)
                                                     return state
                                                 })
                                             }} readOnly={this.props.readOnly} value={agent.id>0?agent:null} param="s" placeholder={trans('Ajouter un agent')} endpoint={`/agents?edi_id=${this.cast(edi, 'departure.id')}`} line={item=>`${item.name} (${item.airport.iata})`} selection={item=><div>
-                                                        <i className="fa fa-user"></i> Agent <strong>{item.airport.iata}</strong>
+                                                        <i className="fa fa-user"></i> {trans('Agent')} <strong>{item.airport.iata}</strong>
                                                         <br/>
                                                         <span className="text-body">
                                                             {item.profile.gender_label} {item.name}
@@ -352,7 +264,7 @@ class Organisation extends Component
                                                 </div>
                                                 {(!this.props.readOnly &&  edi.agents.filter(item=>!item.deleted).length>1)?<button className="btn position-absolute" type="button" onClick={()=>{
                                                     this.setState(state=>{
-                                                        state.customer.facturable.airlines[airline_index].edis[edi_index].agents[agent_index].deleted = true
+                                                        state.customer.facturable[TRANSPORTERS[state.customer.type]][airline_index].edis[edi_index].agents[agent_index].deleted = true
                                                         return state
                                                     })
                                                 }} style={{right:-40,top:0,zIndex:100}}>
@@ -372,7 +284,7 @@ class Organisation extends Component
                                                         <div className="alert d-flex justify-content-between p-2">
                                                             <Autocomplete onChange={item=>{
                                                 this.setState(state=>{
-                                                    state.customer.facturable.airlines[airline_index].edis[edi_index].routes[route_index].departure = item
+                                                    state.customer.facturable[TRANSPORTERS[state.customer.type]][airline_index].edis[edi_index].routes[route_index].departure = item
                                                     if(this.refs.pricing)
                                                         this.refs.pricing.updateCustomer(state.customer)
                                                     return state
@@ -387,7 +299,7 @@ class Organisation extends Component
                                                         <div className="alert d-flex justify-content-between p-2">
                                                             <Autocomplete onChange={item=>{
                                                 this.setState(state=>{
-                                                    state.customer.facturable.airlines[airline_index].edis[edi_index].routes[route_index].arrival = item
+                                                    state.customer.facturable[TRANSPORTERS[state.customer.type]][airline_index].edis[edi_index].routes[route_index].arrival = item
                                                     if(this.refs.pricing)
                                                         this.refs.pricing.updateCustomer(state.customer)
                                                     return state
@@ -405,7 +317,7 @@ class Organisation extends Component
                                                                 <input className="bg-transparent form-control h-auto p-0 w-50 text-center text-white" type="number" name={`airlines[${airline_index}][edis][${edi_index}][routes][${route_index}][nsetup][vat]`} value={this.cast(route, 'nsetup.vat')} onChange={e=>{
                                                                     const value = e.target.value
                                                                     this.setState(state=>{
-                                                                        state.customer.facturable.airlines[airline_index].edis[edi_index].routes[route_index].nsetup.vat = value
+                                                                        state.customer.facturable[TRANSPORTERS[state.customer.type]][airline_index].edis[edi_index].routes[route_index].nsetup.vat = value
                                                                         return state
                                                                     })
                                                                 }}/>
@@ -416,7 +328,7 @@ class Organisation extends Component
                                                     <input type="hidden" name={`airlines[${airline_index}][edis][${edi_index}][routes][${route_index}][id]`} value={route.id}/>
                                                     {(!this.props.readOnly && edi.routes.filter(item=>!item.deleted).length>1)?<button className="btn position-absolute" type="button" onClick={()=>{
                                                         this.setState(state=>{
-                                                            state.customer.facturable.airlines[airline_index].edis[edi_index].routes[route_index].deleted = true
+                                                            state.customer.facturable[TRANSPORTERS[state.customer.type]][airline_index].edis[edi_index].routes[route_index].deleted = true
                                                             return state
                                                         })
                                                     }} style={{right:24}}>

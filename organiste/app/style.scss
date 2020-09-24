@@ -1,5 +1,5 @@
-$lucid-assets: "../vendor/lucid/vendor/light/assets/";
-$fa-font-path: "../medias/fontawesome/webfonts";
+$lucid-assets: "../../vendor/lucid/vendor/light/assets/";
+$fa-font-path: "../../medias/fontawesome/webfonts";
 $flag-icon-css-path: '/flags';
   
 .fa {
@@ -25,7 +25,6 @@ $grey: #777777;
 $grass: #d5f6b4;
 $stone: #e6eaec;
 $rose: #e36881;
-$azur: #00b5ff;
 
 /* Bootstrap overrides */
 $primary: $turquoise;
@@ -43,8 +42,7 @@ $theme-colors: (
 	"grey": $grey,
 	"grass": $grass,
 	"stone": $stone,
-	"rose": $rose,
-	"azur" : $azur
+	"rose": $rose
 );
 
 /*manager lucid customization*/
@@ -63,24 +61,24 @@ $max-menu-level: 5;
 
 //icons
 @import "node_modules/flag-icon-css/sass/flag-icon";
-@import "../medias/fontawesome/scss/fontawesome.scss";
-@import "../medias/fontawesome/scss/solid.scss";
-@import "../medias/fontawesome/scss/regular.scss";
-@import "../medias/fontawesome/scss/brands.scss";
+@import "../../medias/fontawesome/scss/fontawesome.scss";
+@import "../../medias/fontawesome/scss/solid.scss";
+@import "../../medias/fontawesome/scss/regular.scss";
+@import "../../medias/fontawesome/scss/brands.scss";
 
 //lucid
-@import '../vendor/lucid/scss/style.scss';
-@import '../vendor//lucid/vendor/light/assets/scss/color_skins.scss';
+@import '../../vendor/lucid/scss/style.scss';
+@import '../../vendor//lucid/vendor/light/assets/scss/color_skins.scss';
 
 //app
-@import "../vendor/Ry/Core/Core.scss";
+@import "../../vendor/Ry/Core/Core.scss";
 
-@import "../vendor/Ry/Profile/Editor";
-@import "../vendor/Ry/Categories/Categorie.scss";
-@import "../vendor/bs/css/bootstrap-datepicker.css";
+@import "../../vendor/Ry/Profile/Editor";
+@import "../../vendor/Ry/Categories/Categorie.scss";
+@import "../../vendor/bs/css/bootstrap-datepicker.css";
 
 //cardit
-@import '../vendor/Ry/Cardit/style.scss';
+@import '../../vendor/Ry/Cardit/style.scss';
 
 @each $size, $length in $spacers {
 	.custom-control-label.custom-control-mt-#{$size} {
@@ -258,29 +256,5 @@ $max-menu-level: 5;
 @media screen and (max-width: 1024px) {
 	.navbar-fixed-top .navbar-right {
 		width: calc(100% - 290px) !important;
-	}
-}
-
-.row-danger td {
-	color: $danger !important;
-}
-
-.row-success td {
-	color: $success !important;
-}
-
-.table-mini-padding {
-	td, th {
-		padding: 0.5rem;
-	}
-}
-
-.table-nowrap {
-	tbody {
-		tr {
-			td, th {
-				white-space: normal;
-			}
-		}
 	}
 }

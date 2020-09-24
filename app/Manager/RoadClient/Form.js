@@ -321,12 +321,12 @@ class Form extends Component
                                                         htmlFor="contacts-fixe-ndetail-value">{trans("Téléphone")}</label>
                                                     <div className="col-md-8">
                                                         <input type="text"
-                                                            defaultValue={this.models("props.data.row.facturable.contacts.fixe.ndetail.value")}
+                                                            defaultValue={this.models("props.data.row.facturable.contacts.fixe_phone.ndetail.value")}
                                                             className="form-control" id="contacts-fixe-ndetail-value"
                                                             name="contacts[fixe][ndetail][value]"/>
                                                         <input type="hidden" name="contacts[fixe][contact_type]"
-                                                            defaultValue={this.models("props.data.row.facturable.contacts.fixe.ndetail.type", 'phone')}/>
-                                                        <input type="hidden" name="contacts[fixe][id]" value={this.models("props.data.row.facturable.contacts.fixe.id")}/>
+                                                            defaultValue={this.models("props.data.row.facturable.contacts.fixe_phone.ndetail.type", 'phone')}/>
+                                                        <input type="hidden" name="contacts[fixe][id]" value={this.models("props.data.row.facturable.contacts.fixe_phone.id")}/>
                                                     </div>
                                                 </div>
                                                 <div className="form-group row">
@@ -334,13 +334,13 @@ class Form extends Component
                                                         htmlFor="contacts-fax-ndetail-value">{trans("Fax")}</label>
                                                     <div className="col-md-8">
                                                         <input type="text"
-                                                            defaultValue={this.models('props.data.row.facturable.contacts.fax.ndetail.value','')}
+                                                            defaultValue={this.models('props.data.row.facturable.contacts.fax_fax.ndetail.value','')}
                                                             className="form-control" id="contacts-fax-ndetail-value"
                                                             name="contacts[fax][ndetail][value]"/>
                                                         <input type="hidden" name="contacts[fax][contact_type]"
-                                                            defaultValue={this.models("props.data.row.facturable.contacts.fax.ndetail.type", 'fax')}/>
+                                                            defaultValue={this.models("props.data.row.facturable.contacts.fax_fax.ndetail.type", 'fax')}/>
                                                         <input type="hidden" name="contacts[fax][id]"
-                                                            defaultValue={this.models("props.data.row.facturable.contacts.fax.id", '')}/>
+                                                            defaultValue={this.models("props.data.row.facturable.contacts.fax_fax.id", '')}/>
                                                     </div>
                                                 </div>
                                                 <div className="form-group row">
@@ -348,13 +348,13 @@ class Form extends Component
                                                         htmlFor="contacts-email-ndetail-value">{trans("Email")}</label>
                                                     <div className="col-md-8">
                                                         <input type="text" 
-                                                            defaultValue={this.models("props.data.row.facturable.contacts.email.ndetail.value", '')}
+                                                            defaultValue={this.models("props.data.row.facturable.contacts.email_email.ndetail.value", '')}
                                                             className="form-control" id="contacts-email-ndetail-value"
                                                             name="contacts[email][ndetail][value]"/>
                                                         <input type="hidden" name="contacts[email][contact_type]"
-                                                            defaultValue={this.models("props.data.row.facturable.contacts.email.ndetail.type", 'email')}/>
+                                                            defaultValue={this.models("props.data.row.facturable.contacts.email_email.ndetail.type", 'email')}/>
                                                         <input type="hidden" name="contacts[email][id]"
-                                                            defaultValue={this.models("props.data.row.facturable.contacts.email.id", '')}/>
+                                                            defaultValue={this.models("props.data.row.facturable.contacts.email_email.id", '')}/>
                                                     </div>
                                                 </div>
                                             </div>
