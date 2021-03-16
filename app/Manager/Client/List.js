@@ -108,6 +108,12 @@ class List extends NavigableModel
                     <span></span>
                 </label>
             </td>
+            <td className="text-center">
+                <label className="fancy-checkbox">
+                    <input type="checkbox" checked={customer.nsetup.mail_manifest==1?true:false} onChange={e=>this.handleSetup(e, key, 'mail_manifest')} value="1"/>
+                    <span></span>
+                </label>
+            </td>
             <td className="text-right">
                 <a className="btn btn-primary" href={`/client_edit?id=${customer.id}`}><i className="fa fa-edit"></i> {trans('Éditer')}</a>
                 <button className="btn btn-danger ml-2" type="button" onClick={()=>this.remove(customer)}><i className="fa fa-remove"></i> {trans('Supprimer')}</button>
@@ -156,6 +162,7 @@ class List extends NavigableModel
                                 <th className="text-uppercase">{trans('AWB/FWB')}</th>
                                 <th className="text-uppercase">{trans('Facturation')}</th>
                                 <th className="text-uppercase">{trans('Stats')}</th>
+                                <th className="text-uppercase">{trans('Mail Manifest')}</th>
                                 <th></th>
                             </tr>
                         </thead>

@@ -271,6 +271,7 @@ const DATES = [
             {
                 from : '17:30:00',
                 to : '19:00:00',
+                principal : 6
             }
         ]
     },
@@ -283,6 +284,7 @@ const DATES = [
             {
                 from : '17:30:00',
                 to : '19:00:00',
+                principal : 7
             }
         ]
     },
@@ -294,17 +296,66 @@ const DATES = [
             {
                 from : '17:00:00',
                 to : '19:00:00',
+                principal : 3
             }
         ]
     },
     {
         date : '2020-09-27',
         event : "Fetim-piangonana",
-        exclude : [2, 4, 5, 8, 10]
+        exclude : [2, 4, 5, 8, 10],
+        hours : [
+            {
+                from : '06:00:00',
+                to : '08:30:00',
+                principal : 3,
+                secondaire : 7 
+            },
+            {
+                from : '08:30:00',
+                to : '11:00:00',
+                principal : 1,
+                secondaire : 9 
+            },
+            {
+                from : '06:00:00',
+                to : '08:30:00',
+                principal : 7
+            }
+        ]
+    },
+    {
+        date : '2020-10-03',
+        event : 'Visite pastorale sady confirmation',
+        exclude : [2, 4, 8, 10, 5],
+        reserve : [9],
+        hours : [
+            {
+                from : '17:00:00',
+                to : '19:00:00'
+            }
+        ]
     },
     {
         date : '2020-10-04',
-        event : 'Visite pastorale sady confirmation'
+        event : 'Visite pastorale sady confirmation',
+        exclude : [2, 4, 10],
+        reserve : [5],
+        hours : [
+            {
+                from : '06:00:00',
+                to : '08:30:00'
+            },
+            {
+                from : '08:30:00',
+                to : '11:00:00',
+                principal : 5
+            },
+            {
+                from : '17:00:00',
+                to : '19:00:00'
+            },
+        ]
     },
     {
         date : '2020-10-11'

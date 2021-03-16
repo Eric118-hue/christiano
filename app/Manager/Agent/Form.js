@@ -278,10 +278,20 @@ class Form extends AdminUser
                                             </div>
                                         </div>
                                         <div className="col-md-4">
-                                            <div className="custom-control custom-switch pt-4 text-right">
-                                                <input type="checkbox" className={`custom-control-input`} id={`user-toggle-active-${this.props.data.id}`} onChange={this.activeHandler} checked={this.models('state.active', false)}/>
-                                                <label className="custom-control-label" htmlFor={`user-toggle-active-${this.props.data.id}`}>{this.state.active?trans('Compte actif'):trans('Compte inactif')}</label>
-                                                <input type="hidden" name="active" value={this.models('state.active')?1:0}/>
+                                            <div className="row">
+                                                <div className="col-md-6">
+                                                    <div className="custom-control custom-switch pt-4 text-right">
+                                                        <input type="checkbox" className={`custom-control-input`} id={`user-toggle-active-${this.props.data.id}`} onChange={this.activeHandler} checked={this.models('state.active', false)}/>
+                                                        <label className="custom-control-label" htmlFor={`user-toggle-active-${this.props.data.id}`}>{this.state.active?trans('Compte actif'):trans('Compte inactif')}</label>
+                                                        <input type="hidden" name="active" value={this.models('state.active')?1:0}/>
+                                                    </div>
+                                                </div>
+                                                <div className="col-md-6">
+                                                    <div className="custom-control custom-switch pt-4 text-right">
+                                                        <input type="checkbox" name="profile[nsetup][omnipresent]" className={`custom-control-input`} id={`user-toggle-omnipresent-${this.props.data.id}`} defaultChecked={this.models('props.data.profile.nsetup.omnipresent')}/>
+                                                        <label className="custom-control-label" htmlFor={`user-toggle-omnipresent-${this.props.data.id}`}>{trans('Omniprésent')}</label>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                         <div className="row m-0">

@@ -210,8 +210,8 @@ class Form extends Component
           </div>
           <div className="col-md-6">
             <div className="form-group">
-              <label className="control-label">{trans('Localité')}</label>
-              <input type="text" defaultValue={this.models('props.data.data.adresse.ville.nom', '')} name="adresse[ville][nom]" className="form-control"/>
+              <label className="control-label">{trans('Ville')}</label>
+              <input type="text" defaultValue={this.models('props.data.data.adresse.ville.nom', '')} name="adresse[ville][nom]" className="form-control" required/>
             </div>
             <div className="form-group">
               <label className="control-label">{trans('Etat / province')}</label>

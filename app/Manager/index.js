@@ -5,6 +5,7 @@ import RoadClient from './RoadClient';
 import User from './User';
 import Agent from './Agent';
 import Resdit from './Resdit';
+import Mailmanifest from './Mailmanifest';
 
 const Components = {
     Setup : Setup,
@@ -13,7 +14,8 @@ const Components = {
     RoadClient : RoadClient,
     User : User,
     Agent : Agent,
-    Resdit : Resdit
+    Resdit : Resdit,
+    Mailmanifest
 }
 
 export default Components;

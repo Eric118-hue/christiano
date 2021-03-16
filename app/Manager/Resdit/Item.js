@@ -84,12 +84,12 @@ class Item extends Component
                             </tr>
                         </thead>
                         <tbody>
-                            {this.props.data.cardit.nsetup.transports.slice(0, -1).map((transport, index)=><tr key={`escale-${this.props.data.cardit.id}-${index}`}>
+                            {this.props.data.cardit.transports.slice(0, -1).map((transport, index)=>this.props.data.transports.find(it=>it.pivot.step==index+1)?<tr key={`escale-${this.props.data.cardit.id}-${index}`}>
                                 <td>{transport.arrival_location.iata} - {transport.arrival_location.name} - {transport.arrival_location.country.nom}</td>
                                 <td>{moment(transport.arrival_datetime_lt).format('DD/MM/YYYY HH:mm')}</td>
-                                <td>{moment(this.props.data.cardit.nsetup.transports[index+1].departure_datetime_lt).format('DD/MM/YYYY HH:mm')}</td>
-                                <td>{this.props.data.cardit.nsetup.transports[index+1].conveyence_reference}</td>
-                            </tr>)}
+                                <td>{moment(this.props.data.cardit.transports.find(it=>it.pivot.step==index+1).departure_datetime_lt).format('DD/MM/YYYY HH:mm')}</td>
+                                <td>{this.props.data.cardit.transports.find(it=>it.pivot.step==index+1).reference}</td>
+                            </tr>:null)}
                         </tbody>
                     </table>
                 </PopupBody>
@@ -127,7 +127,7 @@ class Item extends Component
                 </PopupBody>
             </Popup></td>
         <td>
-            {this.props.data.cardit.nsetup.transports[0].conveyence_reference} <a href="#" onClick={e=>{
+            {this.props.data.cardit.transports[0].reference} <a href="#" onClick={e=>{
             e.preventDefault()
             $(`#conveyence-${this.props.data.cardit.id}`).modal('show')
         }}><i className="fa fa-info-circle text-turquoise"></i></a>
@@ -137,7 +137,7 @@ class Item extends Component
                 </PopupHeader>
                 <hr className="border m-0 m-auto" style={{width:'calc(100% - 10px)', height:3}}/>
                 <PopupBody>
-                    {this.props.data.cardit.nsetup.transports[0].airlines.join('<br/>')}
+                    {this.props.data.cardit.transports[0].airlines.join('<br/>')}
                 </PopupBody>
             </Popup>
         </td>

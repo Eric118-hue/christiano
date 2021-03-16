@@ -1,13 +1,13 @@
 import List from './List';
 import Detail from './Detail';
 import {ReceptacleDialog} from '../Client/Cart/Detail';
-import CN38 from './CN38';
+import Document from './Document';
 
 const Components = {
     List : List,
-    Detail : Detail,
+    Detail,
     Receptacles : ReceptacleDialog,
-    CN38
+    Document
 }
 
 export default Components;

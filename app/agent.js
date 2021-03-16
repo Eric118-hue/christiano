@@ -103,6 +103,7 @@ class Cardit
 				url : $(this).data('dropzone-action'),
 				paramName : $(this).data('name'),
 				acceptedFiles: '.png,.jpg,.jpeg,.gif',
+				timeout : 3600000,
 				dictCancelUpload: trans('Annuler'),
             	dictCancelUploadConfirmation: trans("Êtes-vous certain d'annuler le transfert?"),
 				dictInvalidFileType: trans(`Ce type de fichier n'est pas pris en charge`),

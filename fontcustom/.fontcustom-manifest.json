@@ -1,14 +1,14 @@
 {
   "checksum": {
-    "previous": "7f7a9ad1eb7032fdaa5560585f872d117a1e0bc096750e812e1d3ec827ca7101",
-    "current": "7f7a9ad1eb7032fdaa5560585f872d117a1e0bc096750e812e1d3ec827ca7101"
+    "previous": "ed9b993207da7751fc45a48aa5a761a5fe09f2a8bbf86cc7176260225f15e778",
+    "current": "ed9b993207da7751fc45a48aa5a761a5fe09f2a8bbf86cc7176260225f15e778"
   },
   "fonts": [
-    "../medias/fonts/leg2_7f7a9ad1eb7032fdaa5560585f872d11.ttf",
-    "../medias/fonts/leg2_7f7a9ad1eb7032fdaa5560585f872d11.svg",
-    "../medias/fonts/leg2_7f7a9ad1eb7032fdaa5560585f872d11.woff",
-    "../medias/fonts/leg2_7f7a9ad1eb7032fdaa5560585f872d11.eot",
-    "../medias/fonts/leg2_7f7a9ad1eb7032fdaa5560585f872d11.woff2"
+    "../medias/fonts/leg2_ed9b993207da7751fc45a48aa5a761a5.ttf",
+    "../medias/fonts/leg2_ed9b993207da7751fc45a48aa5a761a5.svg",
+    "../medias/fonts/leg2_ed9b993207da7751fc45a48aa5a761a5.woff",
+    "../medias/fonts/leg2_ed9b993207da7751fc45a48aa5a761a5.eot",
+    "../medias/fonts/leg2_ed9b993207da7751fc45a48aa5a761a5.woff2"
   ],
   "glyphs": {
     "arrival": {
@@ -26,6 +26,10 @@
     "receipt": {
       "codepoint": 61699,
       "source": "vectors/receipt.svg"
+    },
+    "resize": {
+      "codepoint": 61701,
+      "source": "vectors/resize.svg"
     },
     "warehouse": {
       "codepoint": 61700,

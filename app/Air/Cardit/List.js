@@ -42,6 +42,7 @@ class RoadFullDetail extends FullDetail
 {
     getHeadStep() {
         let headStep = null;
+        let transport = this.props.data.transports.find(it=>it.pivot.step==this.state.transport_index);
         switch(this.state.step) {
             case 'reception':
                 headStep = <div className="centerText">
@@ -60,17 +61,17 @@ class RoadFullDetail extends FullDetail
             case 'assignation':
             //todo : choices available transport at same point
                 headStep = <div className="centerText">
-                    {trans("Assignation : récipients assignés à :vol au départ de :country_name - :iata - :airport_name", {vol:this.props.data.nsetup.transports[this.state.transport_index].conveyence_reference, country_name:this.props.data.nsetup.transports[this.state.transport_index].departure_location.country.nom, iata:this.props.data.nsetup.transports[this.state.transport_index].departure_location.iata, airport_name:this.props.data.nsetup.transports[this.state.transport_index].departure_location.name})}
+                    {trans("Assignation : récipients assignés à :vol au départ de :country_name - :iata - :airport_name", {vol:transport.reference, country_name:transport.departure_location.country.nom, iata:transport.departure_location.iata, airport_name:transport.departure_location.name})}
                 </div>
                 break;
             case 'departure':
                 headStep = <div className="centerText">
-                    {trans("Départ des récipients sur le convoi Nº:vol au départ de :country_name - :iata - :airport_name", {vol:this.props.data.nsetup.transports[this.state.transport_index].conveyence_reference, country_name:this.props.data.nsetup.transports[this.state.transport_index].departure_location.country.nom, iata:this.props.data.nsetup.transports[this.state.transport_index].departure_location.iata, airport_name:this.props.data.nsetup.transports[this.state.transport_index].departure_location.name})}
+                    {trans("Départ des récipients sur le convoi Nº:vol au départ de :country_name - :iata - :airport_name", {vol:transport.reference, country_name:transport.departure_location.country.nom, iata:transport.departure_location.iata, airport_name:transport.departure_location.name})}
                 </div>
                 break;
             case 'arrival':
                 headStep = <div className="centerText">
-                    {trans("Arrivée des récipients à :airport_name (:iata) - :country_name - Convoi :vol", {vol:this.props.data.nsetup.transports[this.state.transport_index].conveyence_reference, airport_name:this.props.data.nsetup.transports[this.state.transport_index].arrival_location.name, iata:this.cast(this.props.data.nsetup.transports[this.state.transport_index], 'arrival_location.iata', this.cast(this.props.data.nsetup.transports[this.state.transport_index], 'arrival_location.cardit')), country_name:this.cast(this.props.data.nsetup.transports[this.state.transport_index], 'arrival_location.country.nom', this.cast(this.props.data.nsetup.transports[this.state.transport_index], 'arrival_location.adresse.ville.country.nom'))})}
+                    {trans("Arrivée des récipients à :airport_name (:iata) - :country_name - Convoi :vol", {vol:transport.reference, airport_name:transport.arrival_location.name, iata:this.cast(transport, 'arrival_location.iata', this.cast(transport, 'arrival_location.cardit')), country_name:this.cast(transport, 'arrival_location.country.nom', this.cast(transport, 'arrival_location.adresse.ville.country.nom'))})}
                 </div>
                 break;
         }
@@ -165,7 +166,7 @@ class CarditRow extends Cardit
                         </div>
                     </PopupBody>
                 </Popup></td>
-            <td>{this.props.data.nsetup.transports[0].conveyence_reference}</td>
+            <td>{this.cast(this.props.data.transports.find(it=>it.pivot.step==0), 'reference')}</td>
             <td className="p-2">{this.props.reception(this.props.data)}</td>
             <td className="p-2">{this.props.completed(this.props.data)}</td>
         </tr>

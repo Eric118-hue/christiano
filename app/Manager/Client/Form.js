@@ -257,21 +257,47 @@ class Form extends Component
                                             <label className="control-label">{trans('Nom')}</label>
                                             <input type="text" className="form-control" value={this.state.name_search} name="name" autoComplete="bistrict" onChange={this.handleNameChange} required/>
                                         </div>}
+                                        <div className="form-group">
+                                            <label className="control-label">{trans('Préfixe compagnie')}</label>
+                                            <input type="number" className="form-control" name="nsetup[lta][prefix]" defaultValue={this.models('props.data.row.nsetup.lta.prefix')}/>
+                                        </div>
                                     </div>
                                     <div className="col-md-6">
                                         <label className="control-label">&nbsp;</label>
                                         <div className="row border-left">
                                             <div className="col-md-6">
-                                                <div className="form-group">
-                                                    <label className="control-label">{trans('Préfixe compagnie')}</label>
-                                                    <input type="number" className="form-control" name="nsetup[lta][prefix]" defaultValue={this.models('props.data.row.nsetup.lta.prefix')}/>
+                                                <label className="control-label text-uppercase">
+                                                    {trans('Mail Manifest')}
+                                                </label>
+                                                <div className="row border-top mx-0 pt-1 mb-2">
+                                                    <div className="col-md-6">
+                                                        <div className="custom-control custom-radio">
+                                                            <input type="radio" id="nsetup-mail-manifest-1" name="nsetup[mail_manifest]" className="custom-control-input" defaultChecked={this.models('props.data.row.nsetup.mail_manifest')==1} value="1"/>
+                                                            <label className="custom-control-label" htmlFor="nsetup-mail-manifest-1">{trans('Oui')}</label>
+                                                        </div>
+                                                    </div>
+                                                    <div className="col-md-6">
+                                                        <div className="custom-control custom-radio">
+                                                            <input type="radio" id="nsetup-mail-manifest-0" name="nsetup[mail_manifest]" className="custom-control-input" defaultChecked={this.models('props.data.row.nsetup.mail_manifest')!=1} value="0"/>
+                                                            <label className="custom-control-label" htmlFor="nsetup-mail-manifest-0">{trans('Non')}</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <label className="control-label text-uppercase">
+                                                    {trans('Version MLD')}
+                                                </label>
+                                                <div className="form-group border-top pt-3">
+                                                    <select name="nsetup[mld_version]" defaultValue={this.models('props.data.row.nsetup.mld_version')}>
+                                                        <option value="V1">V1</option>
+                                                        <option value="CV">CV</option>
+                                                    </select>
                                                 </div>
                                             </div>
                                             <div className="col-md-6">
                                                 <label className="control-label">
                                                     {trans('FWB')}
                                                 </label>
-                                                <div className="row border-top pt-1">
+                                                <div className="row border-top mx-0 pt-1 mb-2">
                                                     <div className="col-md-6">
                                                         <div className="custom-control custom-radio">
                                                             <input type="radio" id="nsetup-fwb-1" name="nsetup[fwb]" className="custom-control-input" defaultChecked={this.models('props.data.row.nsetup.fwb')==1} value="1"/>
@@ -284,6 +310,15 @@ class Form extends Component
                                                             <label className="custom-control-label" htmlFor="nsetup-fwb-0">{trans('Non')}</label>
                                                         </div>
                                                     </div>
+                                                </div>
+                                                <label className="control-label text-uppercase">
+                                                    {trans('Version FWB')}
+                                                </label>
+                                                <div className="form-group border-top pt-3">
+                                                    <select name="nsetup[fwb_version]" defaultValue={this.models('props.data.row.nsetup.fwb_version')}>
+                                                        <option value="17">17</option>
+                                                        <option value="16">16</option>
+                                                    </select>
                                                 </div>
                                             </div>
                                         </div>

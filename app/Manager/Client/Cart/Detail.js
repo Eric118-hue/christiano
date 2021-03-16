@@ -337,12 +337,6 @@ class Detail extends Component
             total_commissions += parseFloat(cardit.commissions)
             total_nreceptacles += parseInt(cardit.nsetup.nreceptacles)
             total_wreceptacles += parseFloat(cardit.total_weight)
-            if(false) {
-                cardit.nsetup.transports.map(transport=>{
-                    total_ht += parseFloat(transport.total_ht)
-                    total_ttc += parseFloat(transport.total_ttc)
-                })
-            }
         })
         return <div className="p-3">
             <div className="row justify-content-between">

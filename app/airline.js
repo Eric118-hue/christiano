@@ -26,6 +26,8 @@ import Cart from '../app/Manager/Client/Cart';
 import CarditList from './Air/Cardit/List';
 import Fwb from './Air/Fwb';
 import Amd from './Amd';
+import CN38 from './Manager/Cardit/CN38';
+import Mailmanifest from './Manager/Mailmanifest';
 
 __AIRLINE.Cardit.List = CarditList
 
@@ -35,7 +37,11 @@ const Components = {
 		Manager : {
 			Client : {
 				Cart : Cart
-			}
+			},
+			Cardit : {
+				CN38
+			},
+			Mailmanifest
 		},
 		Fwb,
 		Amd
@@ -115,6 +121,7 @@ class Cardit
 			const dz = new Dropzone(this, {
 				url : $(this).data('dropzone-action'),
 				paramName : $(this).data('name'),
+				timeout : 3600000,
 				acceptedFiles: '.png,.jpg,.jpeg,.gif',
 				dictCancelUpload: trans('Annuler'),
             	dictCancelUploadConfirmation: trans("Êtes-vous certain d'annuler le transfert?"),

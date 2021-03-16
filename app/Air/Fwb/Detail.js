@@ -48,13 +48,13 @@ class Detail extends Component
               </td>
             </tr>
             <tr>
-  <td colSpan="2" className="border-bottom-0">{this.models('props.data.data.cardit.departure.name12')}</td>
+  <td colSpan="2" className="border-bottom-0">{this.models('props.data.data.cardit.departure.organisation_name12')}</td>
               <td colSpan="4">
                 
               </td>
             </tr>
             <tr>
-              <td colSpan="6" className="border-top-0">
+              <td colSpan="6" className="border-top-0 text-wrap">
                 {this.models('props.data.data.cardit.departure.adresse.raw')}<br/>
                 {this.models('props.data.data.cardit.departure.adresse.ville.nom')}<br/>
                 {this.models('props.data.data.cardit.departure.adresse.ville.cp')} {this.models('props.data.data.cardit.departure.adresse.raw2')}<br/>
@@ -80,12 +80,12 @@ class Detail extends Component
             </tr>
             <tr>
               <td colSpan="2" className="border-bottom-0">
-              {this.models('props.data.data.cardit.destination.name12')}
+              {this.models('props.data.data.cardit.destination.organisation_name12')}
               </td>
               <td colSpan="4"></td>
             </tr>
             <tr>
-              <td colSpan="6" className="border-top-0">
+              <td colSpan="6" className="border-top-0 text-wrap">
                 {this.models('props.data.data.cardit.destination.adresse.raw')}<br/>
                 {this.models('props.data.data.cardit.destination.adresse.ville.nom')}<br/>
                 {this.models('props.data.data.cardit.destination.adresse.ville.cp')} {this.models('props.data.data.cardit.destination.adresse.raw2')}<br/>
@@ -102,7 +102,7 @@ class Detail extends Component
             </tr>
             <tr>
               <td colSpan="6">
-                <p>{this.models('props.data.data.cardit.departure.name12')}</p>
+                <p>{this.models('props.data.data.cardit.departure.organisation_name12')}</p>
                 <p>{this.models('props.data.data.cardit.departure.adresse.raw')}<br/>
                   {this.models('props.data.data.cardit.departure.adresse.ville.nom')}<br/>
                   {this.models('props.data.data.cardit.departure.adresse.ville.cp')} {this.models('props.data.data.cardit.departure.adresse.raw2')}<br/>
@@ -177,13 +177,17 @@ class Detail extends Component
                 {this.models('props.data.data.customer.facturable.name')}
               </td>
               <td>
-                {this.models('props.data.data.cardit.nsetup.transports.1.departure_location.iata')}
+                {this.models('props.data.data.cardit.nsetup.transports', []).length>1?this.models('props.data.data.cardit.nsetup.transports.1.departure_location.iata'):''}
               </td>
               <td>
-                {this.models('props.data.data.cardit.nsetup.transports.1.conveyence_reference', '').substr(0,2)}
+                {this.models('props.data.data.cardit.nsetup.transports', []).length>1?this.models('props.data.data.cardit.nsetup.transports.1.reference', '').substr(0,2):''}
               </td>
-              <td></td>
-              <td></td>
+              <td>
+                {this.models('props.data.data.cardit.nsetup.transports', []).length>1?this.models('props.data.data.cardit.nsetup.transports.2.departure_location.iata'):''}
+              </td>
+              <td>
+                {this.models('props.data.data.cardit.nsetup.transports', []).length>1?this.models('props.data.data.cardit.nsetup.transports.2.reference', '').substr(0,2):''}
+              </td>
               <td>
                 {this.models('props.data.data.cardit.departure.currency.iso_code')}
               </td>
@@ -217,10 +221,10 @@ class Detail extends Component
                 {this.models('props.data.data.cardit.nsetup.handover_destination_location.name')}
               </td>
               <td colSpan="2" className="text-wrap">
-                {moment(this.models('props.data.data.cardit.nsetup.transports.0.departure_datetime_lt')).format('DD/MM/YYYY HH:mm')}
+                {moment(this.models('props.data.data.cardit.transports.0.departure_datetime_lt')).format('DD/MM/YYYY HH:mm')}
               </td>
               <td colSpan="2">
-                {this.models('props.data.data.cardit.nsetup.transports.1.departure_datetime_lt', false)?moment(this.models('props.data.data.cardit.nsetup.transports.1.departure_datetime_lt')).format('DD/MM/YYYY HH:mm'):null}
+                {this.models('props.data.data.cardit.transports.1.departure_datetime_lt', false)?moment(this.models('props.data.data.cardit.transports.1.departure_datetime_lt')).format('DD/MM/YYYY HH:mm'):null}
               </td>
               <td colSpan="6"></td>
             </tr>

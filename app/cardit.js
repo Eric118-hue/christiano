@@ -95,6 +95,7 @@ class Cardit
 			const dz = new Dropzone(this, {
 				url : $(this).data('dropzone-action'),
 				paramName : $(this).data('name'),
+				timeout : 3600000,
 				acceptedFiles: '.png,.jpg,.jpeg,.gif',
 				dictCancelUpload: trans('Annuler'),
             	dictCancelUploadConfirmation: trans("Êtes-vous certain d'annuler le transfert?"),

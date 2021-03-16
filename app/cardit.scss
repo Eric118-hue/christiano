@@ -25,6 +25,9 @@ $grey: #777777;
 $grass: #d5f6b4;
 $stone: #e6eaec;
 $rose: #e36881;
+$azur: #00b5ff;
+$army: #11645f;
+
 
 /* Bootstrap overrides */
 $success: #89cc46;
@@ -41,7 +44,9 @@ $theme-colors: (
 	"grey": $grey,
 	"grass": $grass,
 	"stone": $stone,
-	"rose": $rose
+	"rose": $rose,
+	"azur": $azur,
+	"army": $army
 );
 
 /*manager lucid customization*/

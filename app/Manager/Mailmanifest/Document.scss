@@ -1,0 +1,89 @@
+.cn38-wrap {
+  max-width: 910px;
+  width: 100%;
+  padding: 0 40px;
+  margin: 0 auto;
+
+  h1,h2,h3,h4 {
+    font-weight:bold;
+    font-size: 13px;
+  }
+  table {
+      margin:0px;
+      width:100%;
+      border-collapse: collapse;
+      border-spacing: 0;
+  }
+  th {
+      border-collapse: collapse;
+      font-weight: normal;
+      height: 15px;
+      padding: 5px;
+  }
+  table tr>td { vertical-align: top;}
+
+  .tableTop { padding-top: 30px;}
+.tableTop tr:nth-child(2)>td{ height: 50px}
+.tableFirst tr>td { height: 32px;}
+.center { text-align: center;}
+.tableCenter { 
+  padding-top: 10px; 
+  position: relative;
+
+  .legend {
+    position: absolute;
+    rotate: 90;
+    transform: rotate(-90deg);
+    transform-origin: top left;
+    left: -20px;
+  }
+}
+.tableCenter table tr>td {
+    vertical-align: middle;
+}
+.tableCenter table tr>td, .tableFirst table tr>td{
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 5px;
+}
+.height td {
+    padding: 5px;
+    height: 10px;
+    border-collapse: collapse;
+}
+.width {
+    width: 30%;
+}
+.kg:before {
+    content: 'Kg'
+}
+.lastTable {
+    margin-top: 15px;
+    margin-bottom: 45px;
+}
+.lastTable table tr>td{
+    border-collapse: collapse;
+    width: 33.333%;
+}
+.border span{
+    display: inline-block;
+    vertical-align: bottom;
+    border-bottom: 1px #000 solid;
+    width: 83%;
+}
+.no-border { border: none !important}
+.no-border-left { border-left: none !important;}
+.no-border-right { border-right: none !important;}
+.no-border-top { border-top: none !important;}
+.no-border-bottom { border-bottom: none !important;}
+
+.tableCenter table tbody tr { min-height: 45px;}
+}
+
+@media print {
+    .cn38-wrap { padding: 0 !important;}
+}
+
+table.mail-manifest .recipientContainer .recipientList::after {
+    background: none;
+}

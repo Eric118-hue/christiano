@@ -1,11 +1,11 @@
 <?xml version="1.0" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" >
 <!--
-2019-8-28: Created with FontForge (http://fontforge.org)
+2021-1-12: Created with FontForge (http://fontforge.org)
 -->
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1">
 <metadata>
-Created by FontForge 20170812 at Wed Aug 28 21:39:56 2019
+Created by FontForge 20170812 at Tue Jan 12 09:36:23 2021
  By dev,,,
 Macentrale 2019
 </metadata>
@@ -19,10 +19,10 @@ Macentrale 2019
     panose-1="2 0 5 3 0 0 0 0 0 0"
     ascent="448"
     descent="-64"
-    bbox="0 -4 511.8 416"
+    bbox="0 -65 513 448"
     underline-thickness="25.6"
     underline-position="-51.2"
-    unicode-range="U+0020-F104"
+    unicode-range="U+0020-F105"
   />
     <missing-glyph />
     <glyph glyph-name="space" unicode=" " horiz-adv-x="200" 
@@ -30,18 +30,21 @@ Macentrale 2019
     <glyph glyph-name="arrival" unicode="&#xf100;" horiz-adv-x="394" 
 d="M0 372l13 2l54 -106l61 -32l3 143l34 -14l56 -182s116 -39 148 -91c64 -103 -15 -61 -15 -61l-353 198zM123 123c0 9 7 16 16 16s17 -7 17 -16s-8 -17 -17 -17s-16 8 -16 17zM85 144c0 9 7 16 16 16s17 -7 17 -16s-8 -17 -17 -17s-16 8 -16 17zM295 22c0 9 8 16 17 16
 s17 -7 17 -16s-8 -17 -17 -17s-17 8 -17 17z" />
-    <glyph glyph-name="warehouse" unicode="&#xf104;" horiz-adv-x="372" 
-d="M0 186c0 0 10 122 186 122s186 -122 186 -122v-190h-74v146h-217v-146h-81v190zM178 308v108h8v-108h-8zM202 369v39h16v-39h-16zM243 376v24h15v-24h-15zM279 378v20h16v-20h-16z" />
-    <glyph glyph-name="destination" unicode="&#xf102;" 
-d="M94 51c0 14 11 25 25 25s25 -11 25 -25s-11 -25 -25 -25s-25 11 -25 25zM25 51c0 14 11 25 25 25s25 -11 25 -25s-11 -25 -25 -25s-25 11 -25 25zM371 379l140 -118v-254h-466c-25 0 -45 19 -45 44s20 45 45 45h187v283l139 -115v115zM45 11h187v81h-187h-1
-c-22 0 -41 -19 -41 -41s19 -40 41 -40h1zM167 51c0 14 11 25 25 25s24 -11 24 -25s-10 -25 -24 -25s-25 11 -25 25zM213 100h-173v124h173v-124zM44 103h165v117h-165v-117zM163 165v-24h-8v24h8zM146 190v-49h-8v49h8zM130 165v-24h-8v24h8zM115 165v-24h-9v24h9zM98 190
-v-49h-8v49h8z" />
     <glyph glyph-name="receipt" unicode="&#xf103;" 
 d="M368 51c0 14 11 25 25 25s24 -11 24 -25s-10 -25 -24 -25s-25 11 -25 25zM437 51c0 14 11 25 25 25s25 -11 25 -25s-11 -25 -25 -25s-25 11 -25 25zM467 96v0c24 0 44 -21 44 -45s-20 -45 -44 -45h-467v255l140 118v-114l139 114v-283h188zM467 10c22 0 40 19 40 41
 s-18 41 -40 41h-188v-82h188zM295 51c0 14 11 25 25 25s25 -11 25 -25s-11 -25 -25 -25s-25 11 -25 25zM301 102v120h168v-120h-168zM301 101h168h1v0v121v1h-1h-168h-1v-1v-121v0h1zM349 141v24h8v-24h-8zM366 141v49h8v-49h-8zM381 141v24h8v-24h-8zM397 141v24h8v-24h-8z
 M413 141v49h8v-49h-8z" />
+    <glyph glyph-name="destination" unicode="&#xf102;" 
+d="M94 51c0 14 11 25 25 25s25 -11 25 -25s-11 -25 -25 -25s-25 11 -25 25zM25 51c0 14 11 25 25 25s25 -11 25 -25s-11 -25 -25 -25s-25 11 -25 25zM371 379l140 -118v-254h-466c-25 0 -45 19 -45 44s20 45 45 45h187v283l139 -115v115zM45 11h187v81h-187h-1
+c-22 0 -41 -19 -41 -41s19 -40 41 -40h1zM167 51c0 14 11 25 25 25s24 -11 24 -25s-10 -25 -24 -25s-25 11 -25 25zM213 100h-173v124h173v-124zM44 103h165v117h-165v-117zM163 165v-24h-8v24h8zM146 190v-49h-8v49h8zM130 165v-24h-8v24h8zM115 165v-24h-9v24h9zM98 190
+v-49h-8v49h8z" />
     <glyph glyph-name="departure" unicode="&#xf101;" horiz-adv-x="512" 
 d="M0 159l5 13l121 -10l61 35l-122 80l30 22l188 -50s97 79 159 79c124 0 45 -45 45 -45l-363 -200zM274 146c0 9 9 17 18 17s17 -8 17 -17s-8 -17 -17 -17s-18 8 -18 17zM236 124c0 9 8 17 17 17s17 -8 17 -17s-8 -17 -17 -17s-17 8 -17 17zM455 241c0 9 8 17 17 17
 s17 -8 17 -17s-8 -17 -17 -17s-17 8 -17 17z" />
+    <glyph glyph-name="warehouse" unicode="&#xf104;" horiz-adv-x="372" 
+d="M0 186c0 0 10 122 186 122s186 -122 186 -122v-190h-74v146h-217v-146h-81v190zM178 308v108h8v-108h-8zM202 369v39h16v-39h-16zM243 376v24h15v-24h-15zM279 378v20h16v-20h-16z" />
+    <glyph glyph-name="resize" unicode="&#xf105;" horiz-adv-x="513" 
+d="M315 213l-37 37c-4 4 -4 11 0 15l106 107l-50 2c-3 0 -6 2 -8 4s-3 4 -3 7l2 52c0 6 5 11 11 11l160 -6c6 0 11 -5 11 -11l6 -160c0 -6 -5 -11 -11 -11l-52 -2c-3 0 -6 1 -8 3s-3 5 -3 8l-2 51l-107 -107c-4 -4 -11 -4 -15 0zM315 213zM235 133c4 -4 4 -11 0 -15
+l-107 -107l51 -2c3 0 6 -2 8 -4s3 -4 3 -7l-2 -52c0 -6 -5 -11 -11 -11h-1l-160 6c-6 0 -10 5 -10 11l-6 160c0 6 5 11 11 11l51 2c3 0 6 -1 8 -3s4 -5 4 -8l2 -51l106 107c4 4 12 4 16 0zM235 133z" />
   </font>
 </defs></svg>
