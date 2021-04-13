@@ -2,8 +2,30 @@ import React, {Component} from 'react';
 import NavigableModel from '../../vendor/Ry/Core/NavigableModel';
 import trans from '../translations';
 import Modelizer from '../../vendor/Ry/Core/Modelizer';
+import {Popup, PopupBody, PopupHeader, PopupFooter} from 'ryvendor/bs/bootstrap';
 import $ from 'jquery';
 import qs from 'qs';
+
+export class Form extends Component
+{
+    render() {
+        return <form name="frm_airport" action="/airport" method="post">
+            <input type="hidden" name="id" value={this.props.data.data.id}/>
+            <PopupHeader><h5>{trans("Ville de l'aéroport")}</h5></PopupHeader>
+            <PopupBody>
+                <div className="form-group">
+                    <label className="control-label">{trans('Ville')}</label>
+                    <input type="text" name="ville[nom]" className="form-control" defaultValue={this.models('props.data.data.ville.nom')}/>
+                </div>
+            </PopupBody>
+            <PopupFooter>
+                <button className="btn btn-primary">{trans('Enregistrer')}</button>
+            </PopupFooter>
+        </form>
+    }
+}
+
+Modelizer(Form)
 
 class Item extends Component
 {
@@ -11,7 +33,9 @@ class Item extends Component
         return <tr>
             <td>{this.props.data.iata}</td>
             <td>{this.props.data.name}</td>
+            <td>{this.models('props.data.ville.nom')}</td>
             <td>{this.models('props.data.country.nom')}</td>
+            <td><a href={`#dialog/airport?id=${this.props.data.id}`} className="btn btn-primary"><i className="fa fa-pencil-alt"></i></a></td>
         </tr>
     }
 }
@@ -94,7 +118,9 @@ class List extends NavigableModel
                             <tr>
                                 <th className="text-capitalize">{trans('Code')}</th>
                                 <th className="text-capitalize">{trans('Nom')}</th>
+                                <th className="text-capitalize">{trans('Ville')}</th>
                                 <th className="text-capitalize">{trans('Pays')}</th>
+                                <th></th>
                             </tr>
                             <tr className="bg-yellow">
                                 <th>
@@ -104,8 +130,12 @@ class List extends NavigableModel
                                     <input type="search" value={this.state.filter.name} onChange={e=>this.onFilter(e, 'name')} className="form-control text-capitalize" placeholder={trans('Filtre')}/>
                                 </th>
                                 <th>
+                                    <input type="search" value={this.state.filter.ville_name} onChange={e=>this.onFilter(e, 'ville_name')} className="form-control text-capitalize" placeholder={trans('Filtre')}/>
+                                </th>
+                                <th>
                                     <input type="search" value={this.state.filter.country_name} onChange={e=>this.onFilter(e, 'country_name')} className="form-control text-capitalize" placeholder={trans('Filtre')}/>
                                 </th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>

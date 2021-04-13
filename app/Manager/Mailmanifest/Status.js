@@ -12,14 +12,37 @@ import qs from 'qs';
 
 const CHECKBOXES = true
 
+Array.prototype.groupBy = function(fn){
+    let ar = []
+    let subar = []
+    this.map(it=>{
+        let i = fn(it)
+        if(ar.indexOf(i)<0)
+            ar.push(fn(it))
+    })
+    ar.map(a=>subar.push(this.filter(it=>fn(it)==a)))
+    return subar
+}
+
+Array.prototype.unique = function(fn) {
+    let ar = {}
+    this.map((it, index)=>{
+        let key = fn(it)
+        if(!key)
+            key = 'undefined-' + index
+        ar[key] = it
+    })
+    return Object.values(ar)
+}
+
 export class Route extends Component
 {
     render() {
-        return this.props.data.nsetup.transports.map(transport=><React.Fragment key={`transport-${transport.conveyence_reference}`}>
+        return this.props.data.transports.map(transport=><React.Fragment key={`transport-${transport.conveyence_reference}`}>
             <li>{trans('Départ')}<br/>
-    <strong className="text-wrap">{transport.departure_location.country.nom} - {transport.departure_location.iata} - {transport.departure_location.name} {trans('le')} {moment(transport.departure_datetime_lt).format('DD/MM/YYYY HH:mm')}{(this.models('props.data.nsetup.transports.'+this.props.transportStep+'.departure_datetime_lt', false) && this.models('props.data.nsetup.transports.'+this.props.transportStep+'.departure_datetime_lt', false)!=transport.departure_datetime_lt)?<React.Fragment> - <span className="text-danger">{trans('Horaire modifié : :datetime', {datetime : moment(this.models('props.data.transports.'+this.props.transportStep+'.departure_datetime_lt')).format('DD/MM/YYYY HH:mm')})}</span></React.Fragment>:null}</strong></li>
+    <strong className="text-wrap">{transport.departure_location.country.nom} - {transport.departure_location.iata} - {transport.departure_location.name} {trans('le')} {moment(transport.departure_datetime_lt).format('DD/MM/YYYY HH:mm')}{(this.models('props.data.transports.'+this.props.transportStep+'.departure_datetime_lt', false) && this.models('props.data.transports.'+this.props.transportStep+'.departure_datetime_lt', false)!=transport.departure_datetime_lt)?<React.Fragment> - <span className="text-danger">{trans('Horaire modifié : :datetime', {datetime : moment(this.models('props.data.transports.'+this.props.transportStep+'.departure_datetime_lt')).format('DD/MM/YYYY HH:mm')})}</span></React.Fragment>:null}</strong></li>
             <li>{trans('Arrivée')}<br/>
-            <strong className="text-wrap">{this.cast(transport, 'arrival_location.country.nom', this.cast(transport, 'arrival_location.adresse.ville.country.nom'))} - {this.cast(transport, 'arrival_location.iata', this.cast(transport, 'arrival_location.cardit'))} - {this.cast(transport, 'arrival_location.name')} {trans('le')} {transport.arrival_datetime_lt!='0000-00-00 00:00:00'?moment(transport.arrival_datetime_lt).format('DD/MM/YYYY HH:mm'):'00/00/00 00:00'}{(this.models('props.data.nsetup.transports.'+this.props.transportStep+'.arrival_datetime_lt', false) && this.models('props.data.nsetup.transports.'+this.props.transportStep+'.arrival_datetime_lt', false)!=transport.arrival_datetime_lt)?<React.Fragment> - <span className="text-danger">{trans('Horaire modifié : :datetime', {datetime : moment(this.models('props.data.transports.'+this.props.transportStep+'.arrival_datetime_lt')).format('DD/MM/YYYY HH:mm')})}</span></React.Fragment>:null}</strong></li>
+            <strong className="text-wrap">{this.cast(transport, 'arrival_location.country.nom', this.cast(transport, 'arrival_location.adresse.ville.country.nom'))} - {this.cast(transport, 'arrival_location.iata', this.cast(transport, 'arrival_location.cardit'))} - {this.cast(transport, 'arrival_location.name')} {trans('le')} {transport.arrival_datetime_lt!='0000-00-00 00:00:00'?moment(transport.arrival_datetime_lt).format('DD/MM/YYYY HH:mm'):'00/00/00 00:00'}{(this.models('props.data.transports.'+this.props.transportStep+'.arrival_datetime_lt', false) && this.models('props.data.transports.'+this.props.transportStep+'.arrival_datetime_lt', false)!=transport.arrival_datetime_lt)?<React.Fragment> - <span className="text-danger">{trans('Horaire modifié : :datetime', {datetime : moment(this.models('props.data.transports.'+this.props.transportStep+'.arrival_datetime_lt')).format('DD/MM/YYYY HH:mm')})}</span></React.Fragment>:null}</strong></li>
         </React.Fragment>)
     }
 }
@@ -104,8 +127,8 @@ class ReceptacleLine extends Component
     constructor(props) {
         super(props)
         this.state = {
-            assignation_conveyence_id : this.props.data.transports[0].assignation.id,
-            departure_conveyence_id : this.models('props.data.transports.0.departure.id'),
+            assignation_conveyence_id : this.models('props.defaultConveyence.id'),
+            departure_conveyence_id : this.models('props.defaultConveyence.id'),
             resdits : this.models('props.data.resdits', [])
         }
         this.mld_transport = this.props.selectTransports.length>1 ? {...this.props.selectTransports[0]} : {id:0}
@@ -131,11 +154,11 @@ class ReceptacleLine extends Component
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if(this.cast(prevState, 'conveyence_id') != this.models('props.data.transports.0.departure.id') && this.models('props.data.transports.0.departure.id')!='')
+        if(this.cast(prevState, 'conveyence_id') != this.models('props.data.departure.id') && this.models('props.data.departure.id')!='')
             this.setState({
-                conveyence_id : this.models('props.data.transports.0.departure.id'),
-                assignation_conveyence_id : this.models('props.data.transports.0.departure.id'),
-                departure_conveyence_id : this.models('props.data.transports.0.departure.id'),
+                conveyence_id : this.models('props.data.departure.id'),
+                assignation_conveyence_id : this.models('props.data.departure.id'),
+                departure_conveyence_id : this.models('props.data.departure.id'),
             })
     }
 
@@ -177,7 +200,7 @@ class ReceptacleLine extends Component
             const resdit = this.models('props.data.resdits', []).find(it=>(it.conveyence_id==select_transport.id && it.consignment_event_code==6))
             if(resdit) {
                 if(this.cast(resdit, 'nsetup.mld')) {
-                    return <div className="btn btn-xs btn-blue text-white">MLD {moment(this.cast(this.models('props.data.resdits', []).find(it=>(it.nsetup.mld && it.nsetup.localtime)), 'nsetup.localtime')).format('DD/MM')}</div>
+                    return <div className="btn btn-xs btn-blue text-white">MLD {moment(this.cast(this.models('props.data.resdits', []).find(it=>(this.cast(it, 'nsetup.mld') && this.cast(it, 'nsetup.localtime'))), 'nsetup.localtime')).format('DD/MM')}</div>
                 }
             }
         }
@@ -189,7 +212,7 @@ class ReceptacleLine extends Component
     departureControl(select_transport) {
         const isDisabled = false
         const disabled = isDisabled?{disabled:true}:{}
-        if(this.models('props.data.resdits', []).find(it=>it.nsetup.mld)) {
+        if(this.models('props.data.resdits', []).find(it=>this.cast(it, 'nsetup.mld'))) {
             return <div className="fancy-checkbox">
                 <label><input type="checkbox" name={`departure_receptacles[${this.props.data.id}][conveyence_id]`} {...disabled} value={select_transport.id} checked={!disabled.disabled && this.state.departure_conveyence_id==select_transport.id} onChange={e=>this.handleConveyenceChange(select_transport, e)}/><span></span></label>
             </div>
@@ -209,7 +232,13 @@ class ReceptacleLine extends Component
         <td className="text-left">
             {this.props.data.nsetup.receptacle_id}
             <input type="hidden" name={`cardits[${this.props.data.cardit_id}][receptacles][${this.props.data.id}][conveyence_id]`} value={this.state.assignation_conveyence_id}/>
-            <input type="hidden" name={`cardits[${this.props.data.cardit_id}][receptacles][${this.props.data.id}][setup][mld][container_id]`} value={this.cast(this.props.data.resdits.find(it=>this.cast(it, 'nsetup.mld.container_id')), 'nsetup.mld.container_id')}/>
+            <input type="hidden" name={`cardits[${this.props.data.cardit_id}][receptacles][${this.props.data.id}][setup][container_id]`} value={this.cast(this.props.data.resdits.find(it=>this.cast(it, 'nsetup.container_id')), 'nsetup.container_id')}/>
+        </td>
+        <td>
+            {this.models('props.data.cardit.nsetup.document_number')}
+        </td>
+        <td>
+            {this.models('props.data.cardit.lta.code')}
         </td>
         {this.props.selectTransports.map((select_transport, index)=><td key={`select-transport-assignation-${select_transport.id}`} className="text-center">
             {this.control(select_transport)}
@@ -231,7 +260,7 @@ class Status extends Component
         const mailManifestHref = {href:`/mailmanifest?${qs.stringify({id:this.models('props.pkey'),format:'pdf'})}`,target:'_blank'}
         let resdit_files = []
         let flights = []
-        let files = [<a key={`download-${this.props.data.id}-mail-manifest`} className="btn btn-orange text-white col-md-3 font-10 pt-2 m-2" {...mailManifestHref}><span className="bg-light pt-1 d-block font-25 m-2 rounded text-primary"><i className="fa fa-file-contract fa-2x text-orange"></i></span><Ry/></a>]
+        let files = []
         let files_tablet = [<div className="row" key={`mail-manifest-file-tablet-${this.props.data.id}`}>
             <a key={`download-tablet-${this.props.data.id}-mail-manifest`} className="btn btn-orange text-white col-md-3 font-10 pt-2 m-2" {...mailManifestHref}><span className="bg-light pt-1 d-block font-25 m-2 rounded text-primary"><i className="fa fa-file-contract fa-2x text-orange"></i></span></a>
             <Ry/>
@@ -246,7 +275,7 @@ class Status extends Component
         })
         this.state = {
             oneTransportAllChecked : false,
-            receptacles : this.props.data.mailmanifest.receptacles,
+            receptacles : this.props.data.receptacles,
             resdits : this.props.data.resdits,
             updated_resdits : this.props.data.updated_resdits,
             changed : false,
@@ -311,25 +340,25 @@ class Status extends Component
     componentDidMount() {
         this.unsubscribe = this.props.store.subscribe(()=>{
             const storeState = this.props.store.getState()
-            if(storeState.type=='mailmanifest_resdit' && storeState.id==this.props.pkey) {
-                let resdits = []
-                let resdit_files = []
-                let flights = []
-                let transports = {}
-                storeState.resdits.map(resdit_group=>{
-                    resdit_group.data.map(resdit=>{
-                        resdits.push(resdit)
-                        this.descend(transports, storeState.consignment_event, resdit)
-                        resdit.files.map(file=>{
-                            resdit_files.push(file.split('-')[0])
-                            flights.push(file.split('-')[1])
+            if(storeState.type=='mailmanifest_resdit' && storeState.id==this.props.data.id) {
+                this.setState(state=>{
+                    let resdits = state.resdits
+                    let resdit_files = []
+                    let flights = []
+                    let transports = {}
+                    storeState.resdits.map(resdit_group=>{
+                        resdit_group.data.map(resdit=>{
+                            resdits.push(resdit)
+                            this.descend(transports, storeState.consignment_event, resdit)
+                            resdit.files.map(file=>{
+                                resdit_files.push(file.split('-')[0])
+                                flights.push(file.split('-')[1])
+                            })
                         })
                     })
-                })
-                this.setState(state=>{
                     state.changed = false
                     state.resdits = resdits
-                    state.updated_resdits.transports[0] = transports
+                    state.updated_resdits = transports
                     state.resdit_files = resdit_files
                     state.flights = flights
                     if(state.resdits.length>0) {
@@ -362,13 +391,10 @@ class Status extends Component
             let found_receptacle = state.receptacles.find(item=>item.id==receptacle.id)
             if(found_receptacle) {
                 if(checked) {
-                    state.resdits = state.resdits.filter(item=>{
-                        return item.event != 'departure' && item.transport_step!=this.props.transportIndex
-                    })
-                    found_receptacle.transports[0].departure = checked
+                    found_receptacle.departure = checked
                 }
                 else {
-                    found_receptacle.transports[0].departure = null
+                    found_receptacle.departure = null
                 }
             }
             return state
@@ -383,12 +409,12 @@ class Status extends Component
             state.oneTransportAllChecked = value
             if(value) {
                 state.receptacles.map(item=>{
-                    item.transports[0].departure = {...transport}
+                    item.departure = {...transport}
                 })
             }
             else {
                 state.receptacles.map(item=>{
-                    item.transports[0].departure.id = 0
+                    item.departure.id = 0
                 })
             }
             return state
@@ -397,7 +423,7 @@ class Status extends Component
 
     render() {
         const isDisabled = false
-        let isDone = this.models('state.updated_resdits.transports.0.departure')
+        let isDone = this.models('state.updated_resdits.departure')
         let done = null
         let done_head = ''
         let done_resdits = []
@@ -410,9 +436,9 @@ class Status extends Component
                         author : `${this.cast(isDone, 'author.profile.gender_label')} ${this.cast(isDone, 'author.profile.official')}`,
                         resdit_files : this.state.resdit_files.join(', '),
                         flights : this.state.flights.join(', '),
-                        flight_datetime : moment(this.cast(this.props.data.transports.find(it=>it.pivot.step==this.props.transportIndex), 'departure_datetime_lt')).format('DD/MM/YYYY [à] HH:mm'),
-                        airport : this.cast(this.props.data.transports.find(it=>it.pivot.step==this.props.transportIndex), 'departure_location.name'),
-                        iata : this.cast(this.props.data.transports.find(it=>it.pivot.step==this.props.transportIndex), 'departure_location.iata')
+                        flight_datetime : moment(this.models('props.data.conveyence.departure_datetime_lt')).format('DD/MM/YYYY [à] HH:mm'),
+                        airport : this.models('props.data.conveyence.departure_location.name'),
+                        iata : this.models('props.data.conveyence.departure_location.iata')
                     })
                     break;
                 case 'departure':
@@ -423,26 +449,26 @@ class Status extends Component
                     })
                     done_resdits = []
                     this.state.flights.map((flight, index)=>{
-                        let transport = this.props.data.transports.find(it=>it.pivot.step==this.props.transportIndex)
-                        if(this.models('props.data.nsetup.transports.'+this.props.transportIndex+'.departure_datetime_lt', false) && this.models('props.data.nsetup.transports.'+this.props.transportIndex+'.departure_datetime_lt', false)!=transport.departure_datetime_lt) {
+                        let transport = this.props.data.conveyence
+                        if(this.models('props.data.conveyence.departure_datetime_lt', false) && this.models('props.data.conveyence.departure_datetime_lt', false)!=transport.departure_datetime_lt) {
                             done_resdits.push(trans('<br/>RESDIT :resdit_files envoyé - Vol :flights :original_flight_datetime - <span class="text-danger">Horaire modifié : :flight_datetime</span>', {
                                 resdit_files : this.state.resdit_files[index],
                                 flights : flight,
                                 original_flight_datetime : moment(transport.departure_datetime_lt).format('DD/MM/YYYY [à] HH:mm'),
-                                flight_datetime : moment(this.models('props.data.transports.'+this.props.transportIndex+'.departure_datetime_lt', transport.departure_datetime_lt)).format('DD/MM/YYYY [à] HH:mm')
+                                flight_datetime : moment(this.models('props.data.conveyence.departure_datetime_lt', transport.departure_datetime_lt)).format('DD/MM/YYYY [à] HH:mm')
                             }))
                         }
                         else {
                             done_resdits.push(trans('<br/>RESDIT :resdit_files envoyé - Vol :flights :flight_datetime', {
                                 resdit_files : this.state.resdit_files[index],
                                 flights : flight,
-                                flight_datetime : moment(this.models('props.data.transports.'+this.props.transportIndex+'.departure_datetime_lt', transport.departure_datetime_lt)).format('DD/MM/YYYY [à] HH:mm')
+                                flight_datetime : moment(this.models('props.data.conveyence.departure_datetime_lt', transport.departure_datetime_lt)).format('DD/MM/YYYY [à] HH:mm')
                             }))
                         }
                     })
                     done = done_head + done_resdits.join('') + '<br/>' + trans('Départ :airport (:iata)', {
-                        airport : this.cast(this.props.data.transports.find(it=>it.pivot.step==this.props.transportIndex), 'departure_location.name'),
-                        iata : this.cast(this.props.data.transports.find(it=>it.pivot.step==this.props.transportIndex), 'departure_location.iata')
+                        airport : this.models('props.data.conveyence.departure_location.name'),
+                        iata : this.models('props.data.conveyence.departure_location.iata')
                     })
                     break;
             }
@@ -457,10 +483,7 @@ class Status extends Component
         </div>
         <div className="col-xl-3 d-md-none d-xl-block">
             <div className="blockTemps">
-                <h6 className="text-uppercase">{trans('Mail Manifest')}</h6>
-                <div className="row">
-                    {this.state.files}
-                </div>
+                {this.state.resdits.unique(it=>it.id).groupBy(it=>it.conveyence_id).map((resdits, index)=><div className="row border-bottom" key={`resdit-files-download-${index}`}>{resdits.map(resdit=>resdit.files.map(file=><a key={`download-${resdit.id}-resdit-${file}-${resdit.files.length}`} className="btn btn-info text-white col-md-3 font-10 pt-2 m-2" {...this.hrefs(file, resdit)}>RESDIT<span className="bg-light d-block font-25 m-2 rounded text-primary">{file.split('-')[0]}<br/><small className="font-10 d-block">{file.split('-')[1]}</small><small className="d-block text-dark subfile">{this.cast(resdit, 'cardit.nsetup.document_number')}</small></span><Ry/></a>))}</div>)}
             </div>
         </div>
         <div className="col-xl-9">
@@ -468,14 +491,13 @@ class Status extends Component
                 <form ref="frm_cardit" name={`frm_cardit${this.props.data.id}`} action={`/mailmanifest_resdit`} method="post">
                     <Ry title="ajaxform"/>
                     <input type="hidden" name="ry"/>
-                    <input type="hidden" name="id" value={this.props.pkey}/>
+                    <input type="hidden" name="id" value={this.props.data.id}/>
                     <input ref="consignment_event" type="hidden" name="consignment_event" value="departure"/>
                     <input type="hidden" name="transport_index" value="0"/>
-                    {this.props.data.mailmanifest.receptacles.map(receptacle=><input key={`cardit-${receptacle.cardit_id}-${receptacle.id}`} type="hidden" name={`cardit_ids[${receptacle.cardit_id}]`} value={receptacle.cardit_id}/>)}
                     <table className="table tableRecap">
                         <thead>
                             <tr>
-                                <th rowSpan="2"
+                                <th rowSpan="2" colSpan="3"
                                     className="colorVert noBor pl-0 text-left text-wrap">
                                         {trans('Nombre de récipients')} : {this.state.receptacles.length}
                                 </th>
@@ -497,6 +519,8 @@ class Status extends Component
                             </tr>
                             <tr>
                                 <th>{trans("Numéro du récipient")}</th>
+                                <th>{trans('Cardit')}</th>
+                                <th>LTA</th>
                                 {this.props.selectTransports.map((select_transport, index)=><th key={`cardit-assignation-checkall-0-${this.props.data.id}-select-transport-${select_transport.id}`}>
                                     {((this.props.selectTransports.length==1 && CHECKBOXES)?<div className="fancy-checkbox">
                                     <label><input type="checkbox" onChange={event=>this.handleAllReceptacleTransportChange(select_transport, event)} checked={this.state.oneTransportAllChecked}/><span></span></label>
@@ -519,9 +543,9 @@ class Status extends Component
                             </tr>
                         </thead>
                         <tbody>
-                            {this.state.receptacles.map((receptacle, index)=><ReceptacleLine key={`content-mail-manifest-${this.props.transportIndex}-${receptacle.id}`} pkey={this.props.data.id} data={receptacle} selectTransports={this.props.selectTransports} transportIndex={this.props.transportIndex} handleReceptacleTransportChange={(select_transport, checked)=>this.handleReceptacleTransportChange(receptacle, select_transport, checked)} readOnly={this.props.readOnly} store={this.props.store} departureSent={this.models('props.data.resdits', []).find(it=>it.event=='departure')}/>)}
+                            {this.state.receptacles.map((receptacle, index)=><ReceptacleLine key={`content-mail-manifest-${this.props.transportIndex}-${receptacle.id}`} defaultConveyence={this.props.data.conveyence} pkey={this.props.data.id} data={receptacle} selectTransports={this.props.selectTransports} transportIndex={this.props.transportIndex} handleReceptacleTransportChange={(select_transport, checked)=>this.handleReceptacleTransportChange(receptacle, select_transport, checked)} readOnly={this.props.readOnly} store={this.props.store} departureSent={this.models('props.data.resdits', []).find(it=>it.event=='departure')}/>)}
                             {(!this.props.readOnly && !this.models('props.data.resdits', []).find(it=>it.event=='departure'))?<tr>
-                                <td className="border-right-0 border-top-0 border-bottom-0 noBg" colSpan="2"></td>
+                                <td className="border-right-0 border-top-0 border-bottom-0 noBg" colSpan="4"></td>
                                 {this.props.selectTransports.length>1?<td className="border-0 p-0" colSpan={this.props.selectTransports.length-1}>
                                     <button className="btn btn-orange rounded-0" type="button" onClick={()=>this.handleSubmit('assignation')}>{trans("Valider")}</button>
                                 </td>:null}
@@ -538,7 +562,7 @@ class Status extends Component
                             {trans("Confirmation dates/heures départ")}
                         </PopupHeader>
                         <PopupBody>
-                            {this.props.selectTransports.filter(it=>this.state.receptacles.filter(receptacle=>receptacle.transports.find(transport=>this.cast(transport, 'departure.conveyence_id')==it.id)).length>0).map(select_transport=><Transport ref={`schedule-transport-departure-${select_transport.id}`} key={`schedule-transport-departure-${select_transport.id}`} data={select_transport} datetimeLT={select_transport.departure_datetime_lt} onChange={()=>this.setState({dtchanged:true})} consignmentEvent="departure"/>)}
+                            {this.props.selectTransports.map(select_transport=><Transport ref={`schedule-transport-departure-${select_transport.id}`} key={`schedule-transport-departure-${select_transport.id}`} data={select_transport} datetimeLT={select_transport.departure_datetime_lt} onChange={()=>this.setState({dtchanged:true})} consignmentEvent="departure"/>)}
                         </PopupBody>
                         <PopupFooter>
                             <button className="btn btn-primary p-2 font-18 text-uppercase" type="button" onClick={this.confirm}>

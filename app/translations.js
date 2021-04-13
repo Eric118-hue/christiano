@@ -24,6 +24,10 @@ numeral.register('locale', 'fr', {
     }
 });
 
+export const TCOUNTER = {
+    AJAX : 0
+}
+
 export const locale = $("html").attr("lang");
 
 export const DATES = {

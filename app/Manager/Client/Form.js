@@ -314,11 +314,16 @@ class Form extends Component
                                                 <label className="control-label text-uppercase">
                                                     {trans('Version FWB')}
                                                 </label>
-                                                <div className="form-group border-top pt-3">
-                                                    <select name="nsetup[fwb_version]" defaultValue={this.models('props.data.row.nsetup.fwb_version')}>
-                                                        <option value="17">17</option>
-                                                        <option value="16">16</option>
-                                                    </select>
+                                                <div className="row border-top pt-3">
+                                                    <div className="col-md-6 form-group">
+                                                        <select name="nsetup[fwb_version]" defaultValue={this.models('props.data.row.nsetup.fwb_version')} className="form-control">
+                                                            <option value="17">17</option>
+                                                            <option value="16">16</option>
+                                                        </select>
+                                                    </div>
+                                                    <div className="col-md-6 form-group">
+                                                        <input type="text" name="nsetup[fwb_name]" defaultValue={this.models('props.data.row.nsetup.fwb_name')} className="form-control" placeholder="Nom FWB"/>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>

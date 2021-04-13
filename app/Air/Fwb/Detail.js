@@ -42,9 +42,9 @@ class Detail extends Component
               <td colSpan="6" rowSpan="3" style={{width:'25%'}}>
                 Not negociable AIR WAYBILL Issued By
               </td>
-              <td colSpan="2" rowSpan="3" style={{width:'25%'}}>
+              <td colSpan="2" rowSpan="3" style={{width:'25%'}} className="text-wrap">
                 <h3>{this.models('props.data.data.customer.facturable.name')}</h3>
-                {this.models('props.data.data.customer.facturable.adresse.raw')} {this.models('props.data.data.customer.facturable.adresse.ville.cp')} // {this.models('props.data.data.customer.facturable.adresse.ville.country.nom')}
+                {this.models('props.data.data.customer.facturable.adresse.raw')} {this.models('props.data.data.customer.facturable.adresse.ville.cp')} / {this.models('props.data.data.customer.facturable.adresse.ville.nom')} / {this.models('props.data.data.customer.facturable.adresse.ville.country.nom')}
               </td>
             </tr>
             <tr>
@@ -221,10 +221,10 @@ class Detail extends Component
                 {this.models('props.data.data.cardit.nsetup.handover_destination_location.name')}
               </td>
               <td colSpan="2" className="text-wrap">
-                {moment(this.models('props.data.data.cardit.transports.0.departure_datetime_lt')).format('DD/MM/YYYY HH:mm')}
+                {this.models('props.data.data.cardit.nsetup.transports.0.conveyence_reference')}
               </td>
               <td colSpan="2">
-                {this.models('props.data.data.cardit.transports.1.departure_datetime_lt', false)?moment(this.models('props.data.data.cardit.transports.1.departure_datetime_lt')).format('DD/MM/YYYY HH:mm'):null}
+                {moment(this.models('props.data.data.cardit.nsetup.transports.0.departure_datetime_lt')).format('DD/MM/YYYY HH:mm')}
               </td>
               <td colSpan="6"></td>
             </tr>

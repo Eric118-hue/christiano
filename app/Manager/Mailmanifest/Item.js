@@ -13,20 +13,17 @@ export class FullDetail extends Component
 {
     constructor(props) {
         super(props)
-        let allTransports = []
+        let allTransports = [{
+            assignation : null,
+            departure : null,
+            arrival : null
+        }]
         let data = this.props.data
-        data.nsetup.transports.map(transport=>{
-            allTransports.push({
-                assignation : null,
-                departure : null,
-                arrival : null
-            })
-        })
         this.state = {
             data : this.props.data,
             step : 'departure',
             transport_index : 0,
-            transports : data.transports,
+            transports : [data.conveyence],
             allTransports : allTransports,
             newairport : {
                 iata : ''
@@ -92,22 +89,20 @@ export class FullDetail extends Component
     }
 
     componentDidMount() {
-        if(this.props.data.transports.length>0) {
-            const opts = {
-                startDate : moment(this.cast(this.props.data.transports.find(it=>it.pivot.step==0), 'departure_datetime_lt')).toDate(),
-                language : 'fr',
-                autoclose : true
-            }
-            const dp = $(this.refs.departure_date).datepicker(opts)
-            const dp_arrival = $(this.refs.arrival_date).datepicker(opts)
-            dp.on("changeDate", ()=>{
-                this.departure_date = moment(dp.datepicker('getDate')).format('YYYY-MM-DD')
-                $(this.refs.arrival_date).datepicker('setStartDate', moment(dp.datepicker('getDate')).toDate())
-            });
-            dp_arrival.on("changeDate", ()=>{
-                this.arrival_date = moment(dp_arrival.datepicker('getDate')).format('YYYY-MM-DD')
-            });
+        const opts = {
+            startDate : moment(this.models('props.data.conveyence.departure_datetime_lt')).toDate(),
+            language : 'fr',
+            autoclose : true
         }
+        const dp = $(this.refs.departure_date).datepicker(opts)
+        const dp_arrival = $(this.refs.arrival_date).datepicker(opts)
+        dp.on("changeDate", ()=>{
+            this.departure_date = moment(dp.datepicker('getDate')).format('YYYY-MM-DD')
+            $(this.refs.arrival_date).datepicker('setStartDate', moment(dp.datepicker('getDate')).toDate())
+        });
+        dp_arrival.on("changeDate", ()=>{
+            this.arrival_date = moment(dp_arrival.datepicker('getDate')).format('YYYY-MM-DD')
+        });
     }
 
     saveTransport() {
@@ -115,7 +110,7 @@ export class FullDetail extends Component
             const departure_datetime = this.refs.departure_time.value
             const arrival_datetime = this.refs.arrival_time.value
             const values = {
-                new : true,
+                mailmanifest_id : this.props.data.id,
                 reference : this.refs.conveyence_reference.value,
                 departure_date : this.departure_date,
                 departure_time : this.refs.departure_time.value,
@@ -129,11 +124,11 @@ export class FullDetail extends Component
                 }
             }
             let cardit_ids = {}
-            this.props.data.mailmanifest.receptacles.map(receptacle=>{
+            this.props.data.receptacles.map(receptacle=>{
                 cardit_ids[receptacle.cardit_id] = 1
             })
             $.ajax({
-                url : '/transports',
+                url : '/mailmanifest_transport',
                 type : 'post',
                 data : {...values, cardit_ids : Object.keys(cardit_ids), transport_index: this.state.transport_index},
                 success : response=>{
@@ -179,7 +174,7 @@ export class FullDetail extends Component
 
     removeSelectTransport(select_transport) {
         this.setState(state=>{
-            state.transports = state.transports.filter(item=>item.pivot.step==state.transport_index && item.id!=select_transport.id)
+            state.transports = state.transports.filter(item=>item.id!=select_transport.id)
             return state
         })
     }
@@ -192,7 +187,7 @@ export class FullDetail extends Component
     }
 
     getHeadStep() {
-        let transport = this.props.data.transports.find(it=>it.pivot.step==this.state.transport_index)
+        let transport = this.props.data.conveyence
         return <div className="centerText">
             {trans("Départ des récipients sur le vol Nº:vol au départ de l'aéroport :country_name - :iata - :airport_name", {vol:transport.reference, country_name:transport.departure_location.country.nom, iata:transport.departure_location.iata, airport_name:transport.departure_location.name})}
         </div>
@@ -217,7 +212,7 @@ export class FullDetail extends Component
                 </div>
             </div>
             <div className="tableBottom">
-                <Status key={`departure-${this.props.data.id}-${this.state.transport_index}`} readOnly={this.props.readOnly} data={this.state.data} transportIndex={this.state.transport_index} selectTransports={this.state.transports.filter(it=>it.pivot.step==this.state.transport_index)} addTransport={this.addTransport} consignmentEvent="departure" handleAllReceptacleTransportChange={transport=>this.handleAllReceptacleTransportChange(transport)} allTransport={this.state.allTransports[this.state.transport_index].departure} store={this.props.store} readOnly={this.props.readOnly}pkey={this.props.pkey}/>
+                <Status key={`departure-${this.props.data.id}-${this.state.transport_index}`} readOnly={this.props.readOnly} data={this.state.data} transportIndex={this.state.transport_index} selectTransports={this.state.transports} addTransport={this.addTransport} consignmentEvent="departure" handleAllReceptacleTransportChange={transport=>this.handleAllReceptacleTransportChange(transport)} allTransport={this.state.allTransports[this.state.transport_index].departure} store={this.props.store} readOnly={this.props.readOnly}pkey={this.props.pkey}/>
             </div>
             <Popup id={`transport_popup_${this.props.pkey}`} className="modal-sm">
                 <PopupBody>
@@ -309,15 +304,15 @@ class Item extends Component
         $.ajax({
             url : '/mailmanifest',
             data : {
-                id : this.props.data.conveyence.id,
+                id : this.props.data.id,
                 container_id : this.props.data.container_id,
                 json : true
             },
             success : response=>{
-                if(this.cast(response, 'data.data')) {
+                if(this.cast(response, 'data')) {
                     this.setState({
                         open : true,
-                        data : response.data.data,
+                        data : response.data,
                         pkey : response.data.id,
                         delivery_consignment_events : response.delivery_consignment_events,
                         consignment_events : response.consignment_events
@@ -336,10 +331,10 @@ class Item extends Component
                 <td>
                     <div className="d-flex align-items-center px-3">
                         <span className="d-inline-block px-2 list-document-number text-blue">{this.props.data.container_id}</span>
-                        {this.models('props.data.nsetup.exceptions.bgms')?null:<a href="#" onClick={this.detail} className="btnAccord"><i className={`fa ${this.state.open?'fa-sort-up':'fa-sort-down'}`}></i></a>}
+                        <a href="#" onClick={this.detail} className="btnAccord"><i className={`fa ${this.state.open?'fa-sort-up':'fa-sort-down'}`}></i></a>
                     </div>
                 </td>
-                <td>{this.models('props.data.nrecipients')}</td>
+                <td>{this.models('props.data.receptacles', []).length}</td>
                 <td>{numeral(this.models('props.data.total_weight')).format('0,0.0')} Kg</td>
                 <td>
                     {this.models('props.data.conveyence.reference')}
@@ -350,7 +345,8 @@ class Item extends Component
                 <td className="w-info">{this.models('props.data.conveyence.departure_location.iata')}</td>
                 <td>{this.models('props.data.conveyence.arrival_location.iata')}</td>
                 <td>
-                    <a href={`/mailmanifest?${qs.stringify({id:this.models('props.data.conveyence.id')})}`} target="_blank"><i className="fa fa-file-contract fa-2x text-orange"></i></a>
+                    <a href={`/mailmanifestdoc?${qs.stringify({id:this.models('props.data.id')})}`} target="_blank"><i className="fa fa-file-contract fa-2x text-orange"></i></a>
+                    {this.models('props.data.resdits', []).find(it=>it.event=='departure')?<i className="fa-2x l2-departure ml-2 text-orange"></i>:null}
                 </td>
             </tr>
             {(this.state.data && this.state.open)?<FullDetail data={this.state.data} pkey={this.state.pkey} consignmentEvents={this.state.consignment_events} deliveryConsignmentEvents={this.state.delivery_consignment_events} store={this.props.store} readOnly={this.props.readOnly}/>:null}

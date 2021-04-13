@@ -23,25 +23,25 @@ class CN38 extends Component
               </div>
               <div className="col text-right">
                 {trans('Issuing station')} :
-                <h3>{this.models('props.data.data.data.mailmanifest.departure_location.iata')}</h3>
+                <h3>{this.models('props.data.data.conveyence.departure_location.iata')}</h3>
               </div>
             </div>
               <table className="table table-bordered table-mini-padding">
                 <tbody>
                   <tr>
                       <td rowSpan="4">{trans('Operator')} :<br/>
-                        <span className="d-block font-24 text-uppercase">{this.models('props.data.data.data.airline.name')}</span>
+                        <span className="d-block font-24 text-uppercase">{this.models('props.data.data.airline.name')}</span>
                       </td>
-                      <td className="pl-4">{trans('Flight')} : <strong>{this.models('props.data.data.data.mailmanifest.reference')}</strong></td>
+                      <td className="pl-4">{trans('Flight')} : <strong>{this.models('props.data.data.conveyence.reference')}</strong></td>
                   </tr>
                   <tr>
                     <td>
                       <div className="row m-0">
                         <div className="col">
-                          {trans('Date')} : <strong>{moment(this.models('props.data.data.data.mailmanifest.departure_datetime_lt')).format('DD/MM/YY')}</strong>
+                          {trans('Date')} : <strong>{moment(this.models('props.data.data.conveyence.departure_datetime_lt')).format('DD/MM/YY')}</strong>
                         </div>
                         <div className="col">
-                        {trans('Time')} : <strong>{moment(this.models('props.data.data.data.mailmanifest.departure_datetime_lt')).format('H[h]mm')}</strong>
+                        {trans('Time')} : <strong>{moment(this.models('props.data.data.conveyence.departure_datetime_lt')).format('HH[h]mm')}</strong>
                         </div>
                       </div>
                     </td>
@@ -55,10 +55,10 @@ class CN38 extends Component
                     <td>
                       <div className="row m-0">
                         <div className="col">
-                          {trans('From')} : <strong>{this.models('props.data.data.data.mailmanifest.departure_location.iata')}</strong>
+                          {trans('From')} : <strong>{this.models('props.data.data.conveyence.departure_location.iata')}</strong>
                         </div>
                         <div className="col">
-                          {trans('To')} : <strong>{this.models('props.data.data.data.mailmanifest.arrival_location.iata')}</strong>
+                          {trans('To')} : <strong>{this.models('props.data.data.conveyence.arrival_location.iata')}</strong>
                         </div>
                       </div>
                     </td>
@@ -69,7 +69,7 @@ class CN38 extends Component
 
           <div className="my-4">
               <table className="table table-bordered table-mini-padding border-0 table-centerall">
-          {this.models('props.data.data.data.mailmanifest.document', []).map(item=><React.Fragment key={`uld-${item.uld}`} >
+          {this.models('props.data.data.document', []).map(item=><React.Fragment key={`uld-${item.uld}`} >
                   <thead style={{textAlign: 'left'}} className="bg-light">
                       <tr>
                           <th colSpan="6" className="font-20 px-4 text-left">{item.uld}</th>
@@ -107,15 +107,15 @@ class CN38 extends Component
               <tfoot className="bg-light">
                   <tr>
                       <th colSpan="3" className="text-right">{trans('Grand total')} : </th>
-                      <th>{this.models('props.data.data.data.mailmanifest.total_bags')}</th>
-                      <th>{numeral(this.models('props.data.data.data.mailmanifest.total_weight')).format('0,0.0')} Kg</th>
+                      <th>{this.models('props.data.data.total_bags')}</th>
+                      <th>{numeral(this.models('props.data.data.total_weight')).format('0,0.0')} Kg</th>
                       <th></th>
                   </tr>
               </tfoot>
             </table>
           </div>
           <div className="text-right">
-            <a className="btn btn-orange" href={`/mailmanifest?${qs.stringify({id:this.models('props.data.data.data.mailmanifest.id'),format:'pdf'})}`} target="_blank"><i className="fa fa-file-pdf"></i> {trans('Télécharger')}</a>
+            <a className="btn btn-orange" href={`/mailmanifestdoc?${qs.stringify({id:this.models('props.data.data.id'),format:'pdf'})}`} target="_blank"><i className="fa fa-file-pdf"></i> {trans('Télécharger')}</a>
           </div>
         </div>
       </div>

@@ -13,6 +13,7 @@ class List extends BaseList
         this.model = 'mailmanifest'
         this.endpoint = '/mailmanifests'
         this.readOnly = (this.props.data.user.guard=='manager')
+        this.state.t = moment()
         this.containerSearch = this.containerSearch.bind(this)
         this.state.filter.container_id = this.models('props.data.filter.container_id', '')
         this.state.filter.departure_datetime_lt = this.models('props.data.filter.departure_datetime_lt', moment())
@@ -24,6 +25,12 @@ class List extends BaseList
         if(this.request) {
             this.request.abort()
         }
+        this.setState({
+            filter : {
+                departure_datetime_lt : moment()
+            },
+            t : moment()
+        })
         this.data.s = {}
         this.request = $.ajax({
             isPagination : true,
@@ -128,7 +135,7 @@ class List extends BaseList
                                 <div className="col-md-2">
                                     <div className="align-items-baseline d-flex form-group ml-2">
                                         <div className="input-group">
-                                            <input ref="container_id" type="search" placeholder={trans("Nº de conteneur")} value={this.state.filter.container_id} className="form-control" onChange={e=>{
+                                            <input ref="container_id" type="search" placeholder={trans("Nº de conteneur")} value={this.models('state.filter.container_id', '')} className="form-control" onChange={e=>{
                                                 const value = e.target.value
                                                 this.setState(state=>{
                                                     state.filter.container_id = value
@@ -144,7 +151,7 @@ class List extends BaseList
                                 <div className="col-md-2">
                                     <div className="align-items-baseline d-flex form-group ml-2">
                                         <div className="input-group">
-                                            <input ref="receptacle_id" placeholder={trans("Nº de récipient")} type="search" value={this.state.filter.receptacle_id} className="form-control" onChange={e=>{
+                                            <input ref="receptacle_id" placeholder={trans("Nº de récipient")} type="search" value={this.models('state.filter.receptacle_id', '')} className="form-control" onChange={e=>{
                                                 const value = e.target.value
                                                 this.setState(state=>{
                                                     return state.filter.receptacle_id = value
@@ -159,13 +166,13 @@ class List extends BaseList
                                 <div className="col-md-6 border rounded p-3">
                                     <form className="row m-0" name="frm_conveyence_reference" action={trans('/mailmanifests')}>
                                         <div className="col-md">
-                                            <input type="text" name="s[conveyence_reference]" defaultValue={this.state.filter.conveyence_reference} className="form-control" placeholder={trans('Nº de vol')}/>
+                                            <input key={`conveyence${this.state.t}`} type="text" name="s[conveyence_reference]" defaultValue={this.models('state.filter.conveyence_reference', '')} className="form-control" placeholder={trans('Nº de vol')}/>
                                         </div>
                                         <label className="control-label font-20 m-0">
                                             +
                                         </label>
                                         <div className="col-md">
-                                            <Datepicker name="s[departure_datetime_lt]" defaultValue={moment(this.state.filter.departure_datetime_lt)} placeholder={trans('Date')} className="w-100"/>
+                                            <Datepicker key={`datepicker${this.state.t}`} name="s[departure_datetime_lt]" defaultValue={moment(this.models('state.filter.departure_datetime_lt'))} placeholder={trans('Date')} className="w-100"/>
                                         </div>
                                         <button className="btn btn-primary">{trans('OK')}</button>
                                     </form>
@@ -189,7 +196,7 @@ class List extends BaseList
                                     </div>
                                     {this.nopaginate?null:<div className="form-group d-flex align-items-center justify-content-start flex-nowrap" style={{width:220}}>
                                         <label className="control-label">{trans('Voir')}</label>
-                                        <select className="form-control" value={this.state.filter.perpage} onChange={e=>this.onFilter(e, 'perpage')}>
+                                        <select className="form-control" value={this.models('state.filter.perpage', 25)} onChange={e=>this.onFilter(e, 'perpage')}>
                                             <option value="25">25</option>
                                             <option value="50">50</option>
                                             <option value="100">100</option>
