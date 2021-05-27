@@ -3,6 +3,7 @@ import trans, {plural} from '../../translations';
 import Modelizer from '../../../vendor/Ry/Core/Modelizer';
 import swal from 'sweetalert2';
 import $ from 'jquery';
+import './Form.scss';
 
 class Form extends Component
 {
@@ -134,13 +135,19 @@ class Form extends Component
             </ul>
             {this.state.numbers.length>0?<div>
               <h4>{trans('Liste des AWB')}</h4>
-              <strong>{this.state.numbers.length}</strong> {plural('AWB Number disponible', {n:this.state.numbers.length}, 'AWB Number disponibles')}
+              <strong>{this.state.numbers.filter(it=>it.selected).length}</strong> {plural('AWB Number disponible', {n:this.state.numbers.filter(it=>it.selected).length}, 'AWB Number disponibles')}
               <div className="row my-5 mx-0 bg-light">
                 {this.state.numbers.map((number, index)=>{
                   const readonly = number.available ? {readOnly:true} : {}
-                  return <label key={`number-${number.value}`} className={`fancy-checkbox px-4 py-2 border ${number.available?'':'border-danger'}`}><input type="checkbox" name="numbers[]" value={number.value} checked={number.selected} onChange={e=>this.handleCheck(e, index)} {...readonly}/>
-                    <span>{number.value}</span>
-                </label>})}
+                  if(number.selected) {
+                    return <label key={`number-${number.value}`} className={`fancy-checkbox px-4 py-2 border ${number.available?'':'border-danger'}`}><input type="checkbox" name="numbers[]" value={number.value} checked={number.selected} onChange={e=>this.handleCheck(e, index)} {...readonly}/>
+                        <span>{number.value}</span>
+                    </label>
+                  }
+                  return <label key={`number-${number.value}`} className={`fancy-checkbox px-4 py-2 bg-stone border ${number.available?'':'border-danger'}`}><i className="fa fa-ban mr-2 text-danger"></i>
+                      <span>{number.value}</span>
+                  </label>
+                })}
               </div>
               {!this.state.saved?<div className="text-center">
                 <button className="btn btn-success text-white" type="button" onClick={this.saveLta}>{trans('Enregistrer les AWB')}</button>

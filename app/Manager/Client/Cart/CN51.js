@@ -32,7 +32,7 @@ class CN51 extends Component
       },
       success : response=>{
         if(response.cart) {
-          if(!response.cart.archived) {
+          if(!response.cart.closed || response.cart.pending) {
             this.reload()
           }
           else {
@@ -52,7 +52,7 @@ class CN51 extends Component
   }
 
   componentDidMount() {
-    if(!this.models('state.cart.archived', false)) {
+    if(!this.models('state.cart.closed', false) || this.models('state.cart.pending', false)) {
       this.reload()
     }
   }
@@ -71,9 +71,6 @@ class CN51 extends Component
   }
 
   render() {
-    if(!this.models('state.cart.archived', false)) {
-      return <div className="alert alert-warning">{trans('Calcul en cours... Veuillez patienter un instant')}</div>
-    }
     return <form className="m-auto" name="frm_cn51" action={trans('/cn51')} method="post" target="blank" style={{width: 910}}>
       <input type="hidden" name="_token" value={$('meta[name="csrf-token"]').attr('content')}/>
         <div className="card">
@@ -212,6 +209,7 @@ class CN51 extends Component
         </div>
         </div>
         </div>
+        {(!this.models('state.cart.closed', false) || this.models('state.cart.pending', false))?<div className="alert alert-warning">{trans('Dernière mise à jour le :date', {date:moment(this.state.cart.updated_at).format('DD/MM/YYYY HH:mm')})}</div>:null}
       </form>
     }
 }

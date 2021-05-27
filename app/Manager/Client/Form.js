@@ -7,6 +7,9 @@ import Organisation from './Organisation';
 import RouteOrganisation from './RouteOrganisation';
 import Repository from './Repository';
 import swal from 'sweetalert2';
+import LandTab from './Tabs/Land';
+import WaterTab from './Tabs/Water';
+import AirTab from './Tabs/Air';
 
 class Form extends Component
 {
@@ -206,6 +209,21 @@ class Form extends Component
                         aria-selected="true">{trans('Compte client')}</a>
                             </li>
                             {this.props.data.row.id?<React.Fragment>
+                                {this.models('props.data.row.transport_types', []).indexOf('air')>=0?<li className="nav-item">
+                                    <a className={`nav-link ${this.state.tab=='air'?'active':''}`}
+                            data-toggle="tab" href={`#air`} role="tab"
+                            aria-controls="air">{trans('Airlines')}</a>
+                                </li>:null}
+                                {this.models('props.data.row.transport_types', []).indexOf('land')>=0?<li className="nav-item">
+                                    <a className={`nav-link ${this.state.tab=='land'?'active':''}`}
+                            data-toggle="tab" href={`#land`} role="tab"
+                            aria-controls="land">{trans('Roads')}</a>
+                                </li>:null}
+                                {this.models('props.data.row.transport_types', []).indexOf('water')>=0?<li className="nav-item">
+                                    <a className={`nav-link ${this.state.tab=='water'?'active':''}`}
+                            data-toggle="tab" href={`#water`} role="tab"
+                            aria-controls="water">{trans('Maritimes')}</a>
+                                </li>:null}
                                 <li className="nav-item">
                                     <a className={`nav-link ${this.state.tab=='organisation'?'active':''}`}
                             data-toggle="tab" href={`#organisation`} role="tab"
@@ -257,10 +275,6 @@ class Form extends Component
                                             <label className="control-label">{trans('Nom')}</label>
                                             <input type="text" className="form-control" value={this.state.name_search} name="name" autoComplete="bistrict" onChange={this.handleNameChange} required/>
                                         </div>}
-                                        <div className="form-group">
-                                            <label className="control-label">{trans('Préfixe compagnie')}</label>
-                                            <input type="number" className="form-control" name="nsetup[lta][prefix]" defaultValue={this.models('props.data.row.nsetup.lta.prefix')}/>
-                                        </div>
                                     </div>
                                     <div className="col-md-6">
                                         <label className="control-label">&nbsp;</label>
@@ -512,7 +526,10 @@ class Form extends Component
                                     </div>
                                 </div>
                             </div>
-                            {this.props.data.row.id?(this.state.type=='road'?<RouteOrganisation tabbed={true} ref="organisation" data={this.props.data} store={this.props.store}/>:<Organisation tabbed={true} ref="organisation" data={this.props.data} store={this.props.store}/>):null}
+                            {this.props.data.row.id && this.models('props.data.row.transport_types', []).indexOf('air')>=0?<AirTab data={this.props.data}/>:null}
+                            {this.props.data.row.id && this.models('props.data.row.transport_types', []).indexOf('land')>=0?<LandTab data={this.props.data}/>:null}
+                            {this.props.data.row.id && this.models('props.data.row.transport_types', []).indexOf('water')>=0?<WaterTab data={this.props.data}/>:null}
+                            {this.props.data.row.id && this.props.data.row.id?(this.state.type=='road'?<RouteOrganisation tabbed={true} ref="organisation" data={this.props.data} store={this.props.store}/>:<Organisation tabbed={true} ref="organisation" data={this.props.data} store={this.props.store}/>):null}
                         </div>
                         <input type="hidden" name="id" value={this.models('props.data.row.id')}/>
                         <div className="d-flex justify-content-end">

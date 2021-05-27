@@ -139,9 +139,9 @@ export class List extends BaseCart
                     {this.state.data.map((item, key)=><tr key={`row=-${key}`}>
                         <td>{moment.utc(item.created_at).format('MMMM YYYY')}</td>
                         <td>{item.code}</td>
-                        {item.airline?<td>{item.airline.edi_code} {item.airline.name}</td>:<td>{item.transporter.name}</td>}
+                        {item.airline?<td>{item.airline.edi_code} {item.airline.name}</td>:<td>{this.cast(item, 'transporter.name')}</td>}
                         <td>{numeral(item.total_weight).format('0.0')}</td>
-                        <td>{item.currency.iso_code}</td>
+                        <td>{this.cast(item, 'currency.iso_code')}</td>
                         <td>{numeral(item.total_ht).format('0.00')}</td>
                         <td>{numeral(item.total_ttc).format('0.00')}</td>
                         {this.nocommission?null:<td>{numeral(item.total_commissions).format('0.00')}</td>}
@@ -192,6 +192,15 @@ class Invoice extends Component
                     <li className="nav-item">
                         <a className={`nav-link`} href={`/client_edit?id=${this.props.data.row.id}`}>{trans('Compte client')}</a>
                     </li>
+                    {this.models('props.data.row.transport_types', []).indexOf('air')>=0?<li className="nav-item">
+                        <a className={`nav-link`} href={`/client_edit?id=${this.props.data.row.id}&tab=air`}>{trans('Airlines')}</a>
+                    </li>:null}
+                    {this.models('props.data.row.transport_types', []).indexOf('land')>=0?<li className="nav-item">
+                        <a className={`nav-link`} href={`/client_edit?id=${this.props.data.row.id}&tab=land`}>{trans('Roads')}</a>
+                    </li>:null}
+                    {this.models('props.data.row.transport_types', []).indexOf('water')>=0?<li className="nav-item">
+                        <a className={`nav-link`} href={`/client_edit?id=${this.props.data.row.id}&tab=water`}>{trans('Maritimes')}</a>
+                    </li>:null}
                     <li className="nav-item">
                         <a className={`nav-link`} href={`/client_edit?id=${this.props.data.row.id}&tab=organisation`}>{trans('Organisation')}</a>
                     </li>

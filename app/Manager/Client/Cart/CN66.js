@@ -25,7 +25,7 @@ class CN66 extends Component
   }
 
   render() {
-    if(!this.models('state.cart.archived', false)) {
+    if(!this.models('state.cart.closed', false) || this.models('state.cart.pending', false)) {
       return <div className="alert alert-warning">{trans('Calcul en cours... Veuillez patienter un instant')}</div>
     }
     return <div className="col-12">

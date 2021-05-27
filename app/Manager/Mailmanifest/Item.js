@@ -259,7 +259,7 @@ export class FullDetail extends Component
                             </label>
                             <input type="text" data-parsley-pattern="^\d{4}$" className="form-control bs-default" ref="arrival_time" required/>
                         </div>
-                        <div className="form-group">
+                        {this.props.theme=='agent'?null:<div className="form-group">
                             <label className="control-label">
                                 {trans('Aéroport de départ')}
                             </label>
@@ -269,8 +269,7 @@ export class FullDetail extends Component
                                     {this.state.select_airports.map(airport=><a key={`airport-${airport.id}`} className="dropdown-item" href="#" onClick={e=>this.handleSelectAirport(e, airport)}>{airport.iata} ({airport.name} - {this.cast(airport, 'country.nom')})</a>)}
                                 </div>
                             </div>
-                            
-                        </div>
+                        </div>}
                         <button className="btn btn-orange text-capitalize" type="button" onClick={this.saveTransport}>{trans('Confirmer')}</button>
                     </form>
                 </PopupBody>
@@ -349,7 +348,7 @@ class Item extends Component
                     {this.models('props.data.resdits', []).find(it=>it.event=='departure')?<i className="fa-2x l2-departure ml-2 text-orange"></i>:null}
                 </td>
             </tr>
-            {(this.state.data && this.state.open)?<FullDetail data={this.state.data} pkey={this.state.pkey} consignmentEvents={this.state.consignment_events} deliveryConsignmentEvents={this.state.delivery_consignment_events} store={this.props.store} readOnly={this.props.readOnly}/>:null}
+            {(this.state.data && this.state.open)?<FullDetail theme={this.props.theme} data={this.state.data} pkey={this.state.pkey} consignmentEvents={this.state.consignment_events} deliveryConsignmentEvents={this.state.delivery_consignment_events} store={this.props.store} readOnly={this.props.readOnly}/>:null}
         </React.Fragment>
     }
 }

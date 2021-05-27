@@ -9,6 +9,7 @@ class List extends NavigableModel
     super(props)
     this.endpoint = '/ltas';
     this.model = 'lta'
+    this.progressive = true
   }
 
   item(item, key) {

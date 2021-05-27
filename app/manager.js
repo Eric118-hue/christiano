@@ -20,6 +20,7 @@ import Cardit from './Manager/Cardit';
 import $ from 'jquery';
 import trans from './translations';
 import Ry from '../vendor/Ry/Core/Ry';
+import Page from '../vendor/Ry/Admin/PageEditor';
 
 const Components = {
     App : App,
@@ -30,7 +31,10 @@ const Components = {
             AdminTools : __ADMINTOOLS,
             NavigationByRole : __NAVIGATION_BY_ROLE,
             Translator : __TRANSLATOR,
-            Traductions : TraductionsDialog
+            Traductions : TraductionsDialog,
+            Page : {
+                Form : Page
+            }
         },
         Categories : __CATEGORIES,
         Profile : {

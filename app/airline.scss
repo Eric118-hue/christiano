@@ -325,7 +325,7 @@ table#recipientTable td .transport-datepicker .btn {
 }
 
 .table-bordered {
-	.table-bordered {
+	.table-bordered:not(.table-resume) {
 
 		border: none;
 
@@ -355,4 +355,12 @@ table#recipientTable td .transport-datepicker .btn {
 	td, th {
 		padding: 0.5rem;
 	}
+}
+
+nav.navbar.navbar-fixed-top .navbar-right {
+	padding-right: 80px;
+}
+
+.ry-float-loading {
+	z-index: 2000000001 !important;
 }
