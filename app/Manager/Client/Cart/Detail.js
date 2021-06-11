@@ -215,7 +215,7 @@ export class CarditInvoice extends Component
                 <a href={`#dialog/receptacle_invoices?cardit_id=${this.props.data.id}&customer_id=${this.props.cart.customer_id}`} className="text-info" data-display="modal-xl">{this.props.data.nsetup.document_number}</a>
             </td>
             <td>{this.props.data.nsetup.consignment_category.code}</td>
-            <td>{mail_classes}</td>
+            <td>{mailclasses}</td>
             <td>{this.models('props.data.nsetup.handover_origin_location.iata')} - {this.models('props.data.nsetup.handover_destination_location.iata', this.models('props.data.nsetup.handover_destination_location.cardit'))}</td>
             <td>{this.props.data.nsetup.nreceptacles}</td>
             <td>{numeral(this.props.data.total_weight).format('0.0')}</td>

@@ -1,0 +1,8 @@
+.nav-pills .nav-link.nav-link-client.active:not(.bg-primary), .nav-pills .show > .nav-link:not(.bg-primary) {
+    background-color: #00a3e6 !important;
+    color: #fff;
+}
+.nav-pills .nav-link.nav-link-client:not(.bg-primary), .nav-pills .nav-link.nav-link-client:not(.bg-primary) {
+    border: 1px solid #dee2e6;
+    color: #5a5a5a;
+}

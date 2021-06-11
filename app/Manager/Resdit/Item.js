@@ -38,7 +38,7 @@ class Item extends Component
             {this.props.data.cardit.nsetup.document_number}
         </td>
         <td>{this.props.data.cardit.nsetup.consignment_category.code}</td>
-        <td>{mail_classes}</td>
+        <td>{mailclasses}</td>
         <td>{this.props.data.cardit.nsetup.nreceptacles}</td>
         <td>{this.props.data.cardit.nsetup.wreceptacles}</td>
         <td className="w-info">{this.props.data.cardit.nsetup.handover_origin_location.iata} <a href="#" onClick={e=>{

@@ -3,11 +3,19 @@ import Organisation, {CUSTOMER_TYPES, TRANSPORTERS, TRANSPORTER} from './Organis
 import Pricing from './RoadPricing';
 import trans from 'ryapp/translations';
 import Autocomplete from 'ryapp/Manager/Client/Autocomplete';
+import $ from 'jquery';
 
 class RouteOrganisation extends Organisation
 {
   validate() {
     let errors = []
+    $(this.refs.organisation).find('.border-danger').removeClass('border-danger')
+        $(this.refs.organisation).find("[required]").each(function(){
+            $(this).parent().parent().addClass('border-danger')
+            errors.push('required')
+        })
+        if(this.refs.pricing)
+            errors.concat(this.refs.pricing.validate())
     return errors
   }
 

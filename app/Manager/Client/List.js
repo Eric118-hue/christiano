@@ -3,6 +3,7 @@ import NavigableModel from '../../../vendor/Ry/Core/NavigableModel';
 import trans from '../../translations';
 import swal from 'sweetalert2';
 import $ from 'jquery';
+import Modelizer from 'ryvendor/Ry/Core/Modelizer';
 
 class List extends NavigableModel
 {
@@ -18,6 +19,7 @@ class List extends NavigableModel
         const checked = event.target.checked
         this.setState(state=>{
             state.data[customer_index].nsetup[option] = checked
+            state.data[customer_index].companies.map(company=>company.nsetup[option] = checked)
             $.ajax({
                 url : '/customer',
                 type : 'post',
@@ -68,7 +70,12 @@ class List extends NavigableModel
             case 'road':
                 badge = <div className={`badge badge-turquoise`}>{trans('Road')}</div>
                 break;
+            case 'mix':
+                badge = <div className={`badge badge-rose`}>{trans('Mix')}</div>
+                break;
         }
+        const mailmanifest_checked = customer.nsetup.mail_manifest==1 && customer.companies.length>0 && customer.companies.filter(it=>it.nsetup.mail_manifest==1).length==customer.companies.length
+        const fwb_checked = customer.nsetup.fwb==1 && customer.companies.length>0 && customer.companies.filter(it=>it.nsetup.fwb==1).length==customer.companies.length
         return <tr key={`customer-${customer.id}`}>
             <td>{customer.id}</td>
             <td>{customer.facturable.name}</td>
@@ -92,7 +99,7 @@ class List extends NavigableModel
             </td>
             <td className="text-center">
                 <label className="fancy-checkbox">
-                    <input type="checkbox" checked={customer.nsetup.fwb==1?true:false} onChange={e=>this.handleSetup(e, key, 'fwb')} value="1"/>
+                    <input type="checkbox" checked={fwb_checked} onChange={e=>this.handleSetup(e, key, 'fwb')} value="1"/>
                     <span></span>
                 </label>
             </td>
@@ -110,7 +117,7 @@ class List extends NavigableModel
             </td>
             <td className="text-center">
                 <label className="fancy-checkbox">
-                    <input type="checkbox" checked={customer.nsetup.mail_manifest==1?true:false} onChange={e=>this.handleSetup(e, key, 'mail_manifest')} value="1"/>
+                    <input type="checkbox" checked={mailmanifest_checked} onChange={e=>this.handleSetup(e, key, 'mail_manifest')} value="1"/>
                     <span></span>
                 </label>
             </td>
@@ -179,6 +186,8 @@ class List extends NavigableModel
         </div>
     }
 }
+
+Modelizer(List)
 
 class AirlineList extends Component
 {

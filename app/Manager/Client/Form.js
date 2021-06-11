@@ -5,11 +5,11 @@ import $ from 'jquery';
 import MultiForm from '../../../vendor/Ry/Admin/User/Multiform';
 import Organisation from './Organisation';
 import RouteOrganisation from './RouteOrganisation';
-import Repository from './Repository';
 import swal from 'sweetalert2';
 import LandTab from './Tabs/Land';
 import WaterTab from './Tabs/Water';
 import AirTab from './Tabs/Air';
+import './Form.scss';
 
 class Form extends Component
 {
@@ -165,6 +165,39 @@ class Form extends Component
                     }
                 }
             }
+            if(this.refs.airTab) {
+                let air_errors = this.refs.airTab.validate()
+                if(air_errors.length>0) {
+                    errors = errors.concat(air_errors)
+                    errorMessages.push(trans("Veuillez remplir airlines."))
+                    if(!notabshown) {
+                        $('#tab-form a[href="#air"]').tab('show')
+                        notabshown = false
+                    }
+                }
+            }
+            if(this.refs.landTab) {
+                let land_errors = this.refs.landTab.validate()
+                if(land_errors.length>0) {
+                    errors = errors.concat(land_errors)
+                    errorMessages.push(trans("Veuillez remplir road."))
+                    if(!notabshown) {
+                        $('#tab-form a[href="#land"]').tab('show')
+                        notabshown = false
+                    }
+                }
+            }
+            if(this.refs.WaterTab) {
+                let water_errors = this.refs.waterTab.validate()
+                if(water_errors.length>0) {
+                    errors = errors.concat(water_errors)
+                    errorMessages.push(trans("Veuillez remplir maritime."))
+                    if(!notabshown) {
+                        $('#tab-form a[href="#water"]').tab('show')
+                        notabshown = false
+                    }
+                }
+            }
             formInstance.validationResult = errors.length==0;
             this.setState({
                 oncevalidate : true,
@@ -246,22 +279,28 @@ class Form extends Component
                                 <div className="row">
                                     <div className="col-md-6">
                                         <div className="row">
-                                            <div className="col-md-4">
+                                            <div className="col-md-3">
                                                 <div className="custom-control custom-radio">
                                                     <input type="radio" id="type-airline" name="type" className="custom-control-input" onChange={event=>this.handleTypeChange(event, 'airline')} checked={this.state.type=='airline'} value="airline"/>
                                                     <label className="custom-control-label" htmlFor="type-airline">{trans('Compagnie aérienne')}</label>
                                                 </div>
                                             </div>
-                                            <div className="col-md-4">
+                                            <div className="col-md-3">
                                                 <div className="custom-control custom-radio">
                                                     <input type="radio" id="type-gsa" name="type" className="custom-control-input" onChange={event=>this.handleTypeChange(event, 'gsa')} checked={this.state.type=='gsa'} value="gsa"/>
                                                     <label className="custom-control-label" htmlFor="type-gsa">{trans('GSA')}</label>
                                                 </div>
                                             </div>
-                                            <div className="col-md-4">
+                                            <div className="col-md-3">
                                                 <div className="custom-control custom-radio">
                                                     <input type="radio" id="type-road" name="type" className="custom-control-input" onChange={event=>this.handleTypeChange(event, 'road')} checked={this.state.type=='road'} value="road"/>
                                                     <label className="custom-control-label" htmlFor="type-road">{trans('Road')}</label>
+                                                </div>
+                                            </div>
+                                            <div className="col-md-3">
+                                                <div className="custom-control custom-radio">
+                                                    <input type="radio" id="type-mix" name="type" className="custom-control-input" onChange={event=>this.handleTypeChange(event, 'mix')} checked={this.state.type=='mix'} value="mix"/>
+                                                    <label className="custom-control-label" htmlFor="type-mix">{trans('Mix')}</label>
                                                 </div>
                                             </div>
                                         </div>
@@ -277,70 +316,26 @@ class Form extends Component
                                         </div>}
                                     </div>
                                     <div className="col-md-6">
-                                        <label className="control-label">&nbsp;</label>
-                                        <div className="row border-left">
-                                            <div className="col-md-6">
-                                                <label className="control-label text-uppercase">
-                                                    {trans('Mail Manifest')}
-                                                </label>
-                                                <div className="row border-top mx-0 pt-1 mb-2">
-                                                    <div className="col-md-6">
-                                                        <div className="custom-control custom-radio">
-                                                            <input type="radio" id="nsetup-mail-manifest-1" name="nsetup[mail_manifest]" className="custom-control-input" defaultChecked={this.models('props.data.row.nsetup.mail_manifest')==1} value="1"/>
-                                                            <label className="custom-control-label" htmlFor="nsetup-mail-manifest-1">{trans('Oui')}</label>
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-md-6">
-                                                        <div className="custom-control custom-radio">
-                                                            <input type="radio" id="nsetup-mail-manifest-0" name="nsetup[mail_manifest]" className="custom-control-input" defaultChecked={this.models('props.data.row.nsetup.mail_manifest')!=1} value="0"/>
-                                                            <label className="custom-control-label" htmlFor="nsetup-mail-manifest-0">{trans('Non')}</label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <label className="control-label text-uppercase">
-                                                    {trans('Version MLD')}
-                                                </label>
-                                                <div className="form-group border-top pt-3">
-                                                    <select name="nsetup[mld_version]" defaultValue={this.models('props.data.row.nsetup.mld_version')}>
-                                                        <option value="V1">V1</option>
-                                                        <option value="CV">CV</option>
-                                                    </select>
+                                        {this.state.type=='mix'?<div className="row">
+                                            <div className="col-md-3">
+                                                <div className="custom-control custom-checkbox">
+                                                    <input type="checkbox" id="mix-air" name="nsetup[transport_types][]" className="custom-control-input" defaultChecked={this.models('props.data.row.nsetup.transport_types', ['air']).indexOf('air')>=0} value="air"/>
+                                                    <label className="custom-control-label" htmlFor="mix-air">{trans('Compagnie aérienne')}</label>
                                                 </div>
                                             </div>
-                                            <div className="col-md-6">
-                                                <label className="control-label">
-                                                    {trans('FWB')}
-                                                </label>
-                                                <div className="row border-top mx-0 pt-1 mb-2">
-                                                    <div className="col-md-6">
-                                                        <div className="custom-control custom-radio">
-                                                            <input type="radio" id="nsetup-fwb-1" name="nsetup[fwb]" className="custom-control-input" defaultChecked={this.models('props.data.row.nsetup.fwb')==1} value="1"/>
-                                                            <label className="custom-control-label" htmlFor="nsetup-fwb-1">{trans('Oui')}</label>
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-md-6">
-                                                        <div className="custom-control custom-radio">
-                                                            <input type="radio" id="nsetup-fwb-0" name="nsetup[fwb]" className="custom-control-input" defaultChecked={this.models('props.data.row.nsetup.fwb')!=1} value="0"/>
-                                                            <label className="custom-control-label" htmlFor="nsetup-fwb-0">{trans('Non')}</label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <label className="control-label text-uppercase">
-                                                    {trans('Version FWB')}
-                                                </label>
-                                                <div className="row border-top pt-3">
-                                                    <div className="col-md-6 form-group">
-                                                        <select name="nsetup[fwb_version]" defaultValue={this.models('props.data.row.nsetup.fwb_version')} className="form-control">
-                                                            <option value="17">17</option>
-                                                            <option value="16">16</option>
-                                                        </select>
-                                                    </div>
-                                                    <div className="col-md-6 form-group">
-                                                        <input type="text" name="nsetup[fwb_name]" defaultValue={this.models('props.data.row.nsetup.fwb_name')} className="form-control" placeholder="Nom FWB"/>
-                                                    </div>
+                                            <div className="col-md-3">
+                                                <div className="custom-control custom-checkbox">
+                                                    <input type="checkbox" id="mix-land" name="nsetup[transport_types][]" className="custom-control-input" defaultChecked={this.models('props.data.row.nsetup.transport_types', ['land']).indexOf('land')>=0} value="land"/>
+                                                    <label className="custom-control-label" htmlFor="mix-land">{trans('Road')}</label>
                                                 </div>
                                             </div>
-                                        </div>
+                                            <div className="col-md-3">
+                                                <div className="custom-control custom-checkbox">
+                                                    <input type="checkbox" id="mix-water" name="nsetup[transport_types][]" className="custom-control-input" defaultChecked={this.models('props.data.row.nsetup.transport_types', ['water']).indexOf('water')>=0} value="water"/>
+                                                    <label className="custom-control-label" htmlFor="mix-water">{trans('Maritime')}</label>
+                                                </div>
+                                            </div>
+                                        </div>:null}
                                     </div>
                                     <div className="col-md-12 mt-2">
                                         <MultiForm data={this.props.data} remove={this.removeContact}/>
@@ -446,89 +441,12 @@ class Form extends Component
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="card">
-                                            <div className="card-header">
-                                                <span className="text-uppercase">{trans('Mode de paiement')}</span>
-                                            </div>
-                                            <div className="body">
-                                                <div className="row">
-                                                    <div className="form-group col-md-6">
-                                                        <label className="control-label"
-                                                                    >{trans('Blocage de paiement')}</label>
-                                                        <div className="custom-control custom-switch">
-                                                            <input type="checkbox" className="custom-control-input" id="setup-payment-forbid"
-                                                                    value="1"
-                                                                    defaultChecked={this.models("props.data.row.nsetup.payment.forbid") == 1}
-                                                                    name={`nsetup[payment][forbid]`}/>
-                                                            <label className="custom-control-label"
-                                                                    htmlFor="setup-payment-forbid"></label>
-                                                        </div>
-                                                    </div>
-                                                    <div className="form-group col-md-6">
-                                                        <label htmlFor="payment_modes">{trans("Mode de paiement")}</label>
-                                                        <select name={`nsetup[orders][payment_modes]`} className="form-control" id={`payment_modes`}
-                                                                defaultValue={this.models("props.data.row.nsetup.orders.payment_modes", '')}
-                                                                data-size="5">
-                                                            {this.props.data.payment_modes.map((payment_mode => <option
-                                                                key={`payment_mode-${payment_mode.id}`}
-                                                                value={payment_mode.id}>{payment_mode.code} - {payment_mode.label}</option>))}
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div> 
-                                        <div className="card">
-                                            <div className="card-header">
-                                                {trans('Informations de paiement')}
-                                            </div>
-                                            <div className="body">
-                                                <div className="row">
-                                                    <div className="form-group col-md-6">
-                                                        <label htmlFor="bank_accounts-0-setup-owner">{trans("Nom titulaire")}</label>
-                                                        <input name="bank_accounts[0][nsetup][owner]" type="text"
-                                                            defaultValue={(this.models('props.data.row.bank_accounts', false) && this.props.data.row.bank_accounts.length > 0) ? this.props.data.row.bank_accounts[0].nsetup.owner : ''}
-                                                            className="form-control" id="bank_accounts-0-nsetup-owner"/>
-                                                    </div>
-                                                    <div className="form-group col-md-6">
-                                                        <label htmlFor="setup-payment-paypal-email">{trans("Adresse email paypal")}</label>
-                                                        <input name="nsetup[payment][paypal][email]" type="email"
-                                                            defaultValue={this.models("props.data.row.nsetup.payment.paypal.email", '')}
-                                                            className="form-control" id="setup-payment-paypal-email"/>
-                                                    </div>
-                                                    <div className="form-group col-md-6">
-                                                        <label htmlFor="bank_accounts-0-bank-name">{trans("Banque")}</label>
-                                                        <input name="bank_accounts[0][bank][name]" type="text"
-                                                            defaultValue={(this.models('props.data.row.bank_accounts', false) && this.props.data.row.bank_accounts.length > 0) ? this.props.data.row.bank_accounts[0].bank.name : ''}
-                                                            className="form-control" id="bank_accounts-0-bank-name"/>
-                                                    </div>
-                                                    <div className="form-group col-md-6">
-                                                        <label htmlFor="bank_accounts-0-setup-rib">{trans("RIB")}</label>
-                                                        <input name="bank_accounts[0][nsetup][RIB]" type="text"
-                                                            defaultValue={(this.models('props.data.row.bank_accounts', false) && this.props.data.row.bank_accounts.length > 0) ? this.props.data.row.bank_accounts[0].nsetup.RIB : ''}
-                                                            className="form-control" id="bank_accounts-0-setup-rib"/>
-                                                    </div>
-                                                    <div className="form-group col-md-6">
-                                                        <label htmlFor="bank_accounts-0-setup-iban">{trans("IBAN")}</label>
-                                                        <input name="bank_accounts[0][nsetup][IBAN]" type="text"
-                                                            defaultValue={(this.models('props.data.row.bank_accounts', false) && this.props.data.row.bank_accounts.length > 0) ? this.props.data.row.bank_accounts[0].nsetup.IBAN : ''}
-                                                            className="form-control" id="bank_accounts-0-setup-iban"/>
-                                                    </div>
-                                                    <div className="form-group col-md-6">
-                                                        <label htmlFor="bank_accounts-0-setup-bic">{trans("BIC")}</label>
-                                                        <input name="bank_accounts[0][nsetup][BIC]" type="text"
-                                                            defaultValue={(this.models('props.data.row.bank_accounts', false) && this.props.data.row.bank_accounts.length > 0) ? this.props.data.row.bank_accounts[0].nsetup.BIC : ''}
-                                                            className="form-control" id="bank_accounts-0-setup-bic"/>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <Repository data={this.props.data} type={this.state.type}/>
                                     </div>
                                 </div>
                             </div>
-                            {this.props.data.row.id && this.models('props.data.row.transport_types', []).indexOf('air')>=0?<AirTab data={this.props.data}/>:null}
-                            {this.props.data.row.id && this.models('props.data.row.transport_types', []).indexOf('land')>=0?<LandTab data={this.props.data}/>:null}
-                            {this.props.data.row.id && this.models('props.data.row.transport_types', []).indexOf('water')>=0?<WaterTab data={this.props.data}/>:null}
+                            {this.props.data.row.id && this.models('props.data.row.transport_types', []).indexOf('air')>=0?<AirTab ref="airTab" data={this.props.data}/>:null}
+                            {this.props.data.row.id && this.models('props.data.row.transport_types', []).indexOf('land')>=0?<LandTab ref="landTab" data={this.props.data}/>:null}
+                            {this.props.data.row.id && this.models('props.data.row.transport_types', []).indexOf('water')>=0?<WaterTab ref="waterTab" data={this.props.data}/>:null}
                             {this.props.data.row.id && this.props.data.row.id?(this.state.type=='road'?<RouteOrganisation tabbed={true} ref="organisation" data={this.props.data} store={this.props.store}/>:<Organisation tabbed={true} ref="organisation" data={this.props.data} store={this.props.store}/>):null}
                         </div>
                         <input type="hidden" name="id" value={this.models('props.data.row.id')}/>
