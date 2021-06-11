@@ -4,7 +4,6 @@ import Modelizer from '../../../vendor/Ry/Core/Modelizer';
 import $ from 'jquery';
 import MultiForm from '../../../vendor/Ry/Admin/User/Multiform';
 import Organisation from './Organisation';
-import RouteOrganisation from './RouteOrganisation';
 import swal from 'sweetalert2';
 import LandTab from './Tabs/Land';
 import WaterTab from './Tabs/Water';
@@ -447,7 +446,7 @@ class Form extends Component
                             {this.props.data.row.id && this.models('props.data.row.transport_types', []).indexOf('air')>=0?<AirTab ref="airTab" data={this.props.data}/>:null}
                             {this.props.data.row.id && this.models('props.data.row.transport_types', []).indexOf('land')>=0?<LandTab ref="landTab" data={this.props.data}/>:null}
                             {this.props.data.row.id && this.models('props.data.row.transport_types', []).indexOf('water')>=0?<WaterTab ref="waterTab" data={this.props.data}/>:null}
-                            {this.props.data.row.id && this.props.data.row.id?(this.state.type=='road'?<RouteOrganisation tabbed={true} ref="organisation" data={this.props.data} store={this.props.store}/>:<Organisation tabbed={true} ref="organisation" data={this.props.data} store={this.props.store}/>):null}
+                            <Organisation tabbed={true} ref="organisation" data={this.props.data} store={this.props.store}/>
                         </div>
                         <input type="hidden" name="id" value={this.models('props.data.row.id')}/>
                         <div className="d-flex justify-content-end">
