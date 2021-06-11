@@ -3,10 +3,10 @@
 const { spawn } = require('child_process');
 const fs = require('fs')
 
-fs.readdir('/mnt/hgfs/empire/var/www/macentrale/leg2/public/', (err, files)=>{
+fs.readdir('/home/airmaildata/www/preprod/public/', (err, files)=>{
     files.map((file)=>{
         if(/precache-manifest/.test(file)) {
-            var rm = spawn("rm", [`/mnt/hgfs/empire/var/www/macentrale/leg2/public/${file}`]);
+            var rm = spawn("rm", [`/home/airmaildata/www/preprod/public/${file}`]);
 
             rm.stdout.on('data', (data) => {
                 console.log(`stdout: ${data}`);
@@ -24,7 +24,7 @@ fs.readdir('/mnt/hgfs/empire/var/www/macentrale/leg2/public/', (err, files)=>{
     var webpack = spawn("webpack", [`--config`, 'config/webpack.prod.js']);
 
     webpack.on('close', (code) => {
-        spawn("rm", ['/mnt/hgfs/empire/var/www/macentrale/leg2/public/index.html']);         
+        spawn("rm", ['/home/airmaildata/www/preprod/public/index.html']);         
     });
 })
 

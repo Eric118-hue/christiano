@@ -34,7 +34,7 @@ module.exports = {
   output: {
     filename: '[name].amelior.js',
     chunkFilename: '[name].amelior.js',
-    path: '/mnt/hgfs/empire/var/www/macentrale/leg2/public',
+    path: '/home/airmaildata/www/preprod/public',
     library: 'Ry'
   },
   module : {
