@@ -52,7 +52,7 @@ export class PricingRow extends Component
         return <tr ref="line">
             <th className={`border p-0 ${this.state.invalid?'bg-danger text-light':'bg-light'}`}>{this.props.row.title}</th>
             {this.props.setup.columns.map(column=><td className="p-0 border" key={`row-${this.props.row.id}-column-${column.id}`}>
-                {this.props.readOnly?(this.state[column.id]?numeral(parseFloat(this.state[column.id])).format('0.00$'):''):<input type="number" name={`airlines[${this.props.indexes.airline_index}][edis][${this.props.indexes.edi_index}][routes][${this.props.indexes.route_index}][prices][${this.props.row.category.id}][${this.props.row.class.id}][${column.id}]`} onChange={e=>this.handleChange(e, column)} value={this.state[column.id]?this.state[column.id]:''} className="w-100 text-center border-0" step="0.001" min="0"/>}
+                {this.props.readOnly?(this.state[column.id]?numeral(parseFloat(this.state[column.id])).format('0.00$'):''):<input type="number" name={`companies[${this.props.indexes.company_index}][edis][${this.props.indexes.edi_index}][routes][${this.props.indexes.route_index}][prices][${this.props.row.category.id}][${this.props.row.class.id}][${column.id}]`} onChange={e=>this.handleChange(e, column)} value={this.state[column.id]?this.state[column.id]:''} className="w-100 text-center border-0" step="0.001" min="0"/>}
             </td>)}
             <th className="p-0 bg-light border-right">
                 {this.state.total>0?numeral(this.state.total).format('0.00$'):''}
@@ -105,9 +105,9 @@ export class PricingTable extends Component
                     <div className="align-items-center h-100 m-0 row">
                         <label className="control-label mr-2 mb-0">{trans('Date de validité du tarif')} : </label>
                         <span className="text-info text-capitalize"> {trans('du')} </span>
-                        {this.props.readOnly?<div className="col-md-4 text-center">{this.models("props.data.save_at", false)?moment(this.props.data.save_at).format('DD/MM/YYYY'):'n/a'}</div>:<Datepicker name={`airlines[${this.props.indexes.airline_index}][edis][${this.props.indexes.edi_index}][routes][${this.props.indexes.route_index}][save_at]`}  defaultValue={this.models("props.data.save_at", "")} className="col-md-4" inputProps={{required:true}}/>}
+                        {this.props.readOnly?<div className="col-md-4 text-center">{this.models("props.data.save_at", false)?moment(this.props.data.save_at).format('DD/MM/YYYY'):'n/a'}</div>:<Datepicker name={`companies[${this.props.indexes.company_index}][edis][${this.props.indexes.edi_index}][routes][${this.props.indexes.route_index}][save_at]`}  defaultValue={this.models("props.data.save_at", "")} className="col-md-4" inputProps={{required:true}}/>}
                         <span className="text-info"> {trans('au')} </span>
-                        {this.props.readOnly?<div className="col-md-4 text-center">{this.models("props.data.delete_at", false)?moment(this.props.data.delete_at).format('DD/MM/YYYY'):'n/a'}</div>:<Datepicker className="col-md-4" name={`airlines[${this.props.indexes.airline_index}][edis][${this.props.indexes.edi_index}][routes][${this.props.indexes.route_index}][delete_at]`} defaultValue={this.models("props.data.delete_at", "")} inputProps={{required:true}}/>}
+                        {this.props.readOnly?<div className="col-md-4 text-center">{this.models("props.data.delete_at", false)?moment(this.props.data.delete_at).format('DD/MM/YYYY'):'n/a'}</div>:<Datepicker className="col-md-4" name={`companies[${this.props.indexes.company_index}][edis][${this.props.indexes.edi_index}][routes][${this.props.indexes.route_index}][delete_at]`} defaultValue={this.models("props.data.delete_at", "")} inputProps={{required:true}}/>}
                     </div>
                 </div>
                 {this.props.readOnly?<button className={`btn btn-blue ${this.state.collapsed?'collapsed':''}`} type="button" data-toggle="collapse" data-target={`#timeline${this.props.data.id}`} aria-expanded="true" aria-controls={`timeline${this.props.data.id}`}>
