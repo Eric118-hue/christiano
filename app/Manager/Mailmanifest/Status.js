@@ -482,6 +482,29 @@ class Status extends Component
             </div>
         </div>
         <div className="col-xl-3 d-md-none d-xl-block">
+            <table className="table table-bordered table-resume">
+                <thead>
+                    <tr>
+                        <th>{trans('CARDIT')}</th>
+                        <th>{trans('AWB')}</th>
+                        <th>{trans('Qté de récipients')}</th>
+                        <th>{trans('Poids (:weight_unit)', {weight_unit:'Kg'})}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {this.state.receptacles.groupBy(it=>it.cardit_id).map((receptacles, index)=>{
+                    let weight = 0
+                    receptacles.map(receptacle=>{
+                        weight += parseFloat(receptacle.nsetup.weight)
+                    })
+                    return <tr key={`synthese-cardit-${this.cast(receptacles, '0.cardit_id', index)}`}>
+                        <td>{this.cast(receptacles, '0.cardit.nsetup.document_number')}</td>
+                        <td>{this.cast(receptacles, '0.cardit.lta.code')}</td>
+                        <td>{receptacles.length}</td>
+                        <td>{numeral(weight).format('0,0.00')}</td>
+                    </tr>})}
+                </tbody>
+            </table>
             <div className="blockTemps">
                 {this.state.resdits.unique(it=>it.id).groupBy(it=>it.conveyence_id).map((resdits, index)=><div className="row border-bottom" key={`resdit-files-download-${index}`}>{resdits.map(resdit=>resdit.files.map(file=><a key={`download-${resdit.id}-resdit-${file}-${resdit.files.length}`} className="btn btn-info text-white col-md-3 font-10 pt-2 m-2" {...this.hrefs(file, resdit)}>RESDIT<span className="bg-light d-block font-25 m-2 rounded text-primary">{file.split('-')[0]}<br/><small className="font-10 d-block">{file.split('-')[1]}</small><small className="d-block text-dark subfile">{this.cast(resdit, 'cardit.nsetup.document_number')}</small></span><Ry/></a>))}</div>)}
             </div>
@@ -520,7 +543,7 @@ class Status extends Component
                             <tr>
                                 <th>{trans("Numéro du récipient")}</th>
                                 <th>{trans('Cardit')}</th>
-                                <th>LTA</th>
+                                <th>{trans('AWB')}</th>
                                 {this.props.selectTransports.map((select_transport, index)=><th key={`cardit-assignation-checkall-0-${this.props.data.id}-select-transport-${select_transport.id}`}>
                                     {((this.props.selectTransports.length==1 && CHECKBOXES)?<div className="fancy-checkbox">
                                     <label><input type="checkbox" onChange={event=>this.handleAllReceptacleTransportChange(select_transport, event)} checked={this.state.oneTransportAllChecked}/><span></span></label>

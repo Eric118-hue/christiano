@@ -137,7 +137,7 @@ class Detail extends Component
             </tr>
             <tr>
               <td colSpan="6">
-                {this.models('props.data.data.cardit.departure.airport.name')}
+                {this.models('props.data.data.cardit.departure.airport.ville.nom')}
               </td>
               <td colSpan="6">
 
@@ -218,7 +218,7 @@ class Detail extends Component
             </tr>
             <tr>
               <td colSpan="2" className="text-wrap">
-                {this.models('props.data.data.cardit.nsetup.handover_destination_location.name')}
+                {this.models('props.data.data.cardit.destination.airport.ville.nom')}
               </td>
               <td colSpan="2" className="text-wrap">
                 {this.models('props.data.data.cardit.nsetup.transports.0.conveyence_reference')}

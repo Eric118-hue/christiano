@@ -3,6 +3,7 @@ import trans, {plural} from '../../translations';
 import Modelizer from '../../../vendor/Ry/Core/Modelizer';
 import swal from 'sweetalert2';
 import $ from 'jquery';
+import './Form.scss';
 
 class Form extends Component
 {

@@ -104,7 +104,7 @@ class List extends BaseList
                 </tr>
             </thead>
             <tbody>
-                {this.state.data.map(item=><MailManifest readOnly={this.readOnly} key={`mail-manifest-${item.id}`} escales={this.escales} data={item} reception={this.reception} assignation={this.assignation} completed={this.completed} consignmentEvents={this.props.data.consignment_events} deliveryConsignmentEvents={this.props.data.delivery_consignment_events} store={this.props.store}/>)}
+                {this.state.data.map(item=><MailManifest readOnly={this.readOnly} key={`mail-manifest-${item.id}`} escales={this.escales} data={item} reception={this.reception} assignation={this.assignation} completed={this.completed} consignmentEvents={this.props.data.consignment_events} deliveryConsignmentEvents={this.props.data.delivery_consignment_events} store={this.props.store} theme={this.props.data.theme}/>)}
             </tbody>
             <tfoot className={(this.progressive && this.state.page<this.state.last_page)?'':'d-none'}>
                 <tr>

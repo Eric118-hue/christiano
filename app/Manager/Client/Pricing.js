@@ -164,7 +164,7 @@ class Pricing extends Component
         return <div className="mb-5" id={`pricing${this.props.data.id}`} style={{maxWidth:750}}>
             <div className="border bg-light rounded">
                 <div className="align-items-center justify-content-between m-0 p-1 pl-3 row">
-                    <strong>{trans('Historique des tarifs pour la route')} {this.props.data.departure.iata} - {this.props.data.arrival.iata}</strong>
+                    <strong>{trans('Historique des tarifs pour la route')} {this.models("props.data.departure.iata")} - {this.models('props.data.arrival.iata', this.models('props.data.arrival.precon'))}</strong>
                     <button className={`btn btn-blue`} type="button" data-toggle="collapse" data-target={`#timelines${this.props.data.id}`} aria-expanded="true" aria-controls={`timelines${this.props.data.id}`}>
                         <i className={`fa fa-caret-down`}></i>
                     </button>

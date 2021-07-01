@@ -3,6 +3,7 @@ import moment from 'moment';
 import {Popup, PopupHeader, PopupBody} from '../../../vendor/bs/bootstrap';
 import $ from 'jquery';
 import trans from '../../translations';
+import Modelizer from 'ryvendor/Ry/Core/Modelizer';
 
 class Item extends Component
 {
@@ -26,6 +27,10 @@ class Item extends Component
     }
 
     render() {
+        let mailclasses = this.models('props.data.cardit.nsetup.mail_class.code')
+        let mailclass_concat = Object.keys(this.models('props.data.cardit.nsetup.mail_classes', {})).join(' ')
+        if(mailclass_concat)
+            mailclasses = mailclass_concat
         return <tr>
         <td className="green">{moment.utc(this.props.data.cardit.nsetup.preparation_datetime).local().format('DD/MM/YYYY')}</td>
         <td className="green">{moment(this.props.data.cardit.nsetup.preparation_datetime_lt).format('HH:mm')}</td>
@@ -33,7 +38,7 @@ class Item extends Component
             {this.props.data.cardit.nsetup.document_number}
         </td>
         <td>{this.props.data.cardit.nsetup.consignment_category.code}</td>
-        <td>{this.props.data.cardit.nsetup.mail_class.code}</td>
+        <td>{mailclasses}</td>
         <td>{this.props.data.cardit.nsetup.nreceptacles}</td>
         <td>{this.props.data.cardit.nsetup.wreceptacles}</td>
         <td className="w-info">{this.props.data.cardit.nsetup.handover_origin_location.iata} <a href="#" onClick={e=>{
@@ -150,4 +155,4 @@ class Item extends Component
     }
 }
 
-export default Item;
+export default Modelizer(Item);

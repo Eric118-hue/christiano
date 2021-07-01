@@ -238,42 +238,6 @@ $max-menu-level: 5;
 		text-align: center;
 	}
 }
-
-/*rado*/
-.cardit-container {
-	max-width: 1300px;
-  }
-  
-  .vol-container .vol-ico {
-	position: absolute;
-	width: 111px;
-	height: 111px;
-	border-radius: 50%;
-	background-color: #ffffff;
-	border: 1px solid #e7e7e7;
-	left: calc(50% - (111px / 2));
-	top: calc(50% - (140px / 2));
-	z-index: 3;
-	padding: 10px;
-  }
-  .vol-container .vol-ico span {
-	display: block;
-	width: 100%;
-	height: 100%;
-	background-color: #f4f7f6;
-	text-align: center;
-	border-radius: 50%;
-	padding: 20px 5px 20px 5px;
-  }
-  .vol-container .h100 {
-	height: calc(100% - 36px);
-  }
-  .vol-container .h100 .body {
-	height: 100%;
-  }
-  .vol-container .h100 .body .card-bureau {
-	height: 100%;
-  }
   .vol-container .card .body {
 	padding: 10px;
   }
@@ -381,12 +345,6 @@ $max-menu-level: 5;
 	color: #5ecfb5;
 	font-size: 20px;
   }
-  .vol-container .card-bureau .custom-select {
-	background-image: url("../medias/images/select.png");
-	background-size: 29px 38px;
-	background-position: right center;
-	background-color: #cceffe;
-  }
   .vol-container .card-bureau table {
 	color: #000000;
   }
@@ -453,19 +411,6 @@ $max-menu-level: 5;
   }
   .vol-container .card-bureau table.table-liste th {
 	font-size: 14px;
-  }
-  .vol-container .card-bureau table.table-liste td {
-	color: #4a7cad;
-	text-transform: uppercase;
-	font-weight: bold;
-	font-size: 14px;
-	padding: 10px;
-  }
-  .vol-container .card-bureau table.table-liste td:nth-child(2) {
-	color: #dc3546;
-  }
-  .vol-container .card-bureau table.table-liste td:nth-child(9), .vol-container .card-bureau table.table-liste td:nth-child(10), .vol-container .card-bureau table.table-liste td:nth-child(11), .vol-container .card-bureau table.table-liste td:nth-child(15) {
-	width: 110px;
   }
   .vol-container .card-bureau table.table-liste td:nth-child(14) {
 	width: 100px;

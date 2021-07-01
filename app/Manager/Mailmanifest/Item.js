@@ -259,7 +259,7 @@ export class FullDetail extends Component
                             </label>
                             <input type="text" data-parsley-pattern="^\d{4}$" className="form-control bs-default" ref="arrival_time" required/>
                         </div>
-                        <div className="form-group">
+                        {this.props.theme=='agent'?null:<div className="form-group">
                             <label className="control-label">
                                 {trans('Aéroport de départ')}
                             </label>
@@ -269,8 +269,7 @@ export class FullDetail extends Component
                                     {this.state.select_airports.map(airport=><a key={`airport-${airport.id}`} className="dropdown-item" href="#" onClick={e=>this.handleSelectAirport(e, airport)}>{airport.iata} ({airport.name} - {this.cast(airport, 'country.nom')})</a>)}
                                 </div>
                             </div>
-                            
-                        </div>
+                        </div>}
                         <button className="btn btn-orange text-capitalize" type="button" onClick={this.saveTransport}>{trans('Confirmer')}</button>
                     </form>
                 </PopupBody>

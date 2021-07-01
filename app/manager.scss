@@ -104,6 +104,12 @@ $max-menu-level: 5;
 	}
 }
 
+.col-md-1-10 {
+	@include media-breakpoint-up('md', $grid-breakpoints) {
+		width: 10% !important;
+	}
+}
+
 .btn-circle {
     border-radius: 50%;
   width: 20px;

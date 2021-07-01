@@ -323,7 +323,7 @@ class Form extends AdminUser
                                             <label className="col-md-2 text-right pt-2">{trans("Fax")}</label>
                                             <div className="form-group col-md-4">
                                                 <input type="text" className="form-control" id="contacts-1-ndetail-value" name="contacts[fax][ndetail][value]" defaultValue={this.models('props.data.contacts.fax_fax.ndetail.value')}/>
-                                                <input type="hidden" name="contacts[fax][contact_type]" defaultValue={'phone'}/>
+                                                <input type="hidden" name="contacts[fax][contact_type]" defaultValue={'fax'}/>
                                                 <input type="hidden" name="contacts[fax][type]" defaultValue={'fax'}/>
                                                 <input type="hidden" name="contacts[fax][id]" defaultValue={this.models('props.data.contacts.fax_fax.id')}/>
                                             </div>
@@ -344,6 +344,12 @@ class Form extends AdminUser
                                                 <input type="text" className="form-control" id="password" name="password" defaultValue={this.models('props.data.id', false)?'******':''} required/>
                                             </div>
                                             {this.props.data.select_roles.map(role=><input key={`role-${role.id}`} type="hidden" name="roles[]" value={role.id}/>)}
+                                            <label className="text-capitalize col-md-2 text-right pt-2">{trans("Langue")}</label>
+                                            <div className="form-group col-md-4">
+                                                <select required name="profile[languages]" defaultValue={this.models('props.data.profile.languages', 'fr')} className="form-control">
+                                                    {this.props.data.select_langs.map(lang=><option key={`lang-${lang.id}`} value={lang.code}>{lang.french}</option>)}
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

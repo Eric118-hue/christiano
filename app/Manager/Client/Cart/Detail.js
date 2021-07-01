@@ -204,6 +204,10 @@ export class ReceptacleDialog extends Component
 export class CarditInvoice extends Component
 {
     render() {
+        let mailclasses = this.models('props.data.nsetup.mail_class.code')
+        let mailclass_concat = Object.keys(this.models('props.data.nsetup.mail_classes', {})).join(' ')
+        if(mailclass_concat)
+            mailclasses = mailclass_concat
         return <tr>
             <td className="green"><Ry/>{moment.utc(this.models('props.data.nsetup.preparation_datetime')).local().format('DD/MM/YYYY')}</td>
             <td className="green">{moment(this.props.data.nsetup.preparation_datetime_lt).format('HH:mm')}</td>
@@ -211,7 +215,7 @@ export class CarditInvoice extends Component
                 <a href={`#dialog/receptacle_invoices?cardit_id=${this.props.data.id}&customer_id=${this.props.cart.customer_id}`} className="text-info" data-display="modal-xl">{this.props.data.nsetup.document_number}</a>
             </td>
             <td>{this.props.data.nsetup.consignment_category.code}</td>
-            <td>{this.props.data.nsetup.mail_class.code}</td>
+            <td>{mailclasses}</td>
             <td>{this.models('props.data.nsetup.handover_origin_location.iata')} - {this.models('props.data.nsetup.handover_destination_location.iata', this.models('props.data.nsetup.handover_destination_location.cardit'))}</td>
             <td>{this.props.data.nsetup.nreceptacles}</td>
             <td>{numeral(this.props.data.total_weight).format('0.0')}</td>

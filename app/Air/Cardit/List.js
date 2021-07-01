@@ -86,6 +86,10 @@ class RoadFullDetail extends FullDetail
 class CarditRow extends Cardit
 {
   render() {
+    let mailclasses = this.models('props.data.nsetup.mail_class.code')
+    let mailclass_concat = Object.keys(this.models('props.data.nsetup.mail_classes', {})).join(' ')
+    if(mailclass_concat)
+        mailclasses = mailclass_concat
     return <React.Fragment>
         <Ry/>
         <tr>
@@ -99,7 +103,7 @@ class CarditRow extends Cardit
                 </div>
             </td>
             <td>{this.models('props.data.nsetup.consignment_category.code')}</td>
-            <td>{this.models('props.data.nsetup.mail_class.code')}</td>
+            <td>{mailclasses}</td>
             <td>{this.props.data.nsetup.nreceptacles}</td>
             <td>{numeral(parseFloat(this.props.data.nsetup.wreceptacles)).format('0,0.[00]')}</td>
             <td className="w-info">{this.props.data.nsetup.handover_origin_location.iata} <a href="#" onClick={e=>{

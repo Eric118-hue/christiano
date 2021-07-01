@@ -22,10 +22,22 @@ import __TUTO from '../vendor/Ry/Core/Tuto';
 import __CARDIT from '../vendor/Ry/Cardit';
 import __AIRLINE from '../vendor/Ry/Airline';
 import CarditDetail from '../app/Manager/Cardit/Detail';
+import Fwb from './Air/Fwb';
+import CN38 from './Manager/Cardit/CN38';
+import Mailmanifest from './Manager/Mailmanifest';
+import Agent from './Agent';
 
 const Components = {
 	App : {
-		Cardit : CarditDetail
+		Cardit : CarditDetail,
+		Fwb,
+		Manager : {
+			Cardit : {
+				CN38
+			},
+			Mailmanifest
+		},
+		Agent
 	},
     Ry : {
         Admin : {
