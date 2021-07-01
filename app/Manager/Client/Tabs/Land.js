@@ -12,8 +12,8 @@ class Land extends Component
   constructor(props) {
     super(props)
     this.state = {
-      tab : this.models('props.data.row.companies.0.id', 0),
-      companies : this.models('props.data.row.companies', []),
+      tab : this.cast(this.models('props.data.row.companies', []).filter(it=>it.type=='land'), '0.id', 0),
+      companies : this.models('props.data.row.companies', []).filter(it=>it.type=='land'),
       errors : [],
       errorMessages : [],
       oncevalidate : false,

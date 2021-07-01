@@ -9,20 +9,9 @@ import Autocomplete from './Autocomplete';
 export const CUSTOMER_TYPES = {
     airline : trans('Compagnie aérienne'),
     gsa : trans('GSA'),
-    road : trans('Road'),
-    mix : trans('Mix')
-}
-
-export const TRANSPORTERS = {
-    road : 'transporters',
-    mix : 'companies'
-}
-
-export const TRANSPORTER = {
-    road : 'transporter',
-    airline : 'airline',
-    gsa : 'airline',
-    mix : 'mix'
+    land : trans('Road'),
+    mix : trans('Mix'),
+	water : trans('Maritime')
 }
 
 class Organisation extends Component
@@ -36,7 +25,6 @@ class Organisation extends Component
                 companies : this.models('props.data.row.companies', [])
             }
         }
-        this.addAirline = this.addAirline.bind(this)
         this.addEdi = this.addEdi.bind(this)
         this.addAgent = this.addAgent.bind(this)
         this.addRoute = this.addRoute.bind(this)
@@ -61,27 +49,6 @@ class Organisation extends Component
         })
     }
 
-    addAirline() {
-        this.setState(state=>{
-            let proto = {
-                departure : {},
-                agents : [{
-
-                }],
-                routes : [{
-                    departure : {},
-                    arrival : {},
-                    nsetup : {}
-                }]
-            }
-            proto[TRANSPORTER[state.customer.type]] = {}
-            state.customer.companies.push({
-                edis : [proto]
-            })
-            return state
-        })
-    }
-
     addEdi(company_index) {
         this.setState(state=>{
             let proto = {
@@ -95,14 +62,14 @@ class Organisation extends Component
                     nsetup : {}
                 }]
             }
-            if(state.customer.type=='road') {
-                proto[TRANSPORTER[state.customer.type]] = {
+            if(state.customer.type=='land') {
+                proto.transporter = {
                     id: state.customer.companies[company_index].id,
                     name: state.customer.companies[company_index].name
                 }
             }
             else {
-                proto[TRANSPORTER[state.customer.type]] = {
+                proto.airline = {
                     id: state.customer.companies[company_index].id,
                     iata_code: state.customer.companies[company_index].iata_code,
                     icao_code: state.customer.companies[company_index].icao_code,
@@ -151,7 +118,7 @@ class Organisation extends Component
                         <div className="row">
                             <div className="col-8">
                                 <div className="alert font-24 d-flex justify-content-between">
-                                    {company.type=='air'?<Autocomplete onChange={item=>{
+                                    {(company.type=='air' || company.type=='water')?<Autocomplete onChange={item=>{
                                                 this.setState(state=>{
                                                     state.customer.companies[company_index].id = item.id
                                                     state.customer.companies[company_index].name = item.name
@@ -223,14 +190,14 @@ class Organisation extends Component
                                     <span className="edi-trait mt-3"></span>
                                     <div className="col-3">
                                         <div className="alert d-flex justify-content-between p-2">
-                                            {company.type=='air'?<Autocomplete onChange={item=>{
+                                            {(company.type=='air' || company.type=='water')?<Autocomplete onChange={item=>{
                                                 this.setState(state=>{
                                                     state.customer.companies[company_index].edis[edi_index].airline = item
                                                     if(this.refs.pricing)
                                                         this.refs.pricing.updateCustomer(state.customer)
                                                     return state
                                                 })
-                                            }} readOnly={this.props.readOnly} value={edi[TRANSPORTER[this.state.customer.type]].id>0?edi.airline:null} param="q" placeholder={trans("Ajouter la compagnie aérienne")} endpoint={`/airlines?with[]=edi_code`} line={item=>`${item.edi_code}`} selection={item=><span>
+                                            }} readOnly={this.props.readOnly} value={this.cast(edi, 'airline.id', 0)>0?edi.airline:null} param="q" placeholder={trans("Ajouter la compagnie aérienne")} endpoint={`/airlines?with[]=edi_code`} line={item=>`${item.edi_code}`} selection={item=><span>
                                                 <strong>{item.edi_code}</strong>
                                                 <input type="hidden" name={`companies[${company.id}][edis][${edi_index}][to_id]`} value={item.id}/>
                                             </span> } buttonClass="p-0"/>:<Autocomplete onChange={item=>{
@@ -240,7 +207,7 @@ class Organisation extends Component
                                                     this.refs.pricing.updateCustomer(state.customer)
                                                 return state
                                             })
-                                        }} readOnly={this.props.readOnly} value={edi[TRANSPORTER[this.state.customer.type]].id>0?edi.transporter:null} param="q" placeholder={trans("Ajouter la compagnie")} endpoint={`/transporters?with[]=edi_code`} line={item=>`${item.name}`} selection={item=><span>
+                                        }} readOnly={this.props.readOnly} value={this.cast(edi, 'transporter.id', 0)>0?edi.transporter:null} param="q" placeholder={trans("Ajouter la compagnie")} endpoint={`/transporters?with[]=edi_code`} line={item=>`${item.name}`} selection={item=><span>
                                             <strong>{item.name}</strong>
                                             <input type="hidden" name={`companies[${company.id}][edis][${edi_index}][to_id]`} value={item.id}/>
                                         </span> } buttonClass="p-0"/>}
@@ -269,7 +236,7 @@ class Organisation extends Component
                                         <ul className="list-unstyled ramification-agent">
                                             {edi.agents.map((agent, agent_index)=>agent.deleted?<input key={`company-${company_index}-edi-${edi_index}-agent-${agent_index}`} type="hidden" name={`companies[${company.id}][edis][${edi_index}][agents][${agent_index}][deleted_id]`} value={agent.id}/>:<li key={`company-${company_index}-edi-${edi_index}-agent-${agent_index}`} className="pb-2">
                                                 <div className="alert d-flex justify-content-between mb-0 p-2">
-                                                    {company.type=='air'?<Autocomplete onChange={item=>{
+                                                    {(company.type=='air' || company.type=='water')?<Autocomplete onChange={item=>{
                                                 this.setState(state=>{
                                                     state.customer.companies[company_index].edis[edi_index].agents[agent_index] = item
                                                     if(this.refs.pricing)
@@ -319,7 +286,7 @@ class Organisation extends Component
                                                 <div className="row">
                                                     <div className="col-4">
                                                         <div className="alert d-flex justify-content-between p-2">
-                                                            {company.type=="air"?<Autocomplete onChange={item=>{
+                                                            {(company.type=='air' || company.type=='water')?<Autocomplete onChange={item=>{
                                                 this.setState(state=>{
                                                     state.customer.companies[company_index].edis[edi_index].routes[route_index].departure = item
                                                     if(this.refs.pricing)
@@ -343,7 +310,7 @@ class Organisation extends Component
                                                     <span className="edi-trait mt-3"></span>
                                                     <div className="col-4">
                                                         <div className="alert d-flex justify-content-between p-2">
-                                                            {company.type=='air'?<Autocomplete onChange={item=>{
+                                                            {(company.type=='air' || company.type=='water')?<Autocomplete onChange={item=>{
                                                 this.setState(state=>{
                                                     state.customer.companies[company_index].edis[edi_index].routes[route_index].arrival = item
                                                     if(this.refs.pricing)

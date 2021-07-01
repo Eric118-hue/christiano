@@ -73,6 +73,9 @@ class List extends NavigableModel
             case 'mix':
                 badge = <div className={`badge badge-rose`}>{trans('Mix')}</div>
                 break;
+			case 'water':
+                badge = <div className={`badge badge-azur`}>{trans('Maritime')}</div>
+                break;
         }
         const mailmanifest_checked = customer.nsetup.mail_manifest==1 && customer.companies.length>0 && customer.companies.filter(it=>it.nsetup.mail_manifest==1).length==customer.companies.length
         const fwb_checked = customer.nsetup.fwb==1 && customer.companies.length>0 && customer.companies.filter(it=>it.nsetup.fwb==1).length==customer.companies.length

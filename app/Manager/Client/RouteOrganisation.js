@@ -1,5 +1,5 @@
 import React from 'react';
-import Organisation, {CUSTOMER_TYPES, TRANSPORTERS, TRANSPORTER} from './Organisation';
+import Organisation, {CUSTOMER_TYPES} from './Organisation';
 import Pricing from './RoadPricing';
 import trans from 'ryapp/translations';
 import Autocomplete from 'ryapp/Manager/Client/Autocomplete';
@@ -26,7 +26,7 @@ class RouteOrganisation extends Organisation
                 {CUSTOMER_TYPES[this.state.customer.type]} : {this.state.customer.facturable.name}
             </div>
             <ul className="list-unstyled ramification-airline" ref="organisation">
-                {this.state.customer.facturable[TRANSPORTERS[this.state.customer.type]].map((transporter, transporter_index)=>transporter.deleted?<input key={`transporter-${transporter_index}`} type="hidden" name={`deleted_transports[${transporter_index}][id]`} value={transporter.id}/>:<li key={`transporter-${transporter_index}`}>
+                {this.state.customer.companies.map((transporter, transporter_index)=>transporter.deleted?<input key={`transporter-${transporter_index}`} type="hidden" name={`deleted_transports[${transporter_index}][id]`} value={transporter.id}/>:<li key={`transporter-${transporter_index}`}>
                     <div className="row">
                         <div className="col-8">
                             <div className="alert font-24 d-flex justify-content-between">
@@ -57,7 +57,7 @@ class RouteOrganisation extends Organisation
                                 </div>
                             </div>
                         </React.Fragment>:null}
-                        {(!this.props.readOnly &&  this.state.customer.facturable[TRANSPORTERS[this.state.customer.type]].filter(item=>!item.deleted).length>1)?<button className="btn" type="button" onClick={()=>{
+                        {(!this.props.readOnly &&  this.state.customer.companies.filter(item=>!item.deleted).length>1)?<button className="btn" type="button" onClick={()=>{
                             this.setState(state=>{
                                 state.customer.facturable.transporters[transporter_index].deleted = true
                                 return state
@@ -94,7 +94,7 @@ class RouteOrganisation extends Organisation
                                                     this.refs.pricing.updateCustomer(state.customer)
                                                 return state
                                             })
-                                        }} readOnly={this.props.readOnly} value={edi[TRANSPORTER[this.state.customer.type]].id>0?edi.transporter:null} param="q" placeholder={trans("Ajouter la compagnie")} endpoint={`/transporters?with[]=edi_code`} line={item=>`${item.name}`} selection={item=><span>
+                                        }} readOnly={this.props.readOnly} value={this.cast(edi, 'transporter.id', 0)>0?edi.transporter:null} param="q" placeholder={trans("Ajouter la compagnie")} endpoint={`/transporters?with[]=edi_code`} line={item=>`${item.name}`} selection={item=><span>
                                             <strong>{item.name}</strong>
                                             <input type="hidden" name={`transporters[${transporter_index}][edis][${edi_index}][to_id]`} value={item.id}/>
                                         </span> } buttonClass="p-0"/>
