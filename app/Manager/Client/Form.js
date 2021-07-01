@@ -276,66 +276,72 @@ class Form extends Component
                             <div className={`tab-pane ${this.state.tab=='client-account'?'active':''} first-section`}
                             id={`client-account`} role="tabpanel" aria-labelledby="client-account-tab">
                                 <div className="row">
-                                    <div className="col-md-6">
-                                        <div className="row">
-                                            <div className="col-md-3">
-                                                <div className="custom-control custom-radio">
-                                                    <input type="radio" id="type-airline" name="type" className="custom-control-input" onChange={event=>this.handleTypeChange(event, 'airline')} checked={this.state.type=='airline'} value="airline"/>
-                                                    <label className="custom-control-label" htmlFor="type-airline">{trans('Compagnie aérienne')}</label>
-                                                </div>
-                                            </div>
-                                            <div className="col-md-3">
-                                                <div className="custom-control custom-radio">
-                                                    <input type="radio" id="type-gsa" name="type" className="custom-control-input" onChange={event=>this.handleTypeChange(event, 'gsa')} checked={this.state.type=='gsa'} value="gsa"/>
-                                                    <label className="custom-control-label" htmlFor="type-gsa">{trans('GSA')}</label>
-                                                </div>
-                                            </div>
-                                            <div className="col-md-3">
-                                                <div className="custom-control custom-radio">
-                                                    <input type="radio" id="type-road" name="type" className="custom-control-input" onChange={event=>this.handleTypeChange(event, 'road')} checked={this.state.type=='road'} value="road"/>
-                                                    <label className="custom-control-label" htmlFor="type-road">{trans('Road')}</label>
-                                                </div>
-                                            </div>
-                                            <div className="col-md-3">
-                                                <div className="custom-control custom-radio">
-                                                    <input type="radio" id="type-mix" name="type" className="custom-control-input" onChange={event=>this.handleTypeChange(event, 'mix')} checked={this.state.type=='mix'} value="mix"/>
-                                                    <label className="custom-control-label" htmlFor="type-mix">{trans('Mix')}</label>
-                                                </div>
-                                            </div>
+                                    <div className="col-md-1-10">
+                                        <div className="custom-control custom-radio">
+                                            <input type="radio" id="type-airline" name="type" className="custom-control-input" onChange={event=>this.handleTypeChange(event, 'airline')} checked={this.state.type=='airline'} value="airline"/>
+                                            <label className="custom-control-label" htmlFor="type-airline">{trans('Compagnie aérienne')}</label>
                                         </div>
-                                        {this.state.type=='airline'?<div className="form-group position-relative mt-2">
-                                            <label className="control-label">{trans('Nom')}</label>
-                                            <input type="text" value={this.state.name_search} onChange={this.handleSearch} onClick={this.handleSearch} name="name" autoComplete="bistrict" required className={`form-control ${this.state.errors.indexOf('no_airline_match')>=0?'error':''}`}/>
-                                            <div className={`dropdown-menu overflow-auto w-100 ${this.state.select_airline?'show':''}`} style={{maxHeight:200}}>
-                                                {this.state.airlines.map(airline=><a key={`airline-${airline.id}`} className="dropdown-item" href="#" onClick={e=>this.handleSelectAirline(e, airline)}>{airline.name}</a>)}
-                                            </div>
-                                        </div>:<div className="form-group position-relative mt-2">
-                                            <label className="control-label">{trans('Nom')}</label>
-                                            <input type="text" className="form-control" value={this.state.name_search} name="name" autoComplete="bistrict" onChange={this.handleNameChange} required/>
-                                        </div>}
                                     </div>
-                                    <div className="col-md-6">
-                                        {this.state.type=='mix'?<div className="row">
-                                            <div className="col-md-3">
-                                                <div className="custom-control custom-checkbox">
-                                                    <input type="checkbox" id="mix-air" name="nsetup[transport_types][]" className="custom-control-input" defaultChecked={this.models('props.data.row.nsetup.transport_types', ['air']).indexOf('air')>=0} value="air"/>
-                                                    <label className="custom-control-label" htmlFor="mix-air">{trans('Compagnie aérienne')}</label>
-                                                </div>
-                                            </div>
-                                            <div className="col-md-3">
-                                                <div className="custom-control custom-checkbox">
-                                                    <input type="checkbox" id="mix-land" name="nsetup[transport_types][]" className="custom-control-input" defaultChecked={this.models('props.data.row.nsetup.transport_types', ['land']).indexOf('land')>=0} value="land"/>
-                                                    <label className="custom-control-label" htmlFor="mix-land">{trans('Road')}</label>
-                                                </div>
-                                            </div>
-                                            <div className="col-md-3">
-                                                <div className="custom-control custom-checkbox">
-                                                    <input type="checkbox" id="mix-water" name="nsetup[transport_types][]" className="custom-control-input" defaultChecked={this.models('props.data.row.nsetup.transport_types', ['water']).indexOf('water')>=0} value="water"/>
-                                                    <label className="custom-control-label" htmlFor="mix-water">{trans('Maritime')}</label>
-                                                </div>
-                                            </div>
-                                        </div>:null}
+                                    <div className="col-md-1-10">
+                                        <div className="custom-control custom-radio">
+                                            <input type="radio" id="type-gsa" name="type" className="custom-control-input" onChange={event=>this.handleTypeChange(event, 'gsa')} checked={this.state.type=='gsa'} value="gsa"/>
+                                            <label className="custom-control-label" htmlFor="type-gsa">{trans('GSA')}</label>
+                                        </div>
                                     </div>
+                                    <div className="col-md-1-10">
+                                        <div className="custom-control custom-radio">
+                                            <input type="radio" id="type-road" name="type" className="custom-control-input" onChange={event=>this.handleTypeChange(event, 'road')} checked={this.state.type=='road'} value="road"/>
+                                            <label className="custom-control-label" htmlFor="type-road">{trans('Road')}</label>
+                                        </div>
+                                    </div>
+									<div className="col-md-1-10">
+                                        <div className="custom-control custom-radio">
+                                            <input type="radio" id="type-water" name="type" className="custom-control-input" onChange={event=>this.handleTypeChange(event, 'water')} checked={this.state.type=='water'} value="water"/>
+                                            <label className="custom-control-label" htmlFor="type-water">{trans('Maritime')}</label>
+                                        </div>
+                                    </div>
+                                    <div className="col-md-1-10">
+                                        <div className="custom-control custom-radio">
+                                            <input type="radio" id="type-mix" name="type" className="custom-control-input" onChange={event=>this.handleTypeChange(event, 'mix')} checked={this.state.type=='mix'} value="mix"/>
+                                            <label className="custom-control-label" htmlFor="type-mix">{trans('Mix')}</label>
+                                        </div>
+                                    </div>
+									{this.state.type=='mix'?<React.Fragment>
+	                                    <div className="col-md-2">
+	                                        <div className="custom-control custom-checkbox">
+	                                            <input type="checkbox" id="mix-air" name="nsetup[transport_types][]" className="custom-control-input" defaultChecked={this.models('props.data.row.nsetup.transport_types', ['air']).indexOf('air')>=0} value="air"/>
+	                                            <label className="custom-control-label" htmlFor="mix-air">{trans('Compagnie aérienne')}</label>
+	                                        </div>
+	                                    </div>
+	                                    <div className="col-md-2">
+	                                        <div className="custom-control custom-checkbox">
+	                                            <input type="checkbox" id="mix-land" name="nsetup[transport_types][]" className="custom-control-input" defaultChecked={this.models('props.data.row.nsetup.transport_types', ['land']).indexOf('land')>=0} value="land"/>
+	                                            <label className="custom-control-label" htmlFor="mix-land">{trans('Road')}</label>
+	                                        </div>
+	                                    </div>
+	                                    <div className="col-md-2">
+	                                        <div className="custom-control custom-checkbox">
+	                                            <input type="checkbox" id="mix-water" name="nsetup[transport_types][]" className="custom-control-input" defaultChecked={this.models('props.data.row.nsetup.transport_types', ['water']).indexOf('water')>=0} value="water"/>
+	                                            <label className="custom-control-label" htmlFor="mix-water">{trans('Maritime')}</label>
+	                                        </div>
+	                                    </div>
+	                                </React.Fragment>:null}
+                                </div>
+                                    <div className="row">
+	                                    <div className="col-md-6">
+	                                        {this.state.type=='airline'?<div className="form-group position-relative mt-2">
+	                                            <label className="control-label">{trans('Nom')}</label>
+	                                            <input type="text" value={this.state.name_search} onChange={this.handleSearch} onClick={this.handleSearch} name="name" autoComplete="bistrict" required className={`form-control ${this.state.errors.indexOf('no_airline_match')>=0?'error':''}`}/>
+	                                            <div className={`dropdown-menu overflow-auto w-100 ${this.state.select_airline?'show':''}`} style={{maxHeight:200}}>
+	                                                {this.state.airlines.map(airline=><a key={`airline-${airline.id}`} className="dropdown-item" href="#" onClick={e=>this.handleSelectAirline(e, airline)}>{airline.name}</a>)}
+	                                            </div>
+	                                        </div>:<div className="form-group position-relative mt-2">
+	                                            <label className="control-label">{trans('Nom')}</label>
+	                                            <input type="text" className="form-control" value={this.state.name_search} name="name" autoComplete="bistrict" onChange={this.handleNameChange} required/>
+	                                        </div>}
+	                                    </div>
+									</div>
+									<div>
                                     <div className="col-md-12 mt-2">
                                         <MultiForm data={this.props.data} remove={this.removeContact}/>
                                     </div>

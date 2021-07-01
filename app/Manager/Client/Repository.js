@@ -10,8 +10,8 @@ class RepoItem extends Component
             <div className="form-group col-md-1">
                 <label className="control-label">&nbsp;</label>
                 <div className="custom-control custom-switch">
-                    <input type="checkbox" className="custom-control-input" id={`active-repo-${this.props.name}-${this.props.pkey}`} value="1" defaultChecked={this.props.data.active==1} name={`${prefix}[repos][${this.props.name}][${this.props.pkey}][active]`}/>
-                    <label className="custom-control-label" htmlFor={`active-repo-${this.props.name}-${this.props.pkey}`}></label>
+                    <input type="checkbox" className="custom-control-input" id={`active-repo-${this.props.name}-${this.props.pkey2}-${this.props.pkey}`} value="1" defaultChecked={this.props.data.active==1} name={`${prefix}[repos][${this.props.name}][${this.props.pkey}][active]`}/>
+                    <label className="custom-control-label" htmlFor={`active-repo-${this.props.name}-${this.props.pkey2}-${this.props.pkey}`}></label>
                 </div>
             </div>
             <div className="form-group col-md-2">
@@ -93,7 +93,7 @@ class Repository extends Component
                         {trans('Réception PRECON')}
                     </div>
                     <div className="body">
-                        {this.state.precon_repos.filter(it=>!it.deleted).map((repo, index)=><RepoItem pkey={index} prefix={this.props.prefix} key={`repo-${index}`} name="precon" data={repo} remove={()=>this.removeLine(index, 'precon_repos')}/>)}
+                        {this.state.precon_repos.filter(it=>!it.deleted).map((repo, index)=><RepoItem pkey={index} pkey2={this.props.data.id} prefix={this.props.prefix} key={`repo-${index}`} name="precon" data={repo} remove={()=>this.removeLine(index, 'precon_repos')}/>)}
                         <button type="button" className="btn btn-primary mb-4" onClick={()=>this.addLine('precon_repos')}><i className="fa fa-plus"></i> {trans('Ajouter un dépôt')}</button>
                     </div>
                 </div>
@@ -102,7 +102,7 @@ class Repository extends Component
                         {trans('Dépôt CARDIT')}
                     </div>
                     <div className="body">
-                        {this.state.cardit_repos.filter(it=>!it.deleted).map((repo, index)=><RepoItem pkey={index} prefix={this.props.prefix} key={`repo-${index}`} name="cardit" data={repo} remove={()=>this.removeLine(index, 'cardit_repos')}/>)}
+                        {this.state.cardit_repos.filter(it=>!it.deleted).map((repo, index)=><RepoItem pkey={index} pkey2={this.props.data.id} prefix={this.props.prefix} key={`repo-${index}`} name="cardit" data={repo} remove={()=>this.removeLine(index, 'cardit_repos')}/>)}
                         <button type="button" className="btn btn-primary mb-4" onClick={()=>this.addLine('cardit_repos')}><i className="fa fa-plus"></i> {trans('Ajouter un dépôt')}</button>
                     </div>
                 </div>
@@ -111,7 +111,7 @@ class Repository extends Component
                         {trans('Dépôts IFTMIN')}
                     </div>
                     <div className="body">
-                        {this.state.iftmin_repos.filter(it=>!it.deleted).map((repo, index)=><RepoItem pkey={index} prefix={this.props.prefix} key={`repo-${index}`} name="iftmin" data={repo} remove={()=>this.removeLine(index, 'iftmin_repos')}/>)}
+                        {this.state.iftmin_repos.filter(it=>!it.deleted).map((repo, index)=><RepoItem pkey={index} pkey2={this.props.data.id} prefix={this.props.prefix} key={`repo-${index}`} name="iftmin" data={repo} remove={()=>this.removeLine(index, 'iftmin_repos')}/>)}
                         <button type="button" className="btn btn-primary mb-4" onClick={()=>this.addLine('iftmin_repos')}><i className="fa fa-plus"></i> {trans('Ajouter un dépôt')}</button>
                     </div>
                 </div>
@@ -120,7 +120,7 @@ class Repository extends Component
                         {trans('Réception IFTSTA')}
                     </div>
                     <div className="body">
-                        {this.state.iftsta_repos.filter(it=>!it.deleted).map((repo, index)=><RepoItem pkey={index} prefix={this.props.prefix} key={`repo-${index}`} name="iftsta" data={repo} remove={()=>this.removeLine(index, 'iftsta_repos')}/>)}
+                        {this.state.iftsta_repos.filter(it=>!it.deleted).map((repo, index)=><RepoItem pkey={index} pkey2={this.props.data.id} prefix={this.props.prefix} key={`repo-${index}`} name="iftsta" data={repo} remove={()=>this.removeLine(index, 'iftsta_repos')}/>)}
                         <button type="button" className="btn btn-primary mb-4" onClick={()=>this.addLine('iftsta_repos')}><i className="fa fa-plus"></i> {trans('Ajouter un dépôt')}</button>
                     </div>
                 </div>
@@ -129,7 +129,7 @@ class Repository extends Component
                         {trans('Dépôts RESDIT')}
                     </div>
                     <div className="body">
-                        {this.state.output_repos.filter(it=>!it.deleted).map((repo, index)=><RepoItem pkey={index} prefix={this.props.prefix} key={`repo-${index}`} name="out" data={repo} remove={()=>this.removeLine(index, 'output_repos')}/>)}
+                        {this.state.output_repos.filter(it=>!it.deleted).map((repo, index)=><RepoItem pkey={index} pkey2={this.props.data.id} prefix={this.props.prefix} key={`repo-${index}`} name="out" data={repo} remove={()=>this.removeLine(index, 'output_repos')}/>)}
                         <button type="button" className="btn btn-primary mb-4" onClick={()=>this.addLine('output_repos')}><i className="fa fa-plus"></i> {trans('Ajouter un dépôt')}</button>
                     </div>
                 </div>
@@ -141,7 +141,7 @@ class Repository extends Component
                     {trans('Réception CARDIT')}
                 </div>
                 <div className="body">
-                    {this.state.input_repos.filter(it=>!it.deleted).map((repo, index)=><RepoItem pkey={index} prefix={this.props.prefix} key={`repo-${index}`} name="in" data={repo} remove={()=>this.removeLine(index, 'input_repos')}/>)}
+                    {this.state.input_repos.filter(it=>!it.deleted).map((repo, index)=><RepoItem pkey={index} pkey2={this.props.data.id} prefix={this.props.prefix} key={`repo-${index}`} name="in" data={repo} remove={()=>this.removeLine(index, 'input_repos')}/>)}
                     <button type="button" className="btn btn-primary mb-4" onClick={()=>this.addLine('input_repos')}><i className="fa fa-plus"></i> {trans('Ajouter un dépôt')}</button>
                 </div>
             </div>
@@ -150,7 +150,7 @@ class Repository extends Component
                     {trans('Dépôts CARDIT AWB')}
                 </div>
                 <div className="body">
-                    {this.state.lta_repos.filter(it=>!it.deleted).map((repo, index)=><RepoItem pkey={index} prefix={this.props.prefix} key={`repo-${index}`} name="lta" data={repo} remove={()=>this.removeLine(index, 'lta_repos')}/>)}
+                    {this.state.lta_repos.filter(it=>!it.deleted).map((repo, index)=><RepoItem pkey={index} pkey2={this.props.data.id} pkey2={this.props.data.id} prefix={this.props.prefix} key={`repo-${index}`} name="lta" data={repo} remove={()=>this.removeLine(index, 'lta_repos')}/>)}
                     <button type="button" className="btn btn-primary mb-4" onClick={()=>this.addLine('lta_repos')}><i className="fa fa-plus"></i> {trans('Ajouter un dépôt')}</button>
                 </div>
             </div>
@@ -159,7 +159,7 @@ class Repository extends Component
                     {trans('Dépôts RESDIT')}
                 </div>
                 <div className="body">
-                    {this.state.output_repos.filter(it=>!it.deleted).map((repo, index)=><RepoItem pkey={index} prefix={this.props.prefix} key={`repo-${index}`} name="out" data={repo} remove={()=>this.removeLine(index, 'output_repos')}/>)}
+                    {this.state.output_repos.filter(it=>!it.deleted).map((repo, index)=><RepoItem pkey={index} pkey2={this.props.data.id} prefix={this.props.prefix} key={`repo-${index}`} name="out" data={repo} remove={()=>this.removeLine(index, 'output_repos')}/>)}
                     <button type="button" className="btn btn-primary mb-4" onClick={()=>this.addLine('output_repos')}><i className="fa fa-plus"></i> {trans('Ajouter un dépôt')}</button>
                 </div>
             </div>
@@ -168,7 +168,7 @@ class Repository extends Component
                     {trans('Réception MRD')}
                 </div>
                 <div className="body">
-                    {this.state.mrd_repos.filter(it=>!it.deleted).map((repo, index)=><RepoItem pkey={index} prefix={this.props.prefix} key={`repo-${index}`} name="mrd" data={repo} remove={()=>this.removeLine(index, 'mrd_repos')}/>)}
+                    {this.state.mrd_repos.filter(it=>!it.deleted).map((repo, index)=><RepoItem pkey={index} pkey2={this.props.data.id} prefix={this.props.prefix} key={`repo-${index}`} name="mrd" data={repo} remove={()=>this.removeLine(index, 'mrd_repos')}/>)}
                     <button type="button" className="btn btn-primary mb-4" onClick={()=>this.addLine('mrd_repos')}><i className="fa fa-plus"></i> {trans('Ajouter un dépôt')}</button>
                 </div>
             </div>
@@ -177,7 +177,7 @@ class Repository extends Component
                     {trans('Réception MLD')}
                 </div>
                 <div className="body">
-                    {this.state.mld_repos.filter(it=>!it.deleted).map((repo, index)=><RepoItem pkey={index} prefix={this.props.prefix} key={`repo-${index}`} name="mld" data={repo} remove={()=>this.removeLine(index, 'mld_repos')}/>)}
+                    {this.state.mld_repos.filter(it=>!it.deleted).map((repo, index)=><RepoItem pkey={index} pkey2={this.props.data.id} prefix={this.props.prefix} key={`repo-${index}`} name="mld" data={repo} remove={()=>this.removeLine(index, 'mld_repos')}/>)}
                     <button type="button" className="btn btn-primary mb-4" onClick={()=>this.addLine('mld_repos')}><i className="fa fa-plus"></i> {trans('Ajouter un dépôt')}</button>
                 </div>
             </div>
@@ -186,7 +186,7 @@ class Repository extends Component
                     {trans('Dépôt FWB')}
                 </div>
                 <div className="body">
-                    {this.state.fwb_repos.filter(it=>!it.deleted).map((repo, index)=><RepoItem pkey={index} prefix={this.props.prefix} key={`repo-${index}`} name="fwb" data={repo} remove={()=>this.removeLine(index, 'fwb_repos')}/>)}
+                    {this.state.fwb_repos.filter(it=>!it.deleted).map((repo, index)=><RepoItem pkey={index} pkey2={this.props.data.id} prefix={this.props.prefix} key={`repo-${index}`} name="fwb" data={repo} remove={()=>this.removeLine(index, 'fwb_repos')}/>)}
                     <button type="button" className="btn btn-primary mb-4" onClick={()=>this.addLine('fwb_repos')}><i className="fa fa-plus"></i> {trans('Ajouter un dépôt')}</button>
                 </div>
             </div>
@@ -195,7 +195,7 @@ class Repository extends Component
                     {trans('Réception FSU')}
                 </div>
                 <div className="body">
-                    {this.state.fsu_repos.filter(it=>!it.deleted).map((repo, index)=><RepoItem pkey={index} prefix={this.props.prefix} key={`repo-${index}`} name="fsu" data={repo} remove={()=>this.removeLine(index, 'fsu_repos')}/>)}
+                    {this.state.fsu_repos.filter(it=>!it.deleted).map((repo, index)=><RepoItem pkey={index} pkey2={this.props.data.id} prefix={this.props.prefix} key={`repo-${index}`} name="fsu" data={repo} remove={()=>this.removeLine(index, 'fsu_repos')}/>)}
                     <button type="button" className="btn btn-primary mb-4" onClick={()=>this.addLine('fsu_repos')}><i className="fa fa-plus"></i> {trans('Ajouter un dépôt')}</button>
                 </div>
             </div>

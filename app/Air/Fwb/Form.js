@@ -10,8 +10,9 @@ class Form extends Component
   constructor(props) {
     super(props)
     this.state = {
-      numbers : [],
-      saved : false
+      numbers : {},
+      saved : false,
+		t : 0
     }
     this.saveLta = this.saveLta.bind(this)
     this.generate = this.generate.bind(this)
@@ -23,16 +24,19 @@ class Form extends Component
     $(this.refs.form).submit()
   }
 
-  handleCheck(event, index) {
+  handleCheck(event, customer_company_id, index) {
     const checked = event.target.checked
     this.setState(state=>{
-      state.numbers[index].selected = checked
+      state.numbers[customer_company_id][index].selected = checked
       return state
     })
   }
 
   saveLta() {
-    const duplicates = this.state.numbers.filter(it=>!it.available && it.selected)
+	let duplicates = []
+	this.models('props.data.user.customer_account.companies', []).map(customer_company=>{
+		duplicates = duplicates.concat(this.models("state.numbers." + customer_company.id, []).filter(it=>!it.available && it.selected))
+	})
     $(this.refs.mode).val('save')
     if(duplicates.length>0) {
       let lis = []
@@ -70,9 +74,11 @@ class Form extends Component
     this.props.store.subscribe(()=>{
       const storeState = this.props.store.getState()
       if(storeState.type=='ltas') {
-        this.setState({
-          numbers : storeState.numbers,
-          saved : storeState.saved
+        this.setState(state => {
+          state.numbers = storeState.numbers,
+          state.saved = storeState.saved,
+		  state.t++
+		  return state
         })
       }
     })
@@ -89,11 +95,11 @@ class Form extends Component
                   {trans('AWB Number Generator')}
                 </div>
                 <ul className="list-unstyled ramification-edi">
-                  <li>
+				{this.models("props.data.user.customer_account.companies", []).map(customer_company=><li key={`company-${customer_company.id}`}>
                     <div className="row">
                       <div className="col-5">
                         <div className="alert d-flex justify-content-between align-items-center p-2">
-                          {trans('Code compagnie aérienne')} : <strong className="font-24">{this.models('props.data.user.customer_account.nsetup.lta.prefix')}</strong>
+                          {trans('Code compagnie aérienne')} : {this.cast(customer_company, 'company.name')} <strong className="font-24">{this.cast(customer_company, 'nsetup.lta.prefix')}</strong>
                         </div>
                       </div>
                       <span className="edi-trait mt-4"></span>
@@ -103,7 +109,7 @@ class Form extends Component
                             <label className="control-label bg-inverse">
                               {trans('Premier numéro AWB')} : 
                             </label>
-                            <input className="ml-3 form-control text-center" data-parsley-length="[8,8]" data-parsley-length-message={trans('Le premier numéro doit comporter 8 chiffres exactement')} required type="number" data-parsley-errors-container="#first-number" name="first"/>
+                            <input className="ml-3 form-control text-center" data-parsley-length="[8,8]" data-parsley-length-message={trans('Le premier numéro doit comporter 8 chiffres exactement')} required type="number" data-parsley-errors-container="#first-number" name={`companies[${customer_company.id}][first]`}/>
                           </div>
                         </div>
                       </div>
@@ -118,7 +124,7 @@ class Form extends Component
                                 <label className="control-label">
                                   {trans('Quantité de AWB')} : 
                                 </label>
-                                <input className="ml-3 form-control text-center" required type="number" name="n"/>
+                                <input className="ml-3 form-control text-center" required type="number" name={`companies[${customer_company.id}][n]`}/>
                               </div>
                             </div>
                           </div>
@@ -129,18 +135,18 @@ class Form extends Component
                         </div>
                       </li>
                     </ul>
-                  </li>
+                  </li>)}
                 </ul>
               </li>
             </ul>
-            {this.state.numbers.length>0?<div>
-              <h4>{trans('Liste des AWB')}</h4>
-              <strong>{this.state.numbers.filter(it=>it.selected).length}</strong> {plural('AWB Number disponible', {n:this.state.numbers.filter(it=>it.selected).length}, 'AWB Number disponibles')}
+            {this.models("props.data.user.customer_account.companies", []).map(customer_company=>this.models("state.numbers." + customer_company.id, []).length>0?<div key={`list-${customer_company.id}-${this.state.t}`}>
+              <h4>{trans('Liste des AWB')} {customer_company.company.name}</h4>
+              <strong>{this.models("state.numbers." + customer_company.id, []).filter(it=>it.selected).length}</strong> {plural('AWB Number disponible', {n:this.models("state.numbers." + customer_company.id, []).filter(it=>it.selected).length}, 'AWB Number disponibles')}
               <div className="row my-5 mx-0 bg-light">
-                {this.state.numbers.map((number, index)=>{
+                {this.models("state.numbers."+customer_company.id, []).map((number, index)=>{
                   const readonly = number.available ? {readOnly:true} : {}
                   if(number.selected) {
-                    return <label key={`number-${number.value}`} className={`fancy-checkbox px-4 py-2 border ${number.available?'':'border-danger'}`}><input type="checkbox" name="numbers[]" value={number.value} checked={number.selected} onChange={e=>this.handleCheck(e, index)} {...readonly}/>
+                    return <label key={`number-${number.value}`} className={`fancy-checkbox px-4 py-2 border ${number.available?'':'border-danger'}`}><input type="checkbox" name={`companies[${customer_company.id}][numbers][]`} value={number.value} checked={number.selected} onChange={e=>this.handleCheck(e, customer_company.id, index)} {...readonly}/>
                         <span>{number.value}</span>
                     </label>
                   }
@@ -152,7 +158,7 @@ class Form extends Component
               {!this.state.saved?<div className="text-center">
                 <button className="btn btn-success text-white" type="button" onClick={this.saveLta}>{trans('Enregistrer les AWB')}</button>
               </div>:null}
-            </div>:null}
+            </div>:null)}
             <input type="hidden" name="mode" ref="mode" value="generate"/>
             <input type="hidden" name="ry"/>
           </form>

@@ -130,8 +130,8 @@ class Air extends Component
   constructor(props) {
     super(props)
     this.state = {
-      tab : this.models('props.data.row.companies.0.id', 0),
-      companies : this.models('props.data.row.companies', []),
+      tab : this.cast(this.models('props.data.row.companies', []).filter(it=>it.type=='air'), '0.id', 0),
+      companies : this.models('props.data.row.companies', []).filter(it=>it.type=='air'),
       errors : [],
       errorMessages : [],
       oncevalidate : false,
