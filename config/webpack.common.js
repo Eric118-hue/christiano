@@ -2,6 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const WorkboxPlugin = require('workbox-webpack-plugin');
+const config = require("../cenv");
 
 module.exports = {
   entry: {
@@ -34,7 +35,7 @@ module.exports = {
   output: {
     filename: '[name].amelior.js',
     chunkFilename: '[name].amelior.js',
-    path: '/home/airmaildata/www/preprod/public',
+    path: config.laravel.public,
     library: 'Ry'
   },
   module : {

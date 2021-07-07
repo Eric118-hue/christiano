@@ -2,11 +2,12 @@
 
 const { spawn } = require('child_process');
 const fs = require('fs')
+const config = require('../cenv');
 
-fs.readdir('/home/airmaildata/www/preprod/public/', (err, files)=>{
+fs.readdir(config.laravel.public, (err, files)=>{
     files.map((file)=>{
         if(/precache-manifest/.test(file)) {
-            var rm = spawn("rm", [`/home/airmaildata/www/preprod/public/${file}`]);
+            var rm = spawn("rm", [config.laravel.public+file]);
 
             rm.stdout.on('data', (data) => {
                 console.log(`stdout: ${data}`);
@@ -24,7 +25,7 @@ fs.readdir('/home/airmaildata/www/preprod/public/', (err, files)=>{
     var webpack = spawn("webpack", [`--config`, 'config/webpack.prod.js']);
 
     webpack.on('close', (code) => {
-        spawn("rm", ['/home/airmaildata/www/preprod/public/index.html']);         
+        spawn("rm", [config.laravel.public+'index.html']);         
     });
 })
 
