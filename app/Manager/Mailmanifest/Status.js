@@ -9,6 +9,7 @@ import $ from 'jquery';
 import {Popup, PopupBody, PopupHeader, PopupFooter, Datepicker} from 'ryvendor/bs/bootstrap';
 import swal from 'sweetalert2';
 import qs from 'qs';
+import numeral from 'numeral';
 
 const CHECKBOXES = true
 
