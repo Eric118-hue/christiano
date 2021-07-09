@@ -290,8 +290,8 @@ class Form extends Component
                                     </div>
                                     <div className="col-md-1-10">
                                         <div className="custom-control custom-radio">
-                                            <input type="radio" id="type-road" name="type" className="custom-control-input" onChange={event=>this.handleTypeChange(event, 'road')} checked={this.state.type=='road'} value="road"/>
-                                            <label className="custom-control-label" htmlFor="type-road">{trans('Road')}</label>
+                                            <input type="radio" id="type-land" name="type" className="custom-control-input" onChange={event=>this.handleTypeChange(event, 'land')} checked={this.state.type=='land'} value="land"/>
+                                            <label className="custom-control-label" htmlFor="type-land">{trans('Road')}</label>
                                         </div>
                                     </div>
 									<div className="col-md-1-10">

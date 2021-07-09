@@ -182,7 +182,7 @@ class CarditRow extends Cardit
 class CarditList extends List
 {
   table() {
-    if(this.props.data.customer_type!='road')
+    if(this.props.data.customer_type!='land')
         return super.table()
     return <table className="table table-bordered table-hover table-striped table-liste" cellSpacing="0" cellPadding="0" id="recipientTable">
         <thead>

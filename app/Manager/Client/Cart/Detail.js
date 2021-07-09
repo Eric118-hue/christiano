@@ -218,7 +218,7 @@ export class CarditInvoice extends Component
             <td>{mailclasses}</td>
             <td>{this.models('props.data.nsetup.handover_origin_location.iata')} - {this.models('props.data.nsetup.handover_destination_location.iata', this.models('props.data.nsetup.handover_destination_location.cardit'))}</td>
             <td>{this.props.data.nsetup.nreceptacles}</td>
-            <td>{numeral(this.props.data.total_weight).format('0.0')}</td>
+            <td>{numeral(this.props.data.nsetup.nreceptacles>0?this.props.data.total_weight:0).format('0.0')}</td>
             <td>{this.props.cart.currency.iso_code}</td>
             <td className="text-info">{numeral(this.props.data.total_ht).format('0.00')}</td>
             <td className="text-info">{numeral(this.props.data.total_ttc).format('0.00')}</td>

@@ -30,6 +30,7 @@ class Organisation extends Component
         this.addRoute = this.addRoute.bind(this)
         this.validate = this.validate.bind(this)
         this.updateCustomer = this.updateCustomer.bind(this)
+		this.companyHeader = this.companyHeader.bind(this)
     }
 
     addRoute(company_index, edi_index) {
@@ -107,6 +108,57 @@ class Organisation extends Component
         return errors
     }
 
+	companyHeader(company) {
+		if(company.type=='air') {
+			return <Autocomplete onChange={item=>{
+		                this.setState(state=>{
+		                    state.customer.companies[company_index].id = item.id
+		                    state.customer.companies[company_index].name = item.name
+		                    state.customer.companies[company_index].icao_code = item.icao_code
+		                    state.customer.companies[company_index].iata_code = item.iata_code
+		                    state.customer.companies[company_index].adresse = item.adresse
+		                    if(this.refs.pricing)
+		                        this.refs.pricing.updateCustomer(state.customer)
+		                    return state
+		                })
+		            }} readOnly={this.props.readOnly} value={this.cast(company, 'company')} placeholder={trans('Ajouter une compagnie aérienne')} endpoint={`/airlines`} line={item=>item.name} selection={item=><span>{item.icao_code} / {item.iata_code} = {item.name} ({this.cast(item, 'country.nom')})
+		        <input type="hidden" name={`companies[${company.id}][company_id]`} value={item.id}/>
+		    </span>} param="q"/>
+		}
+		else if(company.type=='land') {
+			return <Autocomplete onChange={item=>{
+	                    this.setState(state=>{
+	                        state.customer.companies[company_index].id = item.id
+	                        state.customer.companies[company_index].name = item.name
+	                        state.customer.companies[company_index].icao_code = item.icao_code
+	                        state.customer.companies[company_index].iata_code = item.iata_code
+	                        state.customer.companies[company_index].adresse = item.adresse
+	                        if(this.refs.pricing)
+	                            this.refs.pricing.updateCustomer(state.customer)
+	                        return state
+	                    })
+	                }} readOnly={this.props.readOnly} value={this.cast(company, 'company')} placeholder={trans('Ajouter une compagnie')} endpoint={`/transporters`} line={item=>item.name} selection={item=><span>{item.name} ({this.cast(item, 'adresse.ville.country.nom')})
+	            <input type="hidden" name={`companies[${company.id}][company_id]`} value={item.id}/>
+	        </span>} param="q"/>
+		}
+		else {
+			return <Autocomplete onChange={item=>{
+	                    this.setState(state=>{
+	                        state.customer.companies[company_index].id = item.id
+	                        state.customer.companies[company_index].name = item.name
+	                        state.customer.companies[company_index].icao_code = item.icao_code
+	                        state.customer.companies[company_index].iata_code = item.iata_code
+	                        state.customer.companies[company_index].adresse = item.adresse
+	                        if(this.refs.pricing)
+	                            this.refs.pricing.updateCustomer(state.customer)
+	                        return state
+	                    })
+	                }} readOnly={this.props.readOnly} value={this.cast(company, 'company')} placeholder={trans('Ajouter une compagnie maritime')} endpoint={`/airlines`} line={item=>item.name} selection={item=><span>{item.name} ({this.cast(item, 'adresse.ville.country.nom')})
+	            <input type="hidden" name={`companies[${company.id}][company_id]`} value={item.id}/>
+	        </span>} param="q"/>
+		}
+	}
+
     tree() {
         return <ul className="list-unstyled">
             <li className="ramification-client">
@@ -118,33 +170,7 @@ class Organisation extends Component
                         <div className="row">
                             <div className="col-8">
                                 <div className="alert font-24 d-flex justify-content-between">
-                                    {(company.type=='air' || company.type=='water')?<Autocomplete onChange={item=>{
-                                                this.setState(state=>{
-                                                    state.customer.companies[company_index].id = item.id
-                                                    state.customer.companies[company_index].name = item.name
-                                                    state.customer.companies[company_index].icao_code = item.icao_code
-                                                    state.customer.companies[company_index].iata_code = item.iata_code
-                                                    state.customer.companies[company_index].adresse = item.adresse
-                                                    if(this.refs.pricing)
-                                                        this.refs.pricing.updateCustomer(state.customer)
-                                                    return state
-                                                })
-                                            }} readOnly={this.props.readOnly} value={this.cast(company, 'company')} placeholder={trans('Ajouter une compagnie aérienne')} endpoint={`/airlines`} line={item=>item.name} selection={item=><span>{item.icao_code} / {item.iata_code} = {item.name} ({this.cast(item, 'country.nom')})
-                                        <input type="hidden" name={`companies[${company.id}][company_id]`} value={item.id}/>
-                                    </span>} param="q"/>:<Autocomplete onChange={item=>{
-                                            this.setState(state=>{
-                                                state.customer.companies[company_index].id = item.id
-                                                state.customer.companies[company_index].name = item.name
-                                                state.customer.companies[company_index].icao_code = item.icao_code
-                                                state.customer.companies[company_index].iata_code = item.iata_code
-                                                state.customer.companies[company_index].adresse = item.adresse
-                                                if(this.refs.pricing)
-                                                    this.refs.pricing.updateCustomer(state.customer)
-                                                return state
-                                            })
-                                        }} readOnly={this.props.readOnly} value={this.cast(company, 'company')} placeholder={trans('Ajouter une compagnie')} endpoint={`/transporters`} line={item=>item.name} selection={item=><span>{item.name} ({this.cast(item, 'adresse.ville.country.nom')})
-                                    <input type="hidden" name={`companies[${company.id}][company_id]`} value={item.id}/>
-                                </span>} param="q"/>}
+									{this.companyHeader(company)}
                                 </div>
                             </div>
                             {this.props.pricing?<React.Fragment>

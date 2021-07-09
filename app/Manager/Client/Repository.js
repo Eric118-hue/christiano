@@ -86,7 +86,7 @@ class Repository extends Component
     }
 
     render() {
-        if(this.props.type=='road') {
+        if(this.props.type=='land') {
             return <React.Fragment>
                 <div className="card">
                     <div className="card-header">

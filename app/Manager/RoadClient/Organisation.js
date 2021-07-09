@@ -9,7 +9,7 @@ import Autocomplete from '../Client/Autocomplete';
 const CUSTOMER_TYPES = {
     airline : trans('Compagnie aérienne'),
     gsa : trans('GSA'),
-    road : trans('Road')
+    land : trans('Road')
 }
 
 class Organisation extends Component

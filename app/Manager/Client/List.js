@@ -67,7 +67,7 @@ class List extends NavigableModel
             case 'gsa':
                 badge = <div className={`badge badge-blue`}>{trans('GSA')}</div>
                 break;
-            case 'road':
+            case 'land':
                 badge = <div className={`badge badge-turquoise`}>{trans('Road')}</div>
                 break;
             case 'mix':

@@ -156,7 +156,7 @@ class Land extends Component
                     </div>
                   </div>
                 </div>
-                <Repository prefix={`companies[newland]`} type="road"/>
+                <Repository prefix={`companies[newland]`} type="land"/>
               </div>:null}
               {this.state.companies.map(company=><div key={`tab-company-${company.id}`} className={`tab-pane fade show ${company.id==this.state.tab?'active':''}`} id={`v-pills-${company.id}`} role="tabpanel" aria-labelledby={`v-pills-${company.id}-tab`}>
                 <input type="hidden" name={`companies[${company.id}][customer_id]`} value={this.models('props.data.row.id')}/>
@@ -242,7 +242,7 @@ class Land extends Component
                     </div>
                   </div>
                 </div>
-                <Repository data={company} prefix={`companies[${company.id}]`} type="road"/>
+                <Repository data={company} prefix={`companies[${company.id}]`} type="land"/>
               </div>)}
             </div>
           </div>

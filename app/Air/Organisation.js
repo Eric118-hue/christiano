@@ -9,11 +9,11 @@ import Autocomplete from '../Manager/Client/Autocomplete';
 export const CUSTOMER_TYPES = {
     airline : trans('Compagnie aérienne'),
     gsa : trans('GSA'),
-    road : trans('Road')
+    land : trans('Road')
 }
 
 export const TRANSPORTER = {
-    road : 'transporter',
+    land : 'transporter',
     airline : 'airline',
     gsa : 'airline',
     mix : 'mix'
