@@ -7,14 +7,15 @@ import Pricing from '../Manager/Client/Pricing';
 import Autocomplete from '../Manager/Client/Autocomplete';
 
 export const CUSTOMER_TYPES = {
-    airline : trans('Compagnie aérienne'),
+    air : trans('Compagnie aérienne'),
     gsa : trans('GSA'),
-    land : trans('Road')
+    land : trans('Road'),
+	mix : trans('Mix')
 }
 
 export const TRANSPORTER = {
     land : 'transporter',
-    airline : 'airline',
+    air : 'airline',
     gsa : 'airline',
     mix : 'mix'
 }
@@ -118,7 +119,7 @@ class Organisation extends Component
                                     <span className="edi-trait mt-3"></span>
                                     <div className="col-3">
                                         <div className="alert d-flex justify-content-between p-2">
-                                            <Autocomplete onChange={item=>null} readOnly={this.props.readOnly} value={edi[TRANSPORTER[this.state.customer.type]].id>0?edi[TRANSPORTER[this.state.customer.type]]:null} param="q" placeholder={trans("Ajouter la compagnie aérienne")} endpoint={`/airlines?with[]=edi_code`} line={item=>`${item.edi_code}`} selection={item=><span>
+                                            <Autocomplete onChange={item=>null} readOnly={this.props.readOnly} value={edi[TRANSPORTER[company.type]].id>0?edi[TRANSPORTER[company.type]]:null} param="q" placeholder={trans("Ajouter la compagnie aérienne")} endpoint={`/airlines?with[]=edi_code`} line={item=>`${item.edi_code}`} selection={item=><span>
                                                 <strong>{item.edi_code}</strong>
                                                 <input type="hidden" name={`companies[${company_index}][edis][${edi_index}][to_id]`} value={item.id}/>
                                             </span> } buttonClass="p-0"/>

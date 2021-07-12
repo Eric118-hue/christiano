@@ -355,8 +355,14 @@ class Detail extends Component
             <div className="mt-3 mb-3">
                 <label>{trans('Pré-facture Nº')} : </label> 
                 <span className="font-weight-bold text-orange">{this.props.data.code}</span>
-                <label className="ml-5">{trans('Compagnie aérienne')} : </label>
-                {this.models('props.data.airline')?<span className="font-weight-bold text-orange"> {this.props.data.airline.edi_code} {this.props.data.airline.name}</span>:<span className="font-weight-bold text-orange"> {this.props.data.transporter.name}</span>}
+				{this.models('props.data.airline')?<React.Fragment>
+					<label className="ml-5">{trans('Compagnie')} : </label>
+					<span className="font-weight-bold text-orange"> {this.props.data.airline.edi_code} {this.props.data.airline.name}</span>
+				</React.Fragment>:null}
+                {this.models('props.data.transporter')?<React.Fragment>
+					<label className="ml-5">{trans('Road')} : </label>
+					<span className="font-weight-bold text-orange"> {this.props.data.transporter.name}</span>
+				</React.Fragment>:null}
                 <label className="ml-5">{trans('Mois')} : </label> 
                 <span className="font-weight-bold text-orange">{moment.utc(this.props.data.created_at).format('MMMM YYYY')}</span>
                 <label className="ml-5">{trans("Nombre d'expéditions")} : </label> 

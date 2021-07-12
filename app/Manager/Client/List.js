@@ -4,6 +4,7 @@ import trans from '../../translations';
 import swal from 'sweetalert2';
 import $ from 'jquery';
 import Modelizer from 'ryvendor/Ry/Core/Modelizer';
+import { CUSTOMER_TYPES } from './Organisation';
 
 class List extends NavigableModel
 {
@@ -59,22 +60,23 @@ class List extends NavigableModel
     }
 
     item(customer, key) {
-        let badge = null
+        let badge_color = 'azur'
         switch(customer.type) {
             case 'airline':
-                badge = <div className={`badge badge-rose`}>{trans('Compagnie aérienne')}</div>
+                badge_color = 'rose'
                 break;
             case 'gsa':
-                badge = <div className={`badge badge-blue`}>{trans('GSA')}</div>
+                badge_color = 'blue'
                 break;
             case 'land':
-                badge = <div className={`badge badge-turquoise`}>{trans('Road')}</div>
+                badge_color = 'turquoise'
                 break;
             case 'mix':
-                badge = <div className={`badge badge-rose`}>{trans('Mix')}</div>
+                badge_color = 'rose'
                 break;
+			default:
 			case 'water':
-                badge = <div className={`badge badge-azur`}>{trans('Maritime')}</div>
+                badge_color = 'azur'
                 break;
         }
         const mailmanifest_checked = customer.nsetup.mail_manifest==1 && customer.companies.length>0 && customer.companies.filter(it=>it.nsetup.mail_manifest==1).length==customer.companies.length
@@ -83,7 +85,7 @@ class List extends NavigableModel
             <td>{customer.id}</td>
             <td>{customer.facturable.name}</td>
             <td>
-                {badge}
+                <div className={`badge badge-${badge_color}`}>{CUSTOMER_TYPES[customer.type]}</div>
             </td>
             <td className="text-center">
                 {customer.type=='airline'?customer.facturable.icao_code:'--'}

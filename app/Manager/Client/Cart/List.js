@@ -5,6 +5,7 @@ import trans from '../../../translations';
 import moment from 'moment';
 import numeral from 'numeral';
 import Detail from './Detail';
+import { CUSTOMER_TYPES } from '../Organisation';
 
 export class List extends BaseCart
 {
@@ -13,6 +14,8 @@ export class List extends BaseCart
         this.nocommission = false
         this.nopaginate = true
         this.state.list = true
+		this.state.tab = this.models("props.companies.0.id")
+		this.state.companies = this.models("props.companies", [])
         this.detail = this.detail.bind(this)
     }
 
@@ -63,7 +66,7 @@ export class List extends BaseCart
                 <div className="col-md-5">
                     <div className="card h-100 mb-0">
                         <div className="card-header">
-                            {moment().year()} - {this.props.me.type=='Airline'?`${trans('Compagnie aérienne')} : ${this.props.me.facturable.name}`:`${trans('GSA')} : ${trans('Toutes les compagnies aériennes')}`}
+                            {moment().year()} - { CUSTOMER_TYPES[this.props.me.type] } : {this.props.me.facturable.name}
                         </div>
                         <div className="body">
                             <div className="row">
@@ -105,73 +108,93 @@ export class List extends BaseCart
                 <a className={`btn btn-outline-primary ${this.state.page===this.props.data.last_page?'disabled':''}`} href="#" onClick={this.toEnd}><i className="fa fa-angle-double-right"></i></a>
             </li>
         </ul>
-        let wtotal = 0
+		this.total_ttc = 0
+		this.total_commissions = 0
+		let wtotal = 0
         let total_ht = 0
-        this.total_ttc = 0
-        this.total_commissions = 0
-        this.state.data.map((item, key)=>{
-            wtotal += parseFloat(item.total_weight)
-            total_ht += parseFloat(item.total_ht)
-            this.total_ttc += parseFloat(item.total_ttc)
-            this.total_commissions += parseFloat(item.total_commissions)
-        })
+        let total_ttc = 0
+        let total_commissions = 0	
         return this.state.list?<div className={`col-12`}>            
             <div className="justify-content-between m-0 row">
                 {this.beforelist()}
                 {this.nopaginate?null:pagination}
             </div>
             {this.searchEngine()}
-            <table className="table table-bordered table-centerall">
-                <thead>
-                    <tr>
-                        <th>{trans('Date')}</th>
-                        <th>{trans('Pré-facture Nº')}</th>
-                        <th>{trans('Compagnie aérienne')}</th>
-                        <th>{trans('Poids total')}</th>
-                        <th>{trans('Devise')}</th>
-                        <th>{trans('Total HT')}</th>
-                        <th>{trans('Total TTC')}</th>
-                        {this.nocommission?null:<th>{trans('Com. AD')}</th>}
-                        <th>{trans('Editer')}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {this.state.data.map((item, key)=><tr key={`row=-${key}`}>
-                        <td>{moment.utc(item.created_at).format('MMMM YYYY')}</td>
-                        <td>{item.code}</td>
-                        {item.airline?<td>{item.airline.edi_code} {item.airline.name}</td>:<td>{this.cast(item, 'transporter.name')}</td>}
-                        <td>{numeral(item.total_weight).format('0.0')}</td>
-                        <td>{this.cast(item, 'currency.iso_code')}</td>
-                        <td>{numeral(item.total_ht).format('0.00')}</td>
-                        <td>{numeral(item.total_ttc).format('0.00')}</td>
-                        {this.nocommission?null:<td>{numeral(item.total_commissions).format('0.00')}</td>}
-                        <td>
-                            <div className="dropdown show">
-                                <a className="btn btn-orange dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    {trans('Actions')}
-                                </a>
-
-                                <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                    <a className="dropdown-item" href={`/cart?id=${item.id}`} onClick={e=>this.detail(e, item)}>{trans('Détail')}</a>
-                                    <a className="dropdown-item" href={`/cn51?id=${item.id}`}>CN51</a>
-                                    <a className="dropdown-item" href={`/cn66?id=${item.id}`}>CN66</a>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>)}
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colSpan="3" className="text-right">{trans('Total')}</td>
-                        <td className="bg-warning">{numeral(wtotal).format('0.0')}</td>
-                        <td></td>
-                        <td className="bg-warning">{numeral(total_ht).format('0.00')}</td>
-                        <td className="bg-warning">{numeral(this.total_ttc).format('0.00')}</td>
-                        {this.nocommission?null:<td className="bg-warning">{numeral(this.total_commissions).format('0.00')}</td>}
-                        <td></td>
-                    </tr>
-                </tfoot>
-            </table>
+			<div className="d-flex">
+	            <div className="border flex-column nav nav-pills p-1 rounded" id="v-pills-tab-client-invoicing" role="tablist" aria-orientation="vertical">
+	              {this.state.companies.map(company=><a key={`pill-company-invoicing-${company.id}`} className={`nav-link text-nowrap nav-link-client mb-1 ${company.id==this.state.tab?'active':''}`} id={`v-pills-${company.id}-invoicing-tab`} data-toggle="pill" href={`#v-invoicing-pills-${company.id}`} role="tab" aria-controls={`v-invoicing-pills-${company.id}`} aria-selected={company.id==this.state.tab?"true":"false"}>{company.company.name}</a>)}
+	            </div>
+	            <div className="tab-content pt-0 flex-fill" id="v-pills-tabContent">
+					{this.state.companies.map(company=>{
+					wtotal = 0
+			        total_ht = 0
+			        total_ttc = 0
+			        total_commissions = 0	
+					return <div key={`v-invoicing-pills-${company.id}`} className={`tab-pane fade show ${company.id==this.state.tab?'active':''}`} id={`v-invoicing-pills-${company.id}`} role="tabpanel" aria-labelledby={`v-pills-${company.id}-tab`}>
+			            <table className="table table-bordered table-centerall">
+			                <thead>
+			                    <tr>
+			                        <th>{trans('Date')}</th>
+			                        <th>{trans('Pré-facture Nº')}</th>
+			                        <th>{trans('Compagnie')}</th>
+			                        <th>{trans('Poids total')}</th>
+			                        <th>{trans('Devise')}</th>
+			                        <th>{trans('Total HT')}</th>
+			                        <th>{trans('Total TTC')}</th>
+			                        {this.nocommission?null:<th>{trans('Com. AD')}</th>}
+			                        <th>{trans('Editer')}</th>
+			                    </tr>
+			                </thead>
+			                <tbody>
+			                    {this.state.data.filter(it=>(it.airline && it.airline.id==company.company_id && company.ntype=='air') || (it.transporter && it.transporter.id==company.company_id && company.ntype=='land') || (it.shippingco && it.shippingco.id==company.company_id && company.ntype=='water')).map((item, key)=>{
+								wtotal += parseFloat(item.total_weight)
+					            total_ht += parseFloat(item.total_ht)
+					            total_ttc += parseFloat(item.total_ttc)
+					            total_commissions += parseFloat(item.total_commissions)
+								this.total_ttc += parseFloat(item.total_ttc)
+								this.total_commissions += parseFloat(item.total_commissions)
+								return <tr key={`row=-${key}`}>
+			                        <td>{moment.utc(item.created_at).format('MMMM YYYY')}</td>
+			                        <td>{item.code}</td>
+			                        {item.airline?<td>{item.airline.edi_code} {item.airline.name}</td>:null}
+									{item.transporter?<td>{this.cast(item, 'transporter.name')}</td>:null}
+									{item.shippingco?<td>{this.cast(item, 'shippingco.name')}</td>:null}
+									{(!item.transporter && !item.airline && !item.shippingco)?<td></td>:null}
+			                        <td>{numeral(item.total_weight).format('0.0')}</td>
+			                        <td>{this.cast(item, 'currency.iso_code')}</td>
+			                        <td>{numeral(item.total_ht).format('0.00')}</td>
+			                        <td>{numeral(item.total_ttc).format('0.00')}</td>
+			                        {this.nocommission?null:<td>{numeral(item.total_commissions).format('0.00')}</td>}
+			                        <td>
+			                            <div className="dropdown show">
+			                                <a className="btn btn-orange dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			                                    {trans('Actions')}
+			                                </a>
+			
+			                                <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
+			                                    <a className="dropdown-item" href={`/cart?id=${item.id}`} onClick={e=>this.detail(e, item)}>{trans('Détail')}</a>
+			                                    <a className="dropdown-item" href={`/cn51?id=${item.id}`}>CN51</a>
+			                                    <a className="dropdown-item" href={`/cn66?id=${item.id}`}>CN66</a>
+			                                </div>
+			                            </div>
+			                        </td>
+			                    </tr>})}
+			                </tbody>
+			                <tfoot>
+			                    <tr>
+			                        <td colSpan="3" className="text-right">{trans('Total')}</td>
+			                        <td className="bg-warning">{numeral(wtotal).format('0.0')}</td>
+			                        <td></td>
+			                        <td className="bg-warning">{numeral(total_ht).format('0.00')}</td>
+			                        <td className="bg-warning">{numeral(total_ttc).format('0.00')}</td>
+			                        {this.nocommission?null:<td className="bg-warning">{numeral(total_commissions).format('0.00')}</td>}
+			                        <td></td>
+			                    </tr>
+			                </tfoot>
+			            </table>	
+					</div>})}
+				</div>
+			</div>
             <div className="justify-content-between m-0 row">
                 {this.afterlist()}
                 {this.nopaginate?null:pagination}
@@ -215,7 +238,7 @@ class Invoice extends Component
                 <div className="tab-content border-bottom border-left border-right p-4 mb-4">
                     <div className={`tab-pane active`}
                         id={`invoices`} role="tabpanel" aria-labelledby="invoices-tab">
-                            <List data={{data:this.props.data.row.carts}} store={this.props.store} customerId={this.props.data.row.id} me={this.props.data.row}/>
+                            <List data={{data:this.props.data.row.carts}} companies={this.props.data.row.companies} store={this.props.store} customerId={this.props.data.row.id} me={this.props.data.row}/>
                         </div>
                     </div>
                 </div>

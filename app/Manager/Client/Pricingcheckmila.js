@@ -3,12 +3,7 @@ import Modelizer from '../../../vendor/Ry/Core/Modelizer';
 import './Organisation.scss';
 import trans from '../../translations';
 import $ from 'jquery';
-
-const CUSTOMER_TYPES = {
-    airline : trans('Compagnie aérienne'),
-    gsa : trans('GSA'),
-    land : trans('Road')
-}
+import { CUSTOMER_TYPES } from './Organisation'; 
 
 class Autocomplete extends Component
 {

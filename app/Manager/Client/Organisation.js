@@ -7,7 +7,7 @@ import Pricing from './Pricing';
 import Autocomplete from './Autocomplete';
 
 export const CUSTOMER_TYPES = {
-    airline : trans('Compagnie aérienne'),
+    air : trans('Compagnie aérienne'),
     gsa : trans('GSA'),
     land : trans('Road'),
     mix : trans('Mix'),
