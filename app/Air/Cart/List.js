@@ -3,7 +3,7 @@ import trans from '../../translations';
 import {List} from '../../Manager/Client/Cart/List';
 import moment from 'moment';
 import numeral from 'numeral';
-import { CUSTOMER_TYPES } from '../Organisation';
+import { CUSTOMER_TYPES } from '../../Manager/Client/Organisation';
 
 class CartList extends List
 {
