@@ -269,7 +269,7 @@ class Detail extends Component
                 },
                 success : response => {
                     this.setState(state=>{
-                        let cardits = state.cardits.concat(response.data.data)
+                        let cardits = state.cardits.concat(this.cast(response, 'data.data', []))
                         cardits = Array.from(new Set(cardits.map(it=>it.id))).map(id=>cardits.find(it=>it.id==id))
                         state.cardits = cardits
                         state.page = response.data.current_page
