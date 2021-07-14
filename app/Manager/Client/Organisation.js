@@ -166,7 +166,7 @@ class Organisation extends Component
                     {CUSTOMER_TYPES[this.state.customer.type]} : {this.state.customer.facturable.name}
                 </div>
                 <ul className="list-unstyled ramification-airline" ref="organisation">
-                    {this.state.customer.companies.map((company, company_index)=>company.deleted?<input key={`company-${company.id}`} type="hidden" name={`deleted_companies[${company.id}]`} value={company.id}/>:<li key={`company-${company.id}`}>
+                    {this.state.customer.companies.map((company, company_index)=>company.deleted?<input key={`company-${company_index}`} type="hidden" name={`deleted_companies[${company_index}]`} value={company.id}/>:<li key={`company-${company_index}`}>
                         <div className="row">
                             <div className="col-8">
                                 <div className="alert font-24 d-flex justify-content-between">
@@ -196,7 +196,7 @@ class Organisation extends Component
 
                         
                         <ul className="list-unstyled ramification-edi">
-                            {company.edis.map((edi, edi_index)=>edi.deleted?<input key={`company-${company.id}-edi-${edi.id}`} type="hidden" name={`companies[${company.id}][edis][${edi.id}][deleted_id]`} value={edi.id}/>:<li key={`company-${company.id}-edi-${edi.id}`}>
+                            {company.edis.map((edi, edi_index)=>edi.deleted?<input key={`company-${company_index}-edi-${edi_index}`} type="hidden" name={`companies[${company.id}][edis][${edi_index}][deleted_id]`} value={edi.id}/>:<li key={`company-${company_index}-edi-${edi_index}`}>
                                 <div className="row">
                                     <div className="col-3">
                                         <div className="alert d-flex justify-content-between p-2">
@@ -209,7 +209,7 @@ class Organisation extends Component
                                                 })
                                             }} value={this.cast(edi, 'departure.id', -1)>0?edi.departure:null} param="s" placeholder={trans("Ajouter la poste d'origine")} endpoint={`/edis`} line={item=>`${item.edi_address} (${item.network})`} selection={item=><span>
                                                 <strong>{item.edi_address}</strong> ({item.network} - L160)
-                                                <input type="hidden" name={`companies[${company.id}][edis][${edi.id}][from_id]`} value={item.id}/>
+                                                <input type="hidden" name={`companies[${company.id}][edis][${edi_index}][from_id]`} value={item.id}/>
                                             </span>} buttonClass="p-0"/>
                                         </div>
                                     </div>
@@ -225,7 +225,7 @@ class Organisation extends Component
                                                 })
                                             }} readOnly={this.props.readOnly} value={this.cast(edi, 'airline.id', 0)>0?edi.airline:null} param="q" placeholder={trans("Ajouter la compagnie aérienne")} endpoint={`/airlines?with[]=edi_code`} line={item=>`${item.edi_code}`} selection={item=><span>
                                                 <strong>{item.edi_code}</strong>
-                                                <input type="hidden" name={`companies[${company.id}][edis][${edi.id}][to_id]`} value={item.id}/>
+                                                <input type="hidden" name={`companies[${company.id}][edis][${edi_index}][to_id]`} value={item.id}/>
                                             </span> } buttonClass="p-0"/>:<Autocomplete onChange={item=>{
                                             this.setState(state=>{
                                                 state.customer.companies[company_index].edis[edi_index].transporter = item
@@ -235,19 +235,19 @@ class Organisation extends Component
                                             })
                                         }} readOnly={this.props.readOnly} value={this.cast(edi, 'transporter.id', 0)>0?edi.transporter:null} param="q" placeholder={trans("Ajouter la compagnie")} endpoint={`/transporters?with[]=edi_code`} line={item=>`${item.name}`} selection={item=><span>
                                             <strong>{item.name}</strong>
-                                            <input type="hidden" name={`companies[${company.id}][edis][${edi.id}][to_id]`} value={item.id}/>
+                                            <input type="hidden" name={`companies[${company.id}][edis][${edi_index}][to_id]`} value={item.id}/>
                                         </span> } buttonClass="p-0"/>}
                                         </div>
                                     </div>
                                     {this.props.pricing?<React.Fragment>
                                         <span className="edi-trait mt-3"></span>
                                         <div className="col-3">
-                                            <select defaultValue={this.cast(edi, 'nsetup.currency.id')} className="form-control" name={`companies[${company.id}][edis][${edi.id}][nsetup][currency][id]`}>
+                                            <select defaultValue={this.cast(edi, 'nsetup.currency.id')} className="form-control" name={`companies[${company.id}][edis][${edi_index}][nsetup][currency][id]`}>
                                                 {this.props.data.currencies.map(currency=><option key={`currency-${currency.id}`} value={currency.id}>{currency.iso_code}</option>)}
                                             </select>
                                         </div>
                                     </React.Fragment>:null}
-                                    <input type="hidden" name={`companies[${company.id}][edis][${edi.id}][id]`} value={edi.id}/>
+                                    <input type="hidden" name={`companies[${company.id}][edis][${edi_index}][id]`} value={edi.id}/>
                                     {(!this.props.readOnly && company.edis.filter(item=>!item.deleted).length>1)?<button className="btn" onClick={()=>{
                                         this.setState(state=>{
                                             state.customer.companies[company_index].edis[edi_index].deleted = true
@@ -260,7 +260,7 @@ class Organisation extends Component
                                 <div className="row">
                                     {this.props.pricing?null:<div className="col-4">
                                         <ul className="list-unstyled ramification-agent">
-                                            {edi.agents.map((agent, agent_index)=>agent.deleted?<input key={`company-${company.id}-edi-${edi.id}-agent-${agent.id}`} type="hidden" name={`companies[${company.id}][edis][${edi.id}][agents][${agent.id}][deleted_id]`} value={agent.id}/>:<li key={`company-${company.id}-edi-${edi.id}-agent-${agent.id}`} className="pb-2">
+                                            {edi.agents.map((agent, agent_index)=>agent.deleted?<input key={`company-${company_index}-edi-${edi_index}-agent-${agent_index}`} type="hidden" name={`companies[${company.id}][edis][${edi_index}][agents][${agent_index}][deleted_id]`} value={agent.id}/>:<li key={`company-${company_index}-edi-${edi_index}-agent-${agent_index}`} className="pb-2">
                                                 <div className="alert d-flex justify-content-between mb-0 p-2">
                                                     {(company.type=='air' || company.type=='water')?<Autocomplete onChange={item=>{
                                                 this.setState(state=>{
@@ -275,7 +275,7 @@ class Organisation extends Component
                                                         <span className="text-body">
                                                             {item.profile.gender_label} {item.name}
                                                         </span>
-                                                        <input type="hidden" name={`companies[${company.id}][edis][${edi.id}][agents][${agent.id}][id]`} value={item.id}/>
+                                                        <input type="hidden" name={`companies[${company.id}][edis][${edi_index}][agents][${agent_index}][id]`} value={item.id}/>
                                                     </div>} buttonClass="p-0"/>:<Autocomplete onChange={item=>{
                                             this.setState(state=>{
                                                 state.customer.companies[company_index].edis[edi_index].agents[agent_index] = item
@@ -289,7 +289,7 @@ class Organisation extends Component
                                                     <span className="text-body">
                                                         {item.profile.gender_label} {item.name}
                                                     </span>
-                                                    <input type="hidden" name={`companies[${company.id}][edis][${edi.id}][agents][${agent.id}][id]`} value={item.id}/>
+                                                    <input type="hidden" name={`companies[${company.id}][edis][${edi_index}][agents][${agent_index}][id]`} value={item.id}/>
                                                 </div>} buttonClass="p-0"/>}
                                                 </div>
                                                 {(!this.props.readOnly &&  edi.agents.filter(item=>!item.deleted).length>1)?<button className="btn position-absolute" type="button" onClick={()=>{
@@ -308,7 +308,7 @@ class Organisation extends Component
                                     </div>}
                                     <div className={this.props.pricing?"col-12":"col-8"}>
                                         <ul className="list-unstyled ramification-route">
-                                            {edi.routes.map((route, route_index)=>route.deleted?<input key={`company-${company.id}-edi-${edi.id}-route-${route.id}`} type="hidden" name={`companies[${company.id}][edis][${edi.id}][routes][${route.id}][deleted_id]`} value={route.id}/>:<li key={`company-${company.id}-edi-${edi.id}-route-${route.id}`}>
+                                            {edi.routes.map((route, route_index)=>route.deleted?<input key={`company-${company_index}-edi-${edi_index}-route-${route_index}`} type="hidden" name={`companies[${company.id}][edis][${edi_index}][routes][${route_index}][deleted_id]`} value={route.id}/>:<li key={`company-${company_index}-edi-${edi_index}-route-${route_index}`}>
                                                 <div className="row">
                                                     <div className="col-4">
                                                         <div className="alert d-flex justify-content-between p-2">
@@ -320,7 +320,7 @@ class Organisation extends Component
                                                     return state
                                                 })
                                             }} readOnly={this.props.readOnly} value={route.departure.id>0?route.departure:null} placeholder={trans('Ajouter un aéroport de départ')} line={item=><span><strong>{item.iata}</strong> - {item.name} - {this.cast(item, 'country.nom')}</span>} param="q" endpoint={`/airports`} selection={item=><span><strong>{item.iata}</strong> - {item.name} - {this.cast(item, 'country.nom')}
-                                                            <input type="hidden" name={`companies[${company.id}][edis][${edi.id}][routes][${route.id}][from_id]`} value={item.id}/>
+                                                            <input type="hidden" name={`companies[${company.id}][edis][${edi_index}][routes][${route_index}][from_id]`} value={item.id}/>
                                                             </span>} buttonClass="p-0"/>:<Autocomplete onChange={item=>{
                                                     this.setState(state=>{
                                                         state.customer.companies[company_index].edis[edi_index].routes[route_index].departure = item
@@ -329,7 +329,7 @@ class Organisation extends Component
                                                         return state
                                                     })
                                                 }} readOnly={this.props.readOnly} value={this.cast(route, 'departure.id', -1)>0?route.departure:null} placeholder={trans('Ajouter une station de départ')} line={item=><strong>{item.iata}</strong>} param="q" endpoint={`/road_stations`} selection={item=><span><strong>{item.iata}</strong>
-                                                        <input type="hidden" name={`companies[${company.id}][edis][${edi.id}][routes][${route.id}][from_id]`} value={item.id}/>
+                                                        <input type="hidden" name={`companies[${company.id}][edis][${edi_index}][routes][${route_index}][from_id]`} value={item.id}/>
                                                         </span>} buttonClass="p-0"/>}
                                                         </div>
                                                     </div>
@@ -344,7 +344,7 @@ class Organisation extends Component
                                                     return state
                                                 })
                                             }} readOnly={this.props.readOnly} value={route.arrival.id>0?route.arrival:null} placeholder={trans("Ajouter un aéroport d'arrivée")} line={item=><span><strong>{item.iata}</strong> - {item.name} - {this.cast(item, 'country.nom')}</span>} param="q" endpoint={`/airports`} selection={item=><span><strong>{item.iata}</strong> - {item.name} - {this.cast(item, 'country.nom')}
-                                                            <input type="hidden" name={`companies[${company.id}][edis][${edi.id}][routes][${route.id}][to_id]`} value={item.id}/>
+                                                            <input type="hidden" name={`companies[${company.id}][edis][${edi_index}][routes][${route_index}][to_id]`} value={item.id}/>
                                                             </span>} buttonClass="p-0"/>:<Autocomplete onChange={item=>{
                                                 this.setState(state=>{
                                                     state.customer.companies[company_index].edis[edi_index].routes[route_index].arrival = item
@@ -353,7 +353,7 @@ class Organisation extends Component
                                                     return state
                                                 })
                                             }} readOnly={this.props.readOnly} value={this.cast(route, 'arrival.id', -1)>0?route.arrival:null} placeholder={trans("Ajouter une station d'arrivée")} line={item=><strong>{item.precon}</strong>} param="q" endpoint={`/post_offices`} selection={item=><span><strong>{item.precon}</strong>
-                                                        <input type="hidden" name={`companies[${company.id}][edis][${edi.id}][routes][${route.id}][to_id]`} value={item.id}/>
+                                                        <input type="hidden" name={`companies[${company.id}][edis][${edi_index}][routes][${route_index}][to_id]`} value={item.id}/>
                                                         </span>} buttonClass="p-0"/>}
                                                         </div>
                                                     </div>
@@ -362,7 +362,7 @@ class Organisation extends Component
                                                         <div className="col-md-2">
                                                             <div className="alert d-flex justify-content-between p-2">
                                                                 <label className="m-0 text-uppercase">{trans('TVA')} : </label>
-                                                                <input className="bg-transparent form-control h-auto p-0 w-50 text-center text-white" type="number" name={`companies[${company.id}][edis][${edi.id}][routes][${route.id}][nsetup][vat]`} value={this.cast(route, 'nsetup.vat')} onChange={e=>{
+                                                                <input className="bg-transparent form-control h-auto p-0 w-50 text-center text-white" type="number" name={`companies[${company.id}][edis][${edi_index}][routes][${route_index}][nsetup][vat]`} value={this.cast(route, 'nsetup.vat')} onChange={e=>{
                                                                     const value = e.target.value
                                                                     this.setState(state=>{
                                                                         state.customer.companies[company_index].edis[edi_index].routes[route_index].nsetup.vat = value
@@ -373,7 +373,7 @@ class Organisation extends Component
                                                             </div>
                                                         </div>
                                                     </React.Fragment>:null}
-                                                    <input type="hidden" name={`companies[${company.id}][edis][${edi.id}][routes][${route.id}][id]`} value={route.id}/>
+                                                    <input type="hidden" name={`companies[${company.id}][edis][${edi_index}][routes][${route_index}][id]`} value={route.id}/>
                                                     {(!this.props.readOnly && edi.routes.filter(item=>!item.deleted).length>1)?<button className="btn position-absolute" type="button" onClick={()=>{
                                                         this.setState(state=>{
                                                             state.customer.companies[company_index].edis[edi_index].routes[route_index].deleted = true
