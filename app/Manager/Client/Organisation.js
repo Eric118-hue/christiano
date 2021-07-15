@@ -108,7 +108,7 @@ class Organisation extends Component
         return errors
     }
 
-	companyHeader(company, company_index) {
+	companyHeader(company) {
 		if(company.type=='air') {
 			return <Autocomplete onChange={item=>{
 		                this.setState(state=>{
@@ -170,7 +170,7 @@ class Organisation extends Component
                         <div className="row">
                             <div className="col-8">
                                 <div className="alert font-24 d-flex justify-content-between">
-									{this.companyHeader(company, company_index)}
+									{this.companyHeader(company)}
                                 </div>
                             </div>
                             {this.props.pricing?<React.Fragment>
