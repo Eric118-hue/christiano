@@ -116,10 +116,15 @@ class Water extends Air
                 <input type="hidden" name={`companies[${company.id}][customer_id]`} value={this.models('props.data.row.id')}/>
                 <input type="hidden" name={`companies[${company.id}][company_id]`} value={this.cast(company, 'company_id')}/>
                 <input type="hidden" name={`companies[${company.id}][company_type]`} value="water"/>
-                <div className="form-group form-inline">
-                  <label className="control-label mr-3">{trans('Préfixe compagnie')}</label>
-                    <input type="number" className="form-control" name={`companies[${company.id}][nsetup][lta][prefix]`} defaultValue={this.cast(company, `nsetup.lta.prefix`)}/>
-                </div>
+				<div className="d-flex justify-content-between">
+	                <div className="form-group form-inline">
+	                  <label className="control-label mr-3">{trans('Préfixe compagnie')}</label>
+	                    <input type="number" className="form-control" name={`companies[${company.id}][nsetup][lta][prefix]`} defaultValue={this.cast(company, `nsetup.lta.prefix`)}/>
+	                </div>
+					{this.props.data.row.type=='mix'?<div>
+		               <button type="button" onClick={()=>this.remove(company)} className="btn btn-danger text-light"><i className="fa fa-times-circle"></i> {trans("Supprimer la compagnie aérienne")}</button>
+		            </div>:null}
+				</div>
                 <MultiForm data={company} namespace={`companies[${company.id}]`} remove={this.removeContact} optional={true}/>
                 <div className="card">
                   <div className="card-header">

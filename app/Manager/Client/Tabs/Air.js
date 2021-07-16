@@ -145,6 +145,35 @@ class Air extends Component
     this.handleNameChange = this.handleNameChange.bind(this)
     this.offClick = this.offClick.bind(this)
     this.validate = this.validate.bind(this)
+	this.remove = this.remove.bind(this)
+  }
+
+  remove(company) {
+	swal({
+        title: trans('Confirmez-vous la suppression de cette compagnie?'),
+        text: trans('Cet compagnie sera supprimée définitivement'),
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: trans('Oui je confirme')
+    }).then((result) => {
+        if (result.value) {
+            if(company.id>0) {
+                $.ajax({
+                    url : trans('/customer_company'),
+                    type : 'delete',
+                    data : {
+                        id : company.id
+                    },
+                    success : ()=>{
+						this.setState(state=>{
+							state.companies = state.companies.filter(it=>it.id!=company.id)
+							return state
+						})
+					}
+                })
+            }
+        }
+    })
   }
 
   offClick() {
@@ -350,10 +379,15 @@ class Air extends Component
                 <input type="hidden" name={`companies[${company.id}][customer_id]`} value={this.models('props.data.row.id')}/>
                 <input type="hidden" name={`companies[${company.id}][company_id]`} value={this.cast(company, 'company_id')}/>
                 <input type="hidden" name={`companies[${company.id}][company_type]`} value="air"/>
-                <div className="form-group form-inline">
-                  <label className="control-label mr-3">{trans('Préfixe compagnie')}</label>
-                    <input type="number" className="form-control" name={`companies[${company.id}][nsetup][lta][prefix]`} defaultValue={this.cast(company, `nsetup.lta.prefix`)}/>
-                </div>
+                <div className="d-flex justify-content-between">
+	                <div className="form-group form-inline">
+	                  <label className="control-label mr-3">{trans('Préfixe compagnie')}</label>
+	                    <input type="number" className="form-control" name={`companies[${company.id}][nsetup][lta][prefix]`} defaultValue={this.cast(company, `nsetup.lta.prefix`)}/>
+	                </div>
+	                {this.props.data.row.facturable_type.endsWith('Airline')?null:<div>
+	                	<button type="button" onClick={()=>this.remove(company)} className="btn btn-danger text-light"><i className="fa fa-times-circle"></i> {trans("Supprimer la compagnie aérienne")}</button>
+	                </div>}
+	            </div>
                 <MultiForm data={company} namespace={`companies[${company.id}]`} remove={this.removeContact} optional={true}/>
                 <div className="card">
                   <div className="card-header">

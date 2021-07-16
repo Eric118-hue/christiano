@@ -62,7 +62,7 @@ class List extends NavigableModel
     item(customer, key) {
         let badge_color = 'azur'
         switch(customer.type) {
-            case 'airline':
+            case 'air':
                 badge_color = 'rose'
                 break;
             case 'gsa':
@@ -72,7 +72,7 @@ class List extends NavigableModel
                 badge_color = 'turquoise'
                 break;
             case 'mix':
-                badge_color = 'rose'
+                badge_color = 'violet'
                 break;
 			default:
 			case 'water':
