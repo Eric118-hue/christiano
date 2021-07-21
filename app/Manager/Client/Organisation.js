@@ -216,7 +216,7 @@ class Organisation extends Component
                                     <span className="edi-trait mt-3"></span>
                                     <div className="col-3">
                                         <div className="alert d-flex justify-content-between p-2">
-                                            {(company.type=='air' || company.type=='water')?<Autocomplete onChange={item=>{
+                                            {company.type=='air'?<Autocomplete onChange={item=>{
                                                 this.setState(state=>{
                                                     state.customer.companies[company_index].edis[edi_index].airline = item
                                                     if(this.refs.pricing)
@@ -226,7 +226,7 @@ class Organisation extends Component
                                             }} readOnly={this.props.readOnly} value={this.cast(edi, 'airline.id', 0)>0?edi.airline:null} param="q" placeholder={trans("Ajouter la compagnie aérienne")} endpoint={`/airlines?with[]=edi_code`} line={item=>`${item.edi_code}`} selection={item=><span>
                                                 <strong>{item.edi_code}</strong>
                                                 <input type="hidden" name={`companies[${company.id}][edis][${edi_index}][to_id]`} value={item.id}/>
-                                            </span> } buttonClass="p-0"/>:<Autocomplete onChange={item=>{
+                                            </span> } buttonClass="p-0"/>:company.type=='land'?<Autocomplete onChange={item=>{
                                             this.setState(state=>{
                                                 state.customer.companies[company_index].edis[edi_index].transporter = item
                                                 if(this.refs.pricing)
@@ -236,7 +236,17 @@ class Organisation extends Component
                                         }} readOnly={this.props.readOnly} value={this.cast(edi, 'transporter.id', 0)>0?edi.transporter:null} param="q" placeholder={trans("Ajouter la compagnie")} endpoint={`/transporters?with[]=edi_code`} line={item=>`${item.name}`} selection={item=><span>
                                             <strong>{item.name}</strong>
                                             <input type="hidden" name={`companies[${company.id}][edis][${edi_index}][to_id]`} value={item.id}/>
-                                        </span> } buttonClass="p-0"/>}
+                                        </span> } buttonClass="p-0"/>:<Autocomplete onChange={item=>{
+                                                this.setState(state=>{
+                                                    state.customer.companies[company_index].edis[edi_index].shippingco = item
+                                                    if(this.refs.pricing)
+                                                        this.refs.pricing.updateCustomer(state.customer)
+                                                    return state
+                                                })
+                                            }} readOnly={this.props.readOnly} value={this.cast(edi, 'shippingco.id', 0)>0?edi.shippingco:null} param="q" placeholder={trans("Ajouter la compagnie maritime")} endpoint={`/shippingcos?with[]=edi_code`} line={item=>`${item.edi_code}`} selection={item=><span>
+                                                <strong>{item.edi_code}</strong>
+                                                <input type="hidden" name={`companies[${company.id}][edis][${edi_index}][to_id]`} value={item.id}/>
+                                            </span> } buttonClass="p-0"/>}
                                         </div>
                                     </div>
                                     {this.props.pricing?<React.Fragment>
