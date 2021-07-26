@@ -23,7 +23,7 @@ class Detail extends Component
     }
     return <React.Fragment>
       <PopupHeader>
-        <h6>{trans('AWB')} {this.models('props.data.data.customer.nsetup.lta.prefix')} {this.models('props.data.data.code', '').substr(0,4)} {this.models('props.data.data.code', '').substr(4,4)}</h6>
+        <h6>{trans('AWB')} {this.models('props.data.data.customer_company.nsetup.lta.prefix')} {this.models('props.data.data.code', '').substr(0,4)} {this.models('props.data.data.code', '').substr(4,4)}</h6>
       </PopupHeader>
       <PopupBody>
         <div className="font-weight-bold justify-content-around row">
@@ -31,7 +31,7 @@ class Detail extends Component
             <div className="border-left border-right h-100 px-2">{this.models('props.data.data.cardit.departure.airport.iata')}</div>
             <div className="px-2">{this.models('props.data.data.customer.facturable.name')}</div>
           </div>
-			    <div>{trans('AWB')} : {this.models('props.data.data.customer.nsetup.lta.prefix')} {this.models('props.data.data.code', '').substr(0,4)} {this.models('props.data.data.code', '').substr(4,4)}</div>
+			    <div>{trans('AWB')} : {this.models('props.data.data.customer_company.nsetup.lta.prefix')} {this.models('props.data.data.code', '').substr(0,4)} {this.models('props.data.data.code', '').substr(4,4)}</div>
 			    <div>{trans('DOSSIER Nº')}</div>
 		    </div>
         <table className="table table-bordered bg-white">
