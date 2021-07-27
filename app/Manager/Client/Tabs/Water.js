@@ -23,10 +23,24 @@ class Water extends Air
             </div>
             <div className="tab-content pt-0" id="v-pills-tabContent">
 				{this.props.data.row.type=='mix'?<div className="tab-pane fade" id="v-pills-newwater" role="tabpanel" aria-labelledby="v-pills-newwater-tab">
-                <div className="form-group form-inline position-relative">
-                    <label className="control-label col-md-2">{trans('Nom')}</label>
-                    <input type="text" name="companies[newwater][company][name]" autoComplete="bistrict" className={`form-control`}/>
-                </div>
+                <div className="row border-bottom mb-3">
+					<div className="form-group col-md-6 form-inline">
+	                    <label className="control-label col-md-4">{trans('Nom')}</label>
+	                    <input type="text" name="companies[newwater][company][name]" autoComplete="bistrict" className={`form-control`}/>
+	                </div>
+					<div className="form-group col-md-6 form-inline">
+						<label className="control-label col-md-4">{trans('Code IATA')}</label>
+						<input type="text" name="companies[newwater][company][iata_code]" autoComplete="bistrict" className={`form-control`}/>
+					</div>
+					<div className="form-group col-md-6 form-inline">
+						<label className="control-label col-md-4">{trans('Code ICAO')}</label>
+						<input type="text" name="companies[newwater][company][iata_code]" autoComplete="bistrict" className={`form-control`}/>
+					</div>
+					<div className="form-group col-md-6 form-inline">
+						<label className="control-label col-md-4">{trans('Code EDI')}</label>
+						<input type="text" name="companies[newwater][company][edi_code]" autoComplete="bistrict" className={`form-control`}/>
+					</div>
+				</div>
                 <div className="form-group form-inline">
                   <label className="control-label col-md-2">{trans('Préfixe compagnie')}</label>
                   <input type="number" className="form-control" name={`companies[newwater][nsetup][lta][prefix]`}/>

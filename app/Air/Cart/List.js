@@ -59,7 +59,7 @@ class CartList extends List
                                 </div>
                                 <div className="col-md-6">
                                     <div className="alert bg-primary h-100 text-center text-white mb-1">
-                                        <span className="text-large">{numeral(this.total_ttc).format('0.00')}</span> <small className="d-block">{trans('Facturation')}</small>
+                                        <span className="text-large">{numeral(this.state.total_ttc).format('0.00')}</span> <small className="d-block">{trans('Facturation')}</small>
                                     </div>
                                 </div>
                             </div>

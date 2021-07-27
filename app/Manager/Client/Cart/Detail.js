@@ -264,7 +264,6 @@ class Detail extends Component
                 data : {
                     json : true,
                     cart_id : this.props.data.id,
-                    airline_id : this.models('props.data.airline.id', this.models('props.data.transporter.id')),
                     customer_id : this.props.data.customer_id
                 },
                 success : response => {

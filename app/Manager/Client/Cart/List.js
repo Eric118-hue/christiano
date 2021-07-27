@@ -14,10 +14,27 @@ export class List extends BaseCart
         this.nocommission = false
         this.nopaginate = true
         this.state.list = true
+		this.state.total_ttc = 0
+		this.state.total_commissions = 0
 		this.state.tab = this.models("props.companies.0.id")
 		this.state.companies = this.models("props.companies", [])
         this.detail = this.detail.bind(this)
+		this.totalize = this.totalize.bind(this)
     }
+
+	totalize() {
+		this.setState(state=>{
+			state.total_ttc = 0
+			state.total_commissions = 0
+			state.companies.map(company=>{
+				state.data.filter(it=>(it.airline && it.airline.id==company.company_id && company.ntype=='air') || (it.transporter && it.transporter.id==company.company_id && company.ntype=='land') || (it.shippingco && it.shippingco.id==company.company_id && company.ntype=='water')).map((item, key)=>{
+					state.total_ttc += parseFloat(item.total_ttc)
+					state.total_commissions += parseFloat(item.total_commissions)
+				})
+			})
+			return state
+		})
+	}
 
     detail(event, cart) {
         event.preventDefault()
@@ -28,6 +45,11 @@ export class List extends BaseCart
         if(this.refs.detail_view)
             this.refs.detail_view.loadCardits()
     }
+
+	componentDidMount() {
+		super.componentDidMount()
+		this.totalize()
+	}
 
     searchEngine() {
         return <React.Fragment>
@@ -77,12 +99,12 @@ export class List extends BaseCart
                                 </div>
                                 <div className="col-md-4">
                                     <div className="alert bg-primary h-100 text-center text-white mb-1">
-                                        <span className="text-large">{numeral(this.total_ttc).format('0.00')}</span> <small className="d-block">{trans('Facturation')}</small>
+                                        <span className="text-large">{numeral(this.state.total_ttc).format('0.00')}</span> <small className="d-block">{trans('Facturation')}</small>
                                     </div>
                                 </div>
                                 <div className="col-md-4">
                                     <div className="alert bg-primary h-100 text-center text-white mb-1">
-                                        <span className="text-large">{numeral(this.total_commissions).format('0.00')}</span> <small className="d-block">{trans('Commissions')}</small>
+                                        <span className="text-large">{numeral(this.state.total_commissions).format('0.00')}</span> <small className="d-block">{trans('Commissions')}</small>
                                     </div>
                                 </div>
                             </div>
@@ -108,8 +130,6 @@ export class List extends BaseCart
                 <a className={`btn btn-outline-primary ${this.state.page===this.props.data.last_page?'disabled':''}`} href="#" onClick={this.toEnd}><i className="fa fa-angle-double-right"></i></a>
             </li>
         </ul>
-		this.total_ttc = 0
-		this.total_commissions = 0
 		let wtotal = 0
         let total_ht = 0
         let total_ttc = 0
@@ -151,8 +171,6 @@ export class List extends BaseCart
 					            total_ht += parseFloat(item.total_ht)
 					            total_ttc += parseFloat(item.total_ttc)
 					            total_commissions += parseFloat(item.total_commissions)
-								this.total_ttc += parseFloat(item.total_ttc)
-								this.total_commissions += parseFloat(item.total_commissions)
 								return <tr key={`row=-${key}`}>
 			                        <td>{moment.utc(item.created_at).format('MMMM YYYY')}</td>
 			                        <td>{item.code}</td>
