@@ -30,15 +30,15 @@ class Water extends Air
 	                </div>
 					<div className="form-group col-md-6 form-inline">
 						<label className="control-label col-md-4">{trans('Code IATA')}</label>
-						<input type="text" name="companies[newwater][company][iata_code]" autoComplete="bistrict" className={`form-control`}/>
+						<input type="text" name="companies[newwater][company][iata_code]" maxlength="2" autoComplete="bistrict" className={`form-control`}/>
 					</div>
 					<div className="form-group col-md-6 form-inline">
 						<label className="control-label col-md-4">{trans('Code ICAO')}</label>
-						<input type="text" name="companies[newwater][company][iata_code]" autoComplete="bistrict" className={`form-control`}/>
+						<input type="text" name="companies[newwater][company][icao_code]" maxlength="3" autoComplete="bistrict" className={`form-control`}/>
 					</div>
 					<div className="form-group col-md-6 form-inline">
 						<label className="control-label col-md-4">{trans('Code EDI')}</label>
-						<input type="text" name="companies[newwater][company][edi_code]" autoComplete="bistrict" className={`form-control`}/>
+						<input type="text" name="companies[newwater][company][edi_code]" maxlength="6" autoComplete="bistrict" className={`form-control`}/>
 					</div>
 				</div>
                 <div className="form-group form-inline">
@@ -130,6 +130,20 @@ class Water extends Air
                 <input type="hidden" name={`companies[${company.id}][customer_id]`} value={this.models('props.data.row.id')}/>
                 <input type="hidden" name={`companies[${company.id}][company_id]`} value={this.cast(company, 'company_id')}/>
                 <input type="hidden" name={`companies[${company.id}][company_type]`} value="water"/>
+				<div className="row border-bottom mb-3">
+					<div className="form-group col-md-4 form-inline">
+						<label className="control-label col-md-4">{trans('Code IATA')}</label>
+						<input type="text" name={`companies[${company.id}][company][iata_code]`} maxlength="2" autoComplete="bistrict" className={`form-control`} defaultValue={this.cast(company, `company.iata_code`)}/>
+					</div>
+					<div className="form-group col-md-4 form-inline">
+						<label className="control-label col-md-4">{trans('Code ICAO')}</label>
+						<input type="text" name={`companies[${company.id}][company][icao_code]`} maxlength="3" autoComplete="bistrict" className={`form-control`} defaultValue={this.cast(company, `company.icao_code`)}/>
+					</div>
+					<div className="form-group col-md-4 form-inline">
+						<label className="control-label col-md-4">{trans('Code EDI')}</label>
+						<input type="text" name={`companies[${company.id}][company][edi_code]`} maxlength="6" autoComplete="bistrict" className={`form-control`} defaultValue={this.cast(company, `company.edi_code`)}/>
+					</div>
+				</div>
 				<div className="d-flex justify-content-between">
 	                <div className="form-group form-inline">
 	                  <label className="control-label mr-3">{trans('Préfixe compagnie')}</label>

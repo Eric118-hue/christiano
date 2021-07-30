@@ -20,7 +20,7 @@ class Form extends Component
             errors : [],
             errorMessages : [],
             oncevalidate : false,
-            type : this.models('props.data.row.type', 'airline'),
+            type : this.models('props.data.row.type', 'air'),
             name_search : this.models('props.data.row.facturable.name'),
             airlines : [],
             select_airline : false,
@@ -144,7 +144,7 @@ class Form extends Component
                 notabshown = false
             }
             if(this.refs.client_form) {
-                if(this.state.type=='airline' && !this.models('state.facturable.id', false)) {
+                if(this.state.type=='air' && !this.models('state.facturable.id', false)) {
                     errors.push('no_airline_match')
                     errorMessages.push(trans("La compagnie aérienne n'est pas valide."))
                     if(!notabshown) {
@@ -278,8 +278,8 @@ class Form extends Component
                                 <div className="row">
                                     <div className="col-md-1-10">
                                         <div className="custom-control custom-radio">
-                                            <input type="radio" id="type-airline" name="type" className="custom-control-input" onChange={event=>this.handleTypeChange(event, 'airline')} checked={this.state.type=='airline'} value="airline"/>
-                                            <label className="custom-control-label" htmlFor="type-airline">{trans('Compagnie aérienne')}</label>
+                                            <input type="radio" id="type-air" name="type" className="custom-control-input" onChange={event=>this.handleTypeChange(event, 'air')} checked={this.state.type=='air'} value="air"/>
+                                            <label className="custom-control-label" htmlFor="type-air">{trans('Compagnie aérienne')}</label>
                                         </div>
                                     </div>
                                     <div className="col-md-1-10">
@@ -329,7 +329,7 @@ class Form extends Component
                                 </div>
                                     <div className="row">
 	                                    <div className="col-md-6">
-	                                        {this.state.type=='airline'?<div className="form-group position-relative mt-2">
+	                                        {this.state.type=='air'?<div className="form-group position-relative mt-2">
 	                                            <label className="control-label">{trans('Nom')}</label>
 	                                            <input type="text" value={this.state.name_search} onChange={this.handleSearch} onClick={this.handleSearch} name="name" autoComplete="bistrict" required className={`form-control ${this.state.errors.indexOf('no_airline_match')>=0?'error':''}`}/>
 	                                            <div className={`dropdown-menu overflow-auto w-100 ${this.state.select_airline?'show':''}`} style={{maxHeight:200}}>

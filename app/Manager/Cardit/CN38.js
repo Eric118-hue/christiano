@@ -54,7 +54,7 @@ class CN38 extends Component
                         <strong>{this.models('state.origin.office')}</strong>
                       </td>
                       <td style={{border:'none'}}>{trans('Date')}<br/>
-                        <strong>{this.models('state.date')}</strong>
+                        <strong>{this.models('state.date', '').toUpperCase()}</strong>
                       </td>
                       <td style={{border:'none'}}>{trans('Serial No.')}<br/>
                         <strong>{this.models('props.data.data.nsetup.document_number')}</strong>
@@ -85,7 +85,7 @@ class CN38 extends Component
                         <strong>{this.models('state.flights')}</strong>
                       </td>
                       <td>{trans('Date of departure')}<br/>
-                        <strong>{this.models('state.departure.date')}</strong>
+                        <strong>{this.models('state.departure.date', '').toUpperCase()}</strong>
                       </td>
                       <td>{trans('Time')}<br/>
                         <strong>{this.models('state.departure.time')}</strong>

@@ -25,7 +25,7 @@ class CN66 extends Component
   }
 
   render() {
-    if(!this.models('state.cart.closed', false) || this.models('state.cart.pending', false)) {
+    if(!this.models('state.cart.closed', false) && this.models('state.cart.pending', false)) {
       return <div className="alert alert-warning">{trans('Calcul en cours... Veuillez patienter un instant')}</div>
     }
     return <div className="col-12">
@@ -33,7 +33,7 @@ class CN66 extends Component
       <div className="row">
         <div className="col-2">
           <ul className="nav nav-pills flex-column bg-white h-100 rounded">
-            {this.models('state.cart.routes', []).map(route=><li className="nav-item" key={`route-${route.departure.id}-${route.arrival.id}`}><a className={`nav-link ${route.active?'active bg-dark':''}`} href={`/cn66?id=${this.state.cart.id}&from_id=${route.departure.id}&to_id=${route.arrival.id}`}>{route.departure.iata}-{route.arrival.iata}</a></li>)}
+            {this.models('state.cart.routes', []).unique(it=>it.departure.id+'<>'+it.arrival.id).map(route=><li className="nav-item" key={`route-${route.departure.id}-${route.arrival.id}`}><a className={`nav-link ${(route.departure.id==this.models('props.data.s.from_id') && route.arrival.id==this.models('props.data.s.to_id'))?'active bg-dark':''}`} href={`/cn66?id=${this.state.cart.id}&from_id=${route.departure.id}&to_id=${route.arrival.id}`}>{route.departure.iata}-{route.arrival.iata}</a></li>)}
           </ul>
         </div>
         <div className="col-10 py-3">
