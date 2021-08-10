@@ -23,7 +23,7 @@ class List extends NavigableModel
       </div>
       <div className="form-inline">
         <label className="control-label">{trans("AWB Stock Alert")}</label>
-        <input type="number" name="nsetup[lta][warning]" defaultValue={this.models('props.customer.nsetup.lta.warning', '')} className="form-control mx-2" required/>
+        <input type="number" name="nsetup[lta][warning]" defaultValue={this.models('props.customer.company_nsetup.lta.warning', this.models('props.customer.nsetup.lta.warning'))} className="form-control mx-2" required/>
         <button className="btn btn-orange">{trans('Enregistrer')}</button>
       </div>
       <input type="hidden" name="ry"/>
