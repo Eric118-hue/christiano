@@ -6,6 +6,7 @@ import Agent from './Agent';
 import Resdit from './Resdit';
 import Mailmanifest from './Mailmanifest';
 import RoadClient from './RoadClient';
+import Postoffice from './Postoffice';
 
 const Components = {
     Setup : Setup,
@@ -15,7 +16,8 @@ const Components = {
     Agent : Agent,
     Resdit : Resdit,
     Mailmanifest,
-	RoadClient
+	RoadClient,
+	Postoffice
 }
 
 export default Components;

@@ -69,6 +69,7 @@ class MldVersion extends Component
     <select ref={this.mld_version} className="col-md-5" name={`${prefix}[mld_versions][${this.props.pindex}][mld_version]`} defaultValue={this.models('props.data.mld_version')}>
         <option value="V1">V1</option>
         <option value="CV">CV</option>
+		<option value="AMD">AMD</option>
     </select>
     <div className="col-md-5" ref={this.airport_container}>
         <select ref={this.airport} className="form-control" name={`${prefix}[mld_versions][${this.props.pindex}][airport][id]`} onChange={this.handleAirport} value={this.models('state.airport.id')}>

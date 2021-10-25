@@ -11,7 +11,9 @@
     "build": "config/prod.js",
     "buildapp": "webpack --config config/webpack.appprod.js",
     "starthttp": "http-server dist",
-    "gettext": "vendor/Ry/Admin/gettext.js"
+    "gettext": "vendor/Ry/Admin/gettext.js",
+    "watch-documentation": "webpack --watch --config documentation/webpack.prod.js",
+    "build-documentation": "documentation/prod.js"
   },
   "private": true,
   "author": "Landr Rakotoarivelo",

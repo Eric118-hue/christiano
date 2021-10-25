@@ -2,6 +2,32 @@ import React, {Component} from 'react';
 import trans from 'ryapp/translations';
 import Modelizer from 'ryvendor/Ry/Core/Modelizer';
 
+class MailingItem extends Component
+{
+	render() {
+		const prefix = this.props.prefix ? this.props.prefix + '[nsetup]':'nsetup'
+        return <div className="row">
+            <div className="form-group col-md-1">
+                <label className="control-label">&nbsp;</label>
+                <div className="custom-control custom-switch">
+                    <input type="checkbox" className="custom-control-input" id={`active-mailing-${this.props.name}-${this.props.pkey2}-${this.props.pkey}`} value="1" defaultChecked={this.props.data.active==1} name={`${prefix}[mailings][${this.props.name}][${this.props.pkey}][active]`}/>
+                    <label className="custom-control-label" htmlFor={`active-mailing-${this.props.name}-${this.props.pkey2}-${this.props.pkey}`}></label>
+                </div>
+            </div>
+            <div className="form-group col-md-2">
+                <label className="control-label">{trans('Adresse email')}</label>
+                <input type="text" className="form-control" placeholder="user@example.com" required defaultValue={this.props.data.email} name={`${prefix}[mailings][${this.props.name}][${this.props.pkey}][email]`}/>
+            </div>
+            <div className="form-group col-md-1">
+                <label className="control-label">&nbsp;</label>
+                <div>
+                    <button className="btn btn-danger" type="button" onClick={this.props.remove}><i className="fa fa-trash"></i></button>
+                </div>
+            </div>
+        </div>
+	}
+}
+
 class RepoItem extends Component
 {
     render() {
@@ -58,6 +84,7 @@ class Repository extends Component
             mrd_repos : this.models('props.data.nsetup.repos.mrd', []),
             mld_repos : this.models('props.data.nsetup.repos.mld', []),
             fwb_repos : this.models('props.data.nsetup.repos.fwb', []),
+			fwb_mailings : this.models('props.data.nsetup.mailings.fwb', []),
             fsu_repos : this.models('props.data.nsetup.repos.fsu', []),
             precon_repos : this.models('props.data.nsetup.repos.precon', []),
             cardit_repos : this.models('props.data.nsetup.repos.cardit', []),
@@ -188,6 +215,15 @@ class Repository extends Component
                 <div className="body">
                     {this.state.fwb_repos.filter(it=>!it.deleted).map((repo, index)=><RepoItem pkey={index} pkey2={this.props.data.id} prefix={this.props.prefix} key={`repo-${index}`} name="fwb" data={repo} remove={()=>this.removeLine(index, 'fwb_repos')}/>)}
                     <button type="button" className="btn btn-primary mb-4" onClick={()=>this.addLine('fwb_repos')}><i className="fa fa-plus"></i> {trans('Ajouter un dépôt')}</button>
+                </div>
+            </div>
+			 <div className="card">
+                <div className="card-header">
+                    {trans('Envoi mail FWB')}
+                </div>
+                <div className="body">
+                    {this.state.fwb_mailings.filter(it=>!it.deleted).map((mailing, index)=><MailingItem pkey={index} pkey2={this.props.data.id} prefix={this.props.prefix} key={`mailing-${index}`} name="fwb" data={mailing} remove={()=>this.removeLine(index, 'fwb_mailings')}/>)}
+                    <button type="button" className="btn btn-primary mb-4" onClick={()=>this.addLine('fwb_mailings')}><i className="fa fa-plus"></i> {trans('Ajouter un destinataire')}</button>
                 </div>
             </div>
             <div className="card">

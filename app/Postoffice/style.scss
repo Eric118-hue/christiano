@@ -1,0 +1,69 @@
+@import "../variable.scss";
+
+.vol-container .card-bureau table.table-liste {
+	tr.bg1 td {
+		background: #fff8e8 !important;
+	}
+	
+	tr.bg2 td {
+		background: #edefee !important;
+	}
+}
+
+.table-postoffice {
+	tbody {
+		tr:nth-child(odd) {
+			background: #fff8e8 !important;
+		}
+		
+		tr:nth-child(even) {
+			background: #edefee !important;
+		}
+	}
+	
+	.custom-radio .custom-control-label::before {
+		border-radius: 2px;
+	}
+	
+	.custom-radio .custom-control-input:checked~.custom-control-label::after {
+		background-image: none;
+	}
+	
+	.custom-control-input:checked~.custom-control-label::before {
+		background: $turquoise;
+		border-color: $turquoise;
+	}
+	
+}
+
+table#recipientTable.table-precon tbody tr>td {
+	border-bottom: 1px solid #dee2e6;	
+}
+
+.fancy-checkbox input[type=checkbox]+span:before {
+	margin-right: 8px;
+}
+
+.vol-container .card-bureau table.table-liste.table-precon {
+	td.preconred {
+		color: #dc3546;
+	}
+	
+	td.precon100 {
+		width: 100px;
+	}
+}
+
+.vol-container .card-bureau table.table-liste {
+	tr.bg1, tr.bg2 {
+		td .table-transparent {
+			td {
+				background: transparent !important;
+				border: 1px solid #dee2e6 !important;
+				color: #000;
+				font-size: 24px;
+			}
+		}
+	}
+}
+ 

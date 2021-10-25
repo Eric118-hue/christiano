@@ -189,7 +189,7 @@ class Organisation extends Component
                                     state.customer.companies[company_index].deleted = true
                                     return state
                                 })
-                            }} type="button">
+                            }}>
                                 <i className="fa fa-trash-alt"></i>
                             </button>:null}
                         </div>

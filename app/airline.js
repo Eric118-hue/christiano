@@ -28,6 +28,8 @@ import Fwb from './Air/Fwb';
 import Amd from './Amd';
 import CN38 from './Manager/Cardit/CN38';
 import Mailmanifest from './Manager/Mailmanifest';
+import Postoffice from './Postoffice';
+import Account from './Air/Account';
 
 __AIRLINE.Cardit.List = CarditList
 
@@ -44,8 +46,10 @@ const Components = {
 			Mailmanifest
 		},
 		Fwb,
-		Amd
+		Amd,
+		Account
 	},
+	Postoffice,
     Ry : {
         Admin : {
             User : __USER,

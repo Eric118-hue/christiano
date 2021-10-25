@@ -5,6 +5,19 @@ import $ from 'jquery';
 import numeral from 'numeral';
 import 'bootstrap-datepicker';
 
+export default function trans(input, replaces={}) {
+	let result = input
+	if(('__' in window) && (input in __)) {
+        result = __[input]
+    }
+    for(let repl in replaces) {
+        let by = replaces[repl]
+        let re = new RegExp(`:${repl}`, "g");
+        result = result.replace(re, by)
+    }
+	return result;
+};
+
 numeral.register('locale', 'fr', {
     delimiters: {
         thousands: ' ',
@@ -37,8 +50,8 @@ export const DATES = {
     "periods": ["AM", "PM"],
     "days": ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"],
     "shortDays": ["lu", "ma", "me", "je", "ve", "sa", "di"],
-    months : ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Décembre"],
-    shortMonths: ["Jan", "Fév", "Mar", "Avr", "Mai", "Jun", "Jul", "Aoû", "Sep", "Oct", "Nov", "Déc"]
+    months : ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Décembre"].map(it=>trans(it)),
+    shortMonths: ["Jan", "Fév", "Mar", "Avr", "Mai", "Jun", "Jul", "Aoû", "Sep", "Oct", "Nov", "Déc"].map(it=>trans(it))
 };
 
 const body_initial_class = $("body").attr("class");
@@ -138,19 +151,6 @@ export const siteSetup = $("#site-setup").length>0? JSON.parse($("#site-setup").
     general : {
         logo : ''
     }
-};
-
-export default function trans(input, replaces={}) {
-	let result = input
-	if(('__' in window) && (input in __)) {
-        result = __[input]
-    }
-    for(let repl in replaces) {
-        let by = replaces[repl]
-        let re = new RegExp(`:${repl}`, "g");
-        result = result.replace(re, by)
-    }
-	return result;
 };
 
 export const nophoto = (siteSetup.general&&siteSetup.general.nophoto)?`/${siteSetup.general.nophoto}`:'/medias/images/blank.png';

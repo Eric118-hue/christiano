@@ -4,6 +4,7 @@ import Modelizer from '../../../vendor/Ry/Core/Modelizer';
 import swal from 'sweetalert2';
 import $ from 'jquery';
 import './Form.scss';
+import numeral from 'numeral';
 
 class Form extends Component
 {
@@ -99,7 +100,7 @@ class Form extends Component
                     <div className="row">
                       <div className="col-5">
                         <div className="alert d-flex justify-content-between align-items-center p-2">
-                          {trans('Code compagnie aérienne')} : {this.cast(customer_company, 'company.name')} <strong className="font-24">{this.cast(customer_company, 'nsetup.lta.prefix')}</strong>
+                          {trans('Code compagnie aérienne')} : {this.cast(customer_company, 'company.name')} <strong className="font-24">{numeral(this.cast(customer_company, 'nsetup.lta.prefix')).format('000')}</strong>
                         </div>
                       </div>
                       <span className="edi-trait mt-4"></span>

@@ -3,6 +3,7 @@ import moment from 'moment';
 import {Popup, PopupHeader, PopupBody} from 'ryvendor/bs/bootstrap';
 import $ from 'jquery';
 import Status from './Status';
+import Delivery from './Delivery';
 import trans from 'ryapp/translations';
 import Ry from 'ryvendor/Ry/Core/Ry';
 import qs from 'qs';
@@ -34,6 +35,7 @@ export class FullDetail extends Component
         }
         this.assignation = this.assignation.bind(this)
         this.departure = this.departure.bind(this)
+		this.delivery = this.delivery.bind(this)
         this.addTransport = this.addTransport.bind(this)
         this.saveTransport = this.saveTransport.bind(this)
         this.removeSelectTransport = this.removeSelectTransport.bind(this)
@@ -165,10 +167,15 @@ export class FullDetail extends Component
         })
     }
 
-    departure(transport_index) {
+    departure() {
         this.setState({
-            step : 'departure',
-            transport_index : transport_index
+            step : 'departure'
+        })
+    }
+
+	delivery() {
+        this.setState({
+            step : 'delivery'
         })
     }
 
@@ -202,17 +209,28 @@ export class FullDetail extends Component
             </div>
             <div className="recipientContainer">
                 <div className="d-flex justify-content-center align-items-center stepContainer">
-                    <div className={`recipientList d-flex flex-column justify-content-between align-items-center red`}>
-                        <div className="mouse-pointable w-100">
+                    <div className={`recipientList d-flex flex-column justify-content-between align-items-center ${(this.state.step=='departure')?'red':(this.state.resdits.find(item=>{
+                         return item.event=='departure'
+                    })?'text-success':'')}`}>
+                        <div className="mouse-pointable w-100" onClick={this.departure}>
                             <i className="font-50 l2-departure"></i>
                             <span className="text-capitalize">{trans('Départ')}</span>
                         </div>
                         <i className="fa fa-circle"></i>
                     </div>
+					<div className={`recipientList d-flex flex-column justify-content-between align-items-center last ${this.state.step=='delivery'?'red':(this.state.resdits.find(item=>{
+                        return item.event == 'delivery'
+                    })?'text-success':'')}`}>
+	                    <div className="mouse-pointable w-100" onClick={this.delivery}>
+	                        <i className="font-50 l2-destination"></i>
+	                        <span className="text-capitalize">{trans('Livraison')}</span>
+	                    </div>
+	                    <i className="fa fa-circle"></i>
+	                </div>
                 </div>
             </div>
             <div className="tableBottom">
-                <Status key={`departure-${this.props.data.id}-${this.state.transport_index}`} readOnly={this.props.readOnly} data={this.state.data} transportIndex={this.state.transport_index} selectTransports={this.state.transports} addTransport={this.addTransport} consignmentEvent="departure" handleAllReceptacleTransportChange={transport=>this.handleAllReceptacleTransportChange(transport)} allTransport={this.state.allTransports[this.state.transport_index].departure} store={this.props.store} readOnly={this.props.readOnly}pkey={this.props.pkey}/>
+				{this.state.step=='departure'?<Status key={`departure-${this.props.data.id}-${this.state.transport_index}`} readOnly={this.props.readOnly} data={this.state.data} transportIndex={this.state.transport_index} selectTransports={this.state.transports} addTransport={this.addTransport} consignmentEvent="departure" handleAllReceptacleTransportChange={transport=>this.handleAllReceptacleTransportChange(transport)} allTransport={this.state.allTransports[this.state.transport_index].departure} store={this.props.store} readOnly={this.props.readOnly}pkey={this.props.pkey}/>:<Delivery readOnly={this.props.readOnly} data={this.state.data} store={this.props.store} readOnly={this.props.readOnly}/>}
             </div>
             <Popup id={`transport_popup_${this.props.pkey}`} className="modal-sm">
                 <PopupBody>
@@ -286,6 +304,7 @@ class Item extends Component
     constructor(props) {
         super(props)
         this.state = {
+			step : 'departure',
             data : null,
             open : false
         }
@@ -348,7 +367,7 @@ class Item extends Component
                     {this.models('props.data.resdits', []).find(it=>it.event=='departure')?<i className="fa-2x l2-departure ml-2 text-orange"></i>:null}
                 </td>
             </tr>
-            {(this.state.data && this.state.open)?<FullDetail theme={this.props.theme} data={this.state.data} pkey={this.state.pkey} consignmentEvents={this.state.consignment_events} deliveryConsignmentEvents={this.state.delivery_consignment_events} store={this.props.store} readOnly={this.props.readOnly}/>:null}
+            {(this.state.data && this.state.open)?<FullDetail step={this.state.step} theme={this.props.theme} data={this.state.data} pkey={this.state.pkey} consignmentEvents={this.state.consignment_events} deliveryConsignmentEvents={this.state.delivery_consignment_events} store={this.props.store} readOnly={this.props.readOnly}/>:null}
         </React.Fragment>
     }
 }

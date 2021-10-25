@@ -14,19 +14,7 @@ body.full-screen {
 	flex-flow: column;
 }
 
-$yellow : #ffdf7c;
-$aubergine: #9c5374;
-$orange: #f54336;
-$violet: #9972b5;
-$turquoise : #1fb5ac;
-$blue: #337ab7;
-$beige: #FCB322;
-$grey: #777777;
-$grass: #d5f6b4;
-$stone: #e6eaec;
-$rose: #e36881;
-$azur: #00b5ff;
-$army: #11645f;
+@import "variable.scss";
 
 /* Bootstrap overrides */
 $success: #89cc46;

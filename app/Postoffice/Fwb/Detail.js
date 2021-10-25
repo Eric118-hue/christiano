@@ -9,13 +9,17 @@ class Detail extends Component
 {
   render() {
     let total = {
-      nreceptacles : parseInt(this.models('props.data.data.cardit.nsetup.nreceptacles', 0)),
-      wreceptacles : parseFloat(this.models('props.data.data.cardit.nsetup.wreceptacles', 0.0))
+      nreceptacles : 0,
+      wreceptacles : 0.0
     }
+	this.models('props.data.data.precons', []).map(precon=>{
+		total.nreceptacles += parseInt(precon.nsetup.nreceptacles)
+		total.wreceptacles += parseFloat(precon.nsetup.wreceptacles)
+	})
     let recipients = [{
-      nreceptacles : parseInt(this.models('props.data.data.cardit.nsetup.nreceptacles', 0)),
-      wreceptacles : parseFloat(this.models('props.data.data.cardit.nsetup.wreceptacles', 0.0)),
-      weight_unit : this.models('props.data.data.cardit.nsetup.weight_unit')=='KGM' ? 'K' : 'Lb',
+      nreceptacles : total.nreceptacles,
+      wreceptacles : total.wreceptacles,
+      weight_unit : 'K',
       Cl : 'Q'
     }]
     for(let i=1; i<10; i++) {
@@ -23,15 +27,15 @@ class Detail extends Component
     }
     return <React.Fragment>
       <PopupHeader>
-        <h6>{trans('AWB')} {numeral(this.models('props.data.data.customer_company.nsetup.lta.prefix')).format("000")} {this.models('props.data.data.code', '').substr(0,4)} {this.models('props.data.data.code', '').substr(4,4)}</h6>
+        <h6>{trans('AWB')} {numeral(this.models('props.data.data.precons.0.company.prefix')).format("000")} {this.models('props.data.data.code', '').substr(0,4)} {this.models('props.data.data.code', '').substr(4,4)}</h6>
       </PopupHeader>
       <PopupBody>
         <div className="font-weight-bold justify-content-around row">
 			    <div className="row h-100">
-            <div className="border-left border-right h-100 px-2">{this.models('props.data.data.cardit.departure.airport.iata')}</div>
-            <div className="px-2">{this.models('props.data.data.customer_company.company.name')}</div>
+            <div className="border-left border-right h-100 px-2">{this.models('props.data.data.precons.0.departure.airport.iata')}</div>
+            <div className="px-2">{this.models('props.data.data.precons.0.company.name')}</div>
           </div>
-			    <div>{trans('AWB')} : {numeral(this.models('props.data.data.customer_company.nsetup.lta.prefix')).format("000")} {this.models('props.data.data.code', '').substr(0,4)} {this.models('props.data.data.code', '').substr(4,4)}</div>
+			    <div>{trans('AWB')} : {numeral(this.models('props.data.data.precons.0.company.prefix')).format("000")} {this.models('props.data.data.code', '').substr(0,4)} {this.models('props.data.data.code', '').substr(4,4)}</div>
 			    <div>{trans('DOSSIER Nº')}</div>
 		    </div>
         <table className="table table-bordered bg-white">
@@ -43,22 +47,22 @@ class Detail extends Component
                 Not negociable AIR WAYBILL Issued By
               </td>
               <td colSpan="2" rowSpan="3" style={{width:'25%'}} className="text-wrap">
-                <h3>{this.models('props.data.data.customer_company.company.name')}</h3>
-                //
+                <h3>{this.models('props.data.data.precons.0.company.name')}</h3>
+                {this.models('props.data.data.customer.facturable.adresse.raw')} {this.models('props.data.data.customer.facturable.adresse.ville.cp')} / {this.models('props.data.data.customer.facturable.adresse.ville.nom')} / {this.models('props.data.data.customer.facturable.adresse.ville.country.nom')}
               </td>
             </tr>
             <tr>
-  <td colSpan="2" className="border-bottom-0">{this.models('props.data.data.cardit.departure.organisation_name12')}</td>
+  <td colSpan="2" className="border-bottom-0">{this.models('props.data.data.precons.0.departure.organisation_name12')}</td>
               <td colSpan="4">
                 
               </td>
             </tr>
             <tr>
               <td colSpan="6" className="border-top-0 text-wrap">
-                {this.models('props.data.data.cardit.departure.adresse.raw')}<br/>
-                {this.models('props.data.data.cardit.departure.adresse.ville.nom')}<br/>
-                {this.models('props.data.data.cardit.departure.adresse.ville.cp')} {this.models('props.data.data.cardit.departure.adresse.raw2')}<br/>
-                {this.models('props.data.data.cardit.departure.adresse.ville.country.nom')}
+                {this.models('props.data.data.precons.0.departure.adresse.raw')}<br/>
+                {this.models('props.data.data.precons.0.departure.adresse.ville.nom')}<br/>
+                {this.models('props.data.data.precons.0.departure.adresse.ville.cp')} {this.models('props.data.data.precons.0.departure.adresse.raw2')}<br/>
+                {this.models('props.data.data.precons.0.departure.adresse.ville.country.nom')}
               </td>
             </tr>
             <tr className="bg-light text-center">
@@ -80,16 +84,16 @@ class Detail extends Component
             </tr>
             <tr>
               <td colSpan="2" className="border-bottom-0">
-              {this.models('props.data.data.cardit.destination.organisation_name12')}
+              {this.models('props.data.data.precons.0.destination.organisation_name12')}
               </td>
               <td colSpan="4"></td>
             </tr>
             <tr>
               <td colSpan="6" className="border-top-0 text-wrap">
-                {this.models('props.data.data.cardit.destination.adresse.raw')}<br/>
-                {this.models('props.data.data.cardit.destination.adresse.ville.nom')}<br/>
-                {this.models('props.data.data.cardit.destination.adresse.ville.cp')} {this.models('props.data.data.cardit.destination.adresse.raw2')}<br/>
-                {this.models('props.data.data.cardit.destination.adresse.ville.country.nom')}
+                {this.models('props.data.data.precons.0.destination.adresse.raw')}<br/>
+                {this.models('props.data.data.precons.0.destination.adresse.ville.nom')}<br/>
+                {this.models('props.data.data.precons.0.destination.adresse.ville.cp')} {this.models('props.data.data.precons.0.destination.adresse.raw2')}<br/>
+                {this.models('props.data.data.precons.0.destination.adresse.ville.country.nom')}
               </td>
             </tr>
             <tr className="bg-light text-center">
@@ -102,14 +106,14 @@ class Detail extends Component
             </tr>
             <tr>
               <td colSpan="6">
-                <p>{this.models('props.data.data.cardit.departure.organisation_name12')}</p>
-                <p>{this.models('props.data.data.cardit.departure.adresse.raw')}<br/>
-                  {this.models('props.data.data.cardit.departure.adresse.ville.nom')}<br/>
-                  {this.models('props.data.data.cardit.departure.adresse.ville.cp')} {this.models('props.data.data.cardit.departure.adresse.raw2')}<br/>
-                  {this.models('props.data.data.cardit.departure.adresse.ville.country.nom')}</p>
+                <p>{this.models('props.data.data.precons.0.departure.organisation_name12')}</p>
+                <p>{this.models('props.data.data.precons.0.departure.adresse.raw')}<br/>
+                  {this.models('props.data.data.precons.0.departure.adresse.ville.nom')}<br/>
+                  {this.models('props.data.data.precons.0.departure.adresse.ville.cp')} {this.models('props.data.data.precons.0.departure.adresse.raw2')}<br/>
+                  {this.models('props.data.data.precons.0.departure.adresse.ville.country.nom')}</p>
               </td>
               <td colSpan="8" rowSpan="3">
-                {this.models('props.data.data.cardit.departure.nsetup.account.info')}
+                {this.models('props.data.data.precons.0.departure.nsetup.account.info')}
               </td>
             </tr>
             <tr className="bg-light text-center">
@@ -137,7 +141,7 @@ class Detail extends Component
             </tr>
             <tr>
               <td colSpan="6">
-                {this.models('props.data.data.cardit.departure.airport.ville.nom')}
+                {this.models('props.data.data.precons.0.departure.airport.ville.nom')}
               </td>
               <td colSpan="6">
 
@@ -171,25 +175,25 @@ class Detail extends Component
             </tr>
             <tr>
               <td>
-                {this.models('props.data.data.cardit.nsetup.handover_destination_location.iata')}
+                {this.models('props.data.data.precons.0.nsetup.handover_destination_location.iata')}
               </td>
               <td>
-                {this.models('props.data.data.customer_company.company.name')}
+                {this.models('props.data.data.precons.0.company.name')}
               </td>
               <td>
-                {this.models('props.data.data.cardit.nsetup.transports', []).length>1?this.models('props.data.data.cardit.nsetup.transports.1.departure_location.iata'):''}
+                {this.models('props.data.data.precons.0.nsetup.transports', []).length>1?this.models('props.data.data.precons.0.nsetup.transports.1.departure_location.iata'):''}
               </td>
               <td>
-                {this.models('props.data.data.cardit.nsetup.transports', []).length>1?this.models('props.data.data.cardit.nsetup.transports.1.reference', '').substr(0,2):''}
+                {this.models('props.data.data.precons.0.nsetup.transports', []).length>1?this.models('props.data.data.precons.0.nsetup.transports.1.reference', '').substr(0,2):''}
               </td>
               <td>
-                {this.models('props.data.data.cardit.nsetup.transports', []).length>1?this.models('props.data.data.cardit.nsetup.transports.2.departure_location.iata'):''}
+                {this.models('props.data.data.precons.0.nsetup.transports', []).length>1?this.models('props.data.data.precons.0.nsetup.transports.2.departure_location.iata'):''}
               </td>
               <td>
-                {this.models('props.data.data.cardit.nsetup.transports', []).length>1?this.models('props.data.data.cardit.nsetup.transports.2.reference', '').substr(0,2):''}
+                {this.models('props.data.data.precons.0.nsetup.transports', []).length>1?this.models('props.data.data.precons.0.nsetup.transports.2.reference', '').substr(0,2):''}
               </td>
               <td>
-                {this.models('props.data.data.cardit.departure.currency.iso_code')}
+                {this.models('props.data.data.precons.0.departure.currency.iso_code')}
               </td>
               <td></td>
               <td>X</td>
@@ -218,13 +222,13 @@ class Detail extends Component
             </tr>
             <tr>
               <td colSpan="2" className="text-wrap">
-                {this.models('props.data.data.cardit.destination.airport.ville.nom')}
+                {this.models('props.data.data.precons.0.destination.airport.ville.nom')}
               </td>
               <td colSpan="2" className="text-wrap">
-                {this.models('props.data.data.cardit.nsetup.transports.0.conveyence_reference')}
+                {this.models('props.data.data.precons.0.nsetup.transports.0.carrier_code')}{this.models('props.data.data.precons.0.nsetup.transports.0.conveyence_reference')}
               </td>
               <td colSpan="2">
-                {moment(this.models('props.data.data.cardit.nsetup.transports.0.departure_datetime_lt')).format('DD/MM/YYYY HH:mm')}
+                {moment(this.models('props.data.data.precons.0.nsetup.transports.0.departure_datetime_lt')).format('DD/MM/YYYY HH:mm')}
               </td>
               <td colSpan="6"></td>
             </tr>
@@ -393,18 +397,18 @@ class Detail extends Component
             <tr>
               <td colSpan="7" className="align-baseline">
                 <span className="text-muted">Executed on (Date)</span><br/>
-                {moment(this.models('props.data.data.cardit.created_at')).format('DD/MM/YYYY')}
+                {moment(this.models('props.data.data.precons.0.created_at')).format('DD/MM/YYYY')}
               </td>
               <td colSpan="3" className="align-baseline">
                 <span className="text-muted">At (Place) Signature of Carrier</span><br/>
-                {this.models('props.data.data.customer_company.company.name')}
+                {this.models('props.data.data.precons.0.company.name')}
               </td>
             </tr>
           </tbody>
         </table>
       </PopupBody>
       <PopupFooter>
-        <a href={`/ltapdf?cardit_id=${this.models('props.data.data.cardit_id')}`} className="btn btn-primary" target="_blank">{trans('Télécharger')}</a>
+        <a href={`/ltapdf?precon_id=${this.models('props.data.data.precons.0.id')}`} className="btn btn-primary" target="_blank">{trans('Télécharger')}</a>
       </PopupFooter>
     </React.Fragment>
   }
