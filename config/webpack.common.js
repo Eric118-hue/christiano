@@ -6,11 +6,11 @@ const config = require("../cenv");
 
 module.exports = {
   entry: {
-    manager : './app/manager.js',
+    manager : './app/managero.js',
     cardit : './app/cardit.js',
     ryadmin : './app/admin.js',
     airline : './app/airline.js',
-    agent : './app/agent.js'
+    agent : './app/agento.js'
   },
   resolve: {
     alias : {
