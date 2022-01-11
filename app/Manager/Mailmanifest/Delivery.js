@@ -4,17 +4,17 @@ import Ry from 'ryvendor/Ry/Core/Ry';
 import trans from 'ryapp/translations';
 import Modelizer from 'ryvendor/Ry/Core/Modelizer';
 import Localtime from 'ryvendor/Ry/Airline/Cardit/Localtime';
-import {Route} from './Status';
 import {Popup, PopupBody, PopupHeader, PopupFooter, Datepicker} from 'ryvendor/bs/bootstrap';
 import $ from 'jquery';
+import numeral from 'numeral';
 
 class DeliveryDate extends Component
 {
     constructor(props) {
         super(props)
-        const now = moment()
+        const now = moment(this.props.defaultValue)
         this.state = {
-            datetime : now.format('YYYY-MM-DD'),
+            datetime :  now.format('YYYY-MM-DD'),
             hour : now.format('HHmm')
         }
         this.handleChangeDate = this.handleChangeDate.bind(this)
@@ -65,37 +65,57 @@ class ReceptacleLine extends Component
 {
     constructor(props) {
         super(props)
-        this.checkbtn = this.checkbtn.bind(this)
+        this.state = {
+            assignation_conveyence_id : this.models('props.defaultConveyence.id'),
+            resdits : this.models('props.data.resdits', []),
+			statuses : this.models('props.data.statuses', {})
+        }
+        this.deliveryControl = this.deliveryControl.bind(this)
+        this.handleDeliveryChange = this.handleDeliveryChange.bind(this)
     }
 
-    checkbtn(consignment_event) {
-        let mrd = null
-        const isDisabled = this.cast(this.props.data, 'statuses.reception', 82)!=74 && this.cast(this.props.data, 'statuses.reception', 82)!=43
-        const disabled = (isDisabled && !this.models('props.data.statuses.mrd'))?{disabled:true}:{}
-        if(this.models('props.data.statuses.damd', false) && this.models('props.data.statuses.delivery', false) && consignment_event.code==21 && this.cast(this.models('props.data.resdits', []).find(it=>it.consignment_event_code==21), 'nsetup.mrd', 1)==this.models('props.data.statuses.damd', 2)) {
-            mrd = <div className="btn btn-xs btn-theme text-white">AMD{this.models('props.data.resdits', []).find(it=>this.cast(it, 'nsetup.mrd')==this.models('props.data.statuses.damd', 2))?<React.Fragment> {moment(this.models('props.data.resdits', []).find(it=>this.cast(it, 'nsetup.mrd')==this.models('props.data.statuses.damd', 2)).resdit.nsetup.mrd.handover_date_time, 'YYYYMMDDTHH:mm+-HH:mm').format('DD/MM')}</React.Fragment>:null}</div>
+    componentWillUnmount() {
+        this.unsubscribe()
+    }
+
+	handleDeliveryChange(event) {
+		const checked = event.target.checked
+        this.setState(state=>{
+			if(checked) {
+				state.statuses.delivery = 21
+			}
+			else {
+				delete state.statuses.delivery
+			}
+			return state
+        })
+	}
+
+    componentDidMount() {
+        this.unsubscribe = this.props.store.subscribe(()=>{
+            const storeState = this.props.store.getState()
+            if(storeState.type=='resdit' && storeState.event=='delivery' && storeState.cardit_id==this.props.pkey) {
+                this.setState(state=>{
+                    state.resdits.push(storeState)
+                    return state
+                })
+            }
+        })
+    }
+
+    deliveryControl() {
+        if(this.models('props.data.resdits', []).find(it=>this.cast(it, 'nsetup.mld'))) {
+            return <div className="fancy-checkbox">
+                <label><input type="checkbox" name={`delivery_receptacles[${this.props.data.id}]`} value={true} checked={(this.models('state.statuses.delivery') || this.models('props.data.statuses.delivery'))?true:false} onChange={this.handleDeliveryChange}/><span></span></label>
+            </div>
         }
-        else if(this.models('props.data.resdits', []).find(it=>this.cast(it, 'nsetup.fsu') && it.consignment_event_code==21 && consignment_event.code==21)) {
-            mrd = <div className="btn btn-xs btn-blue text-white">FSU {moment(this.cast(this.models('props.data.resdits', []).find(it=>this.cast(it, 'nsetup.fsu')), 'created_at')).format('DD/MM')}</div>
-        }
-        else if(this.models('props.data.statuses.mrd', false) && this.models('props.data.statuses.delivery', false) && consignment_event.code==21 && this.cast(this.models('props.data.resdits', []).find(it=>it.consignment_event_code==21), 'nsetup.mrd', 1)==this.models('props.data.statuses.mrd', 2)) {
-            mrd = <div className="btn btn-xs btn-primary">MRD{this.models('props.data.resdits', []).find(it=>this.cast(it, 'nsetup.mrd')==this.models('props.data.statuses.mrd', 2))?<React.Fragment> {moment(this.models('props.data.resdits', []).find(it=>this.cast(it, 'nsetup.mrd')==this.models('props.data.statuses.mrd', 2)).resdit.nsetup.mrd.handover_date_time, 'YYYYMMDDTHH:mm+-HH:mm').format('DD/MM')}</React.Fragment>:null}</div>
-        }
-        else if(this.models('props.data.statuses.iftsta', false) && this.models('props.data.statuses.delivery', false) && consignment_event.code==21 && this.cast(this.models('props.data.resdits', []).find(it=>it.consignment_event_code==21), 'nsetup.iftsta', 1)==this.models('props.data.statuses.iftsta', 2)) {
-            mrd = <div className="btn btn-xs btn-army">IFTSTA{this.models('props.data.resdits', []).find(it=>this.cast(it, 'nsetup.iftsta')==this.models('props.data.statuses.iftsta', 2))?<React.Fragment> {moment(this.models('props.data.resdits', []).find(it=>it.nsetup.iftsta==this.models('props.data.statuses.iftsta', 2)).resdit.nsetup.localtime).format('DD/MM')}</React.Fragment>:null}</div>
-        }
-        else {
-            mrd = <label className="fancy-radio m-auto custom-color-green">
-                <input {...disabled} name={`receptacles[${this.props.data.id}][delivery_status]`} type="radio" value={consignment_event.code} checked={!disabled.disabled && this.models('props.data.statuses.delivery', -100)==consignment_event.code} onChange={()=>this.props.handleReceptacleStatusChange(consignment_event)}/>
-                <span><i className="mr-0"></i></span>
-            </label>
-        }
-        return mrd
+        return null
     }
 
     render() {
+        const isDisabled = false
+        const disabled = isDisabled?{disabled:true}:{}
         let classNames = []
-        const isDisabled = this.cast(this.props.data, 'statuses.reception', 82)!=74 && this.cast(this.props.data, 'statuses.reception', 82)!=43
         if(isDisabled)
             classNames.push('bg-stone')
         if(this.props.data.nsetup.reference_receptacle_id)
@@ -103,13 +123,17 @@ class ReceptacleLine extends Component
         return <tr className={classNames.join(' ')}>
         <td className="text-left">
             {this.props.data.nsetup.receptacle_id}
+            <input type="hidden" name={`cardits[${this.props.data.cardit_id}][receptacles][${this.props.data.id}][conveyence_id]`} value={this.state.assignation_conveyence_id}/>
+            <input type="hidden" name={`cardits[${this.props.data.cardit_id}][receptacles][${this.props.data.id}][setup][container_id]`} value={this.cast(this.props.data.resdits.find(it=>this.cast(it, 'nsetup.container_id')), 'nsetup.container_id')}/>
         </td>
-        <td>{this.props.data.nsetup.handling}</td>
-        <td>{this.props.data.nsetup.nesting}</td>
-        <td>{this.props.data.nsetup.type.interpretation}</td>
-        <td>{this.props.data.nsetup.weight}</td>
-        <td key={`consignment_event-check-${this.props.data.id}-delivery`} className="text-center">
-            {this.checkbtn(consignment_event)}
+        <td>
+            {this.models('props.data.cardit.nsetup.document_number')}
+        </td>
+        <td>
+            {this.models('props.data.cardit.lta.code')}
+        </td>
+        <td key={`select-delivery`} className="text-center">
+            {this.deliveryControl()}
         </td>
     </tr>
     }
@@ -122,8 +146,11 @@ class Delivery extends Component
     constructor(props) {
         super(props)
         this.state = {
+            files : [],
+			allChecked : false,
             receptacles : this.props.data.receptacles,
             updated_resdits : this.props.data.updated_resdits,
+			resdits : this.props.data.resdits,
             dialogs : [{}],
             dtchanged : false
         }
@@ -161,13 +188,48 @@ class Delivery extends Component
     componentDidMount() {
         this.unsubscribe = this.props.store.subscribe(()=>{
             const storeState = this.props.store.getState()
-            if(storeState.type=='resdit' && storeState.delivery && storeState.delivery.length>0 && storeState.delivery[0].cardit_id==this.props.data.id) {
-                this.setState(state => {
-                    state.updated_resdits.delivery = storeState.delivery
-                    state.dialogs.push({})
+            if(storeState.type=='mailmanifest_resdit' && storeState.id==this.props.data.id) {
+                this.setState(state=>{
+                    let resdits = state.resdits
+                    let resdit_files = []
+                    let flights = []
+                    let transports = {}
+                    storeState.resdits.map(resdit_group=>{
+                        resdit_group.data.map(resdit=>{
+                            resdits.push(resdit)
+                            this.descend(transports, storeState.consignment_event, resdit)
+                            resdit.files.map(file=>{
+                                resdit_files.push(file.split('-')[0])
+                                flights.push(file.split('-')[1])
+                            })
+                        })
+                    })
+                    state.changed = false
+                    state.resdits = resdits
+                    state.updated_resdits = transports
+                    state.resdit_files = resdit_files
+                    state.flights = flights
+                    if(state.resdits.length>0) {
+                        state.resdits.map(resdit=>{
+                            if(storeState.consignment_event=='assignation') {
+                                resdit.files.map(file=>{
+                                    state.files.push(<a key={`download-${this.props.data.id}-resdit-${file}-${state.files.length}`} className="btn btn-info text-white col-md-3 font-10 pt-2 m-2" {...this.hrefs(file, resdit)}>RESDIT<span className="bg-light d-block font-25 m-2 rounded text-primary">{file.split('-')[0]}<br/><small className="font-10 d-block">{file.split('-')[1]}</small></span><Ry/></a>)
+                                    state.files_tablet.push(<a key={`download-tablet-${this.props.data.id}-resdit-${file}-${state.files.length}`} className="btn text-white btn-info col-md-4 font-10 pt-2 m-2" {...this.hrefs(file, resdit)}>RESDIT<span className="bg-light d-block font-25 m-2 rounded text-primary">{file}</span><Ry/></a>)
+                                })
+                            }
+                            else {
+                                resdit.files.map(file=>{
+                                    state.files.push(<a key={`download-${this.props.data.id}-resdit-${file}-${state.files.length}`} className="btn btn-info text-white col-md-3 font-10 pt-2 m-2" {...this.hrefs(file, resdit)}>RESDIT<span className="bg-light d-block font-25 m-2 rounded text-primary">{file.split('-')[0]}<br/><small className="font-10 d-block">{file.split('-')[1]}</small></span><Ry/></a>)
+                                    state.files_tablet.push(<a key={`download-tablet-${this.props.data.id}-resdit-${file}-${state.files.length}`} className="btn text-white btn-info col-md-4 font-10 pt-2 m-2" {...this.hrefs(file, resdit)}>RESDIT<span className="bg-light d-block font-25 m-2 rounded text-primary">{file}</span><Ry/></a>)
+                                })
+                            }
+                        })
+                    }
                     return state
                 })
             }
+            if(storeState.type=='resdit')
+                $(`#schedule-${this.props.data.id}-departure`).modal('hide')
         })
     }
 
@@ -185,13 +247,18 @@ class Delivery extends Component
         })
     }
 
-    handleAllReceptacleStatusChange(status) {
+    handleAllReceptacleStatusChange(event) {
+		const checked = event.target.checked
         this.setState(state=>{
+			state.allChecked = !state.allChecked
             state.receptacles.map(item=>{
                 if(!item.statuses) {
                     item.statuses = {}
                 }
-                item.statuses.delivery = status
+				if(checked)
+                	item.statuses.delivery = 21
+				else
+					delete item.statuses.delivery
             })
             return state
         })
@@ -204,10 +271,47 @@ class Delivery extends Component
     }
 
     render() {
-        const isDisabled = this.models('state.updated_resdits.reception', []).filter(it=>it.event=='reception').length==0
+        const isDisabled = false
+		let isDone = this.models('state.updated_resdits.delivery')
         let files = null
         let files_tablet = null
         let resdit_codes = []
+		let done = null
+        let done_head = ''
+		if(isDone && this.state.resdit_files.length>0) {
+            switch(this.props.consignmentEvent) {
+                case 'delivery':
+                    done_head = trans('Livraison validée le :date à :time par :author', {
+                        date : moment.utc(isDone.localtime).format('DD/MM/YYYY'),
+                        time : moment.utc(isDone.localtime).format('HH:mm'),
+                        author : `${this.cast(isDone, 'author.profile.gender_label')} ${this.cast(isDone, 'author.profile.official')}`
+                    })
+                    done_resdits = []
+                    this.state.flights.map((flight, index)=>{
+                        let transport = this.props.data.conveyence
+                        if(this.models('props.data.conveyence.arrival_datetime_lt', false) && this.models('props.data.conveyence.arrival_datetime_lt', false)!=transport.arrival_datetime_lt) {
+                            done_resdits.push(trans('<br/>RESDIT :resdit_files envoyé - Vol :flights :original_flight_datetime - <span class="text-danger">Horaire modifié : :flight_datetime</span>', {
+                                resdit_files : this.state.resdit_files[index],
+                                flights : flight,
+                                original_flight_datetime : moment(transport.arrival_datetime_lt).format('DD/MM/YYYY [à] HH:mm'),
+                                flight_datetime : moment(this.models('props.data.conveyence.arrival_datetime_lt', transport.arrival_datetime_lt)).format('DD/MM/YYYY [à] HH:mm')
+                            }))
+                        }
+                        else {
+                            done_resdits.push(trans('<br/>RESDIT :resdit_files envoyé - Vol :flights :flight_datetime', {
+                                resdit_files : this.state.resdit_files[index],
+                                flights : flight,
+                                flight_datetime : moment(this.models('props.data.conveyence.arrival_datetime_lt', transport.arrival_datetime_lt)).format('DD/MM/YYYY [à] HH:mm')
+                            }))
+                        }
+                    })
+                    done = done_head + done_resdits.join('') + '<br/>' + trans('Départ :airport (:iata)', {
+                        airport : this.models('props.data.conveyence.arrival_location.name'),
+                        iata : this.models('props.data.conveyence.arrival_location.iata')
+                    })
+                    break;
+            }
+        }
         this.models('state.updated_resdits.delivery', []).map(delivery=>resdit_codes.push(delivery.files.join(', ')))
         resdit_codes = resdit_codes.join(', ')
         if(this.models("state.updated_resdits.delivery")) {
@@ -239,64 +343,42 @@ class Delivery extends Component
         return <div className="row">
             <div className="col-md-12 d-md-block d-xl-none">
                 <div className="row text-left text-body">
-                    {this.models('state.updated_resdits.delivery', []).length>0?null:<div className="col-md-4">
-                        <div className="skillContainer d-flex align-items-center justify-content-around">
-                            
-                        </div>
-                    </div>}
-                    <div className="col-md-4">
-                        <div className="row">
-                            <div className="col-md-6">
-                                <small className="text-muted">{trans('Numéro du container')} :</small><br/>
-                                {this.props.data.nsetup.container_id}
-                            </div>
-                            <div className="col-md-6">
-                                <small className="text-muted">{trans('Nombre de récipient')} :</small><br/>
-                                {this.props.data.nsetup.nreceptacles}
-                            </div>
-                        </div>
-                    </div>
                     <div className="col-md-4">
                         {files_tablet}
                     </div>
                 </div>
             </div>
             <div className="col-xl-3 d-md-none d-xl-block">
-                <div className="blockTemps">
-                    {this.models('state.updated_resdits.delivery', []).length>0?null:<React.Fragment>
-                        <h3>{trans('Temps restant pour valider la réception')} :</h3>
-                        <div className="skillContainer d-flex align-items-center justify-content-around">
-                            
-                        </div>
-                    </React.Fragment>}
-                    <ul className="info">
-                        {this.models('props.data.nsetup.consignment_category.code')=='A'?<li>
-                            <a href={trans('/cn38?id=:id', {id:this.props.data.id})} target="_blank" className="btn btn-beige w-25 text-light">CN 38</a>
-                        </li>:(this.models('props.data.nsetup.consignment_category.code')=='B' && mailclass_concat!='T')?<li>
-                            <a href={trans('/cn41?id=:id', {id:this.props.data.id})} target="_blank" className="btn btn-beige w-25 text-light">CN 41</a>
-                        </li>:(this.models('props.data.nsetup.consignment_category.code')=='B' && mailclass_concat=='T')?<li>
-                            <button href={trans('/cn41?id=:id', {id:this.props.data.id})} type="button" className="btn btn-danger w-25 text-light">CN 47</button>
-                        </li>:null}
-                        <li>
-                            {trans('Numéro du container')} :
-                            <span>{this.props.data.nsetup.container_id}</span>
-                        </li>
-                        <li>
-                            {trans('Container Journey ID')} :
-                            <span>{this.props.data.nsetup.cjid}</span>
-                        </li>
-                        <li>
-                            {trans('Nombre de récipient')} :
-                            <span>{this.props.data.nsetup.nreceptacles}</span>
-                        </li>
-                        <Route data={this.props.data}/>
-                    </ul>
-                    {files}
-                </div>
+                <table className="table table-bordered table-resume">
+	                <thead>
+	                    <tr>
+	                        <th>{trans('CARDIT')}</th>
+	                        <th>{trans('AWB')}</th>
+	                        <th>{trans('Qté de récipients')}</th>
+	                        <th>{trans('Poids (:weight_unit)', {weight_unit:'Kg'})}</th>
+	                    </tr>
+	                </thead>
+	                <tbody>
+	                    {this.state.receptacles.groupBy(it=>it.cardit_id).map((receptacles, index)=>{
+	                    let weight = 0
+	                    receptacles.map(receptacle=>{
+	                        weight += parseFloat(receptacle.nsetup.weight)
+	                    })
+	                    return <tr key={`synthese-cardit-${this.cast(receptacles, '0.cardit_id', index)}`}>
+	                        <td>{this.cast(receptacles, '0.cardit.nsetup.document_number')}</td>
+	                        <td>{this.cast(receptacles, '0.cardit.lta.code')}</td>
+	                        <td>{receptacles.length}</td>
+	                        <td>{numeral(weight).format('0,0.00')}</td>
+	                    </tr>})}
+	                </tbody>
+	            </table>
+	            <div className="blockTemps">
+	                {this.state.resdits.unique(it=>it.id).groupBy(it=>it.conveyence_id).map((resdits, index)=><div className="row border-bottom" key={`resdit-files-download-${index}`}>{resdits.filter(it=>it.event=='delivery').map(resdit=>resdit.files.map(file=><a key={`download-${resdit.id}-resdit-${file}-${resdit.files.length}`} className="btn btn-info text-white col-md-3 font-10 pt-2 m-2" {...this.hrefs(file, resdit)}>RESDIT<span className="bg-light d-block font-25 m-2 rounded text-primary">{file.split('-')[0]}<br/><small className="font-10 d-block">{file.split('-')[1]}</small><small className="d-block text-dark subfile">{this.cast(resdit, 'cardit.nsetup.document_number')}</small></span><Ry/></a>))}</div>)}
+	            </div>
             </div>
             <div className="col-xl-9">
                 <div className="table-responsive">
-                    <form ref={`frm_cardit`} name={`frm_cardit${this.props.data.id}`} action={`/delivery`} method="post">
+                    <form ref={`frm_cardit`} name={`frm_cardit${this.props.data.id}`} action={`/mailmanifest_resdit`} method="post">
                         {this.state.dialogs.map((v,k)=><Ry key={`ajaxform-${k}`} title="ajaxform"/>)}
                         <input type="hidden" name="ry"/>
                         <input type="hidden" name="id" value={this.props.data.id}/>
@@ -304,16 +386,9 @@ class Delivery extends Component
                         <table className="table tableRecap">
                             <thead>
                                 <tr>
-                                    <th rowSpan="2" colSpan="5"
+                                    <th rowSpan="2" colSpan="3"
                                         className="colorVert noBor pl-0 text-left text-wrap">
-                                        {(this.models('state.updated_resdits.delivery', []).length>0)?<React.Fragment>
-                                            {trans('Livraison validée le :date à :time par :author - RESDIT :resdits envoyé(s)', {
-                                                resdits : resdit_codes,
-                                                date : moment.utc(this.cast(this.state.updated_resdits.delivery[this.state.updated_resdits.delivery.length-1], 'nsetup.real_localtime', this.state.updated_resdits.delivery[this.state.updated_resdits.delivery.length-1].localtime)).format('DD/MM/YYYY'),
-                                                time : moment.utc(this.cast(this.state.updated_resdits.delivery[this.state.updated_resdits.delivery.length-1], 'nsetup.real_localtime', this.state.updated_resdits.delivery[this.state.updated_resdits.delivery.length-1].localtime)).format('HH:mm'),
-                                                author : `${this.cast(this.state.updated_resdits.delivery[this.state.updated_resdits.delivery.length-1], 'author.profile.gender_label')} ${this.cast(this.state.updated_resdits.delivery[this.state.updated_resdits.delivery.length-1], 'author.profile.official', 'AIRMAILDATA')}`
-                                            })}{moment.utc(this.cast(this.state.updated_resdits.delivery[this.state.updated_resdits.delivery.length-1], 'nsetup.localtime', this.state.updated_resdits.delivery[this.state.updated_resdits.delivery.length-1].localtime)).format('YYYY-MM-DD HH:mm')!=moment.utc(this.cast(this.state.updated_resdits.delivery[this.state.updated_resdits.delivery.length-1], 'nsetup.real_localtime', this.state.updated_resdits.delivery[this.state.updated_resdits.delivery.length-1].localtime)).format('YYYY-MM-DD HH:mm')?<React.Fragment> - <span className="text-danger">{trans('Horaire de livraison modifié : :datetime', {datetime:moment.utc(this.state.updated_resdits.delivery[this.state.updated_resdits.delivery.length-1].nsetup.localtime).format('DD/MM/YYYY HH:mm')})}</span></React.Fragment>:null}
-                                        </React.Fragment>:null}    
+                                        {trans('Nombre de récipients')} : {this.state.receptacles.length}
                                     </th>
                                     <th className="thTop">{trans('Livraison')}</th>
                                 </tr>
@@ -322,24 +397,21 @@ class Delivery extends Component
                                 </tr>
                                 <tr>
                                     <th>{trans('Numéro du récipient')}</th>
-                                    <th>{trans('Flag')} <i className="icon-info"></i></th>
-                                    <th>{trans('Container Journey ID')}</th>
-                                    <th>{trans('Type de récipient')}</th>
-                                    <th>{trans('Poids (Kg)')}</th>
+                                    <th>{trans('Cardit')}</th>
+                                    <th>{trans('AWB')}</th>
                                     <th>
-                                        <label className="fancy-radio custom-color-green m-auto">
-                                            <input type="radio" name="checkall[delivery_status]" onChange={()=>this.handleAllReceptacleStatusChange(consignment_event.code)}/>
-                                            <span><i className="m-0"></i></span>
-                                        </label>
+										<div className="fancy-checkbox">
+		                                    <label><input type="checkbox" onChange={this.handleAllReceptacleStatusChange} checked={this.state.allChecked}/><span></span></label>
+		                                </div>
                                     </th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {this.state.receptacles.map((receptacle, index)=><ReceptacleLine key={`content-delivery-${receptacle.id}`} handleReceptacleStatusChange={consignment_event=>this.handleReceptacleStatusChange(receptacle, consignment_event.code)} data={receptacle}/>)}
+                                {this.state.receptacles.map((receptacle, index)=><ReceptacleLine  defaultConveyence={this.props.data.conveyence} store={this.props.store} key={`content-delivery-${receptacle.id}`} handleReceptacleStatusChange={consignment_event=>this.handleReceptacleStatusChange(receptacle, consignment_event.code)} data={receptacle}/>)}
                                 <tr>
-                                    <td colSpan="5" className="border-right-0 noBg"></td>
+                                    <td colSpan="3" className="border-bottom-0 border-right-0 noBg"></td>
                                     <td className="border-left-0 border-right-0 p-0">
-                                        {(isDisabled || this.models('state.updated_resdits.delivery', []).length>0 || this.props.readOnly)?null:<button type="button" onClick={this.handleSubmit} className="btn btn-orange rounded-0" {...btndisabled}>{trans('STEP')} {this.props.data.nsetup.transports.length*3+2} :
+                                        {(isDisabled || (isDone && !this.state.changed) || (this.props.readOnly && !this.state.changed))?null:<button type="button" onClick={this.handleSubmit} className="btn btn-orange rounded-0" {...btndisabled}>
                                             {trans('Valider')}</button>}
                                     </td>
                                 </tr>
@@ -351,7 +423,7 @@ class Delivery extends Component
                                 {trans("Confirmation dates/heures de livraison")}
                             </PopupHeader>
                             <PopupBody>
-                                <DeliveryDate ref={`schedule-${this.props.consignmentEvent}`} key={`schedule-${this.props.consignmentEvent}`} onChange={()=>this.setState({dtchanged:true})} consignmentEvent={this.props.consignmentEvent}/>
+                                <DeliveryDate defaultValue={this.models('props.data.conveyence.arrival_datetime_lt')} ref={`schedule-${this.props.consignmentEvent}`} key={`schedule-${this.props.consignmentEvent}`} onChange={()=>this.setState({dtchanged:true})} consignmentEvent={this.props.consignmentEvent}/>
                             </PopupBody>
                             <PopupFooter>
                                 <button className="btn btn-primary p-2 font-18 text-uppercase" type="button" onClick={this.confirm}>

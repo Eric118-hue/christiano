@@ -83,6 +83,8 @@ class Repository extends Component
             output_repos : this.models(`props.data.nsetup.repos.out`, []),
             mrd_repos : this.models('props.data.nsetup.repos.mrd', []),
             mld_repos : this.models('props.data.nsetup.repos.mld', []),
+            ffr_repos : this.models('props.data.nsetup.repos.ffr', []),
+			ffr_mailings : this.models('props.data.nsetup.mailings.ffr', []),
             fwb_repos : this.models('props.data.nsetup.repos.fwb', []),
 			fwb_mailings : this.models('props.data.nsetup.mailings.fwb', []),
             fsu_repos : this.models('props.data.nsetup.repos.fsu', []),
@@ -206,6 +208,24 @@ class Repository extends Component
                 <div className="body">
                     {this.state.mld_repos.filter(it=>!it.deleted).map((repo, index)=><RepoItem pkey={index} pkey2={this.props.data.id} prefix={this.props.prefix} key={`repo-${index}`} name="mld" data={repo} remove={()=>this.removeLine(index, 'mld_repos')}/>)}
                     <button type="button" className="btn btn-primary mb-4" onClick={()=>this.addLine('mld_repos')}><i className="fa fa-plus"></i> {trans('Ajouter un dépôt')}</button>
+                </div>
+            </div>
+            <div className="card">
+                <div className="card-header">
+                    {trans('Dépôt FFR')}
+                </div>
+                <div className="body">
+                    {this.state.ffr_repos.filter(it=>!it.deleted).map((repo, index)=><RepoItem pkey={index} pkey2={this.props.data.id} prefix={this.props.prefix} key={`repo-${index}`} name="ffr" data={repo} remove={()=>this.removeLine(index, 'ffr_repos')}/>)}
+                    <button type="button" className="btn btn-primary mb-4" onClick={()=>this.addLine('ffr_repos')}><i className="fa fa-plus"></i> {trans('Ajouter un dépôt')}</button>
+                </div>
+            </div>
+			 <div className="card">
+                <div className="card-header">
+                    {trans('Envoi mail FFR')}
+                </div>
+                <div className="body">
+                    {this.state.ffr_mailings.filter(it=>!it.deleted).map((mailing, index)=><MailingItem pkey={index} pkey2={this.props.data.id} prefix={this.props.prefix} key={`mailing-${index}`} name="ffr" data={mailing} remove={()=>this.removeLine(index, 'ffr_mailings')}/>)}
+                    <button type="button" className="btn btn-primary mb-4" onClick={()=>this.addLine('ffr_mailings')}><i className="fa fa-plus"></i> {trans('Ajouter un destinataire')}</button>
                 </div>
             </div>
             <div className="card">

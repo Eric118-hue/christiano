@@ -195,14 +195,23 @@ export class FullDetail extends Component
 
     getHeadStep() {
         let transport = this.props.data.conveyence
-        return <div className="centerText">
-            {trans("Départ des récipients sur le vol Nº:vol au départ de l'aéroport :country_name - :iata - :airport_name", {vol:transport.reference, country_name:transport.departure_location.country.nom, iata:transport.departure_location.iata, airport_name:transport.departure_location.name})}
-        </div>
+		switch(this.state.step) {
+			case 'departure':
+				return <div className="centerText">
+	            	{trans("Départ des récipients sur le vol Nº:vol au départ de l'aéroport :country_name - :iata - :airport_name", {vol:transport.reference, country_name:transport.departure_location.country.nom, iata:transport.departure_location.iata, airport_name:transport.departure_location.name})}
+	        	</div>
+			case 'delivery':
+				return <div className="centerText">
+	            	{trans("Livraison des récipients sur le vol Nº:vol à l'arrivéé de l'aéroport :country_name - :iata - :airport_name", {vol:transport.reference, country_name:transport.arrival_location.country.nom, iata:transport.arrival_location.iata, airport_name:transport.arrival_location.name})}
+	        	</div>
+			default:
+				return null
+		}
     }
 
     render() {
         return <tr className={`detail`}>
-        <td colSpan="14" className="no-padding">
+        <td colSpan="15" className="no-padding">
             <div className="bandeau">
                 <span className="title-bandeau">{trans('Liste des récipients')} </span>
                 {this.getHeadStep()}
@@ -365,7 +374,9 @@ class Item extends Component
                 <td>
                     <a href={`/mailmanifestdoc?${qs.stringify({id:this.models('props.data.id')})}`} target="_blank"><i className="fa fa-file-contract fa-2x text-orange"></i></a>
                     {this.models('props.data.resdits', []).find(it=>it.event=='departure')?<i className="fa-2x l2-departure ml-2 text-orange"></i>:null}
+                    {this.models('props.data.resdits', []).find(it=>it.event=='delivery')?<i className="fa-2x l2-destination ml-2 text-orange"></i>:null}
                 </td>
+                <td><button className="btn" type="button" onClick={this.props.archive}><i className="fa fa-2x text-danger fa-archive"></i></button></td>
             </tr>
             {(this.state.data && this.state.open)?<FullDetail step={this.state.step} theme={this.props.theme} data={this.state.data} pkey={this.state.pkey} consignmentEvents={this.state.consignment_events} deliveryConsignmentEvents={this.state.delivery_consignment_events} store={this.props.store} readOnly={this.props.readOnly}/>:null}
         </React.Fragment>
