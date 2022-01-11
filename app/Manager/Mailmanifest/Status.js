@@ -39,7 +39,7 @@ Array.prototype.unique = function(fn) {
 export class Route extends Component
 {
     render() {
-        return this.props.data.transports.map(transport=><React.Fragment key={`transport-${transport.conveyence_reference}`}>
+        return this.models('props.data.transports', []).map(transport=><React.Fragment key={`transport-${transport.conveyence_reference}`}>
             <li>{trans('Départ')}<br/>
     <strong className="text-wrap">{transport.departure_location.country.nom} - {transport.departure_location.iata} - {transport.departure_location.name} {trans('le')} {moment(transport.departure_datetime_lt).format('DD/MM/YYYY HH:mm')}{(this.models('props.data.transports.'+this.props.transportStep+'.departure_datetime_lt', false) && this.models('props.data.transports.'+this.props.transportStep+'.departure_datetime_lt', false)!=transport.departure_datetime_lt)?<React.Fragment> - <span className="text-danger">{trans('Horaire modifié : :datetime', {datetime : moment(this.models('props.data.transports.'+this.props.transportStep+'.departure_datetime_lt')).format('DD/MM/YYYY HH:mm')})}</span></React.Fragment>:null}</strong></li>
             <li>{trans('Arrivée')}<br/>
@@ -507,7 +507,7 @@ class Status extends Component
                 </tbody>
             </table>
             <div className="blockTemps">
-                {this.state.resdits.unique(it=>it.id).groupBy(it=>it.conveyence_id).map((resdits, index)=><div className="row border-bottom" key={`resdit-files-download-${index}`}>{resdits.map(resdit=>resdit.files.map(file=><a key={`download-${resdit.id}-resdit-${file}-${resdit.files.length}`} className="btn btn-info text-white col-md-3 font-10 pt-2 m-2" {...this.hrefs(file, resdit)}>RESDIT<span className="bg-light d-block font-25 m-2 rounded text-primary">{file.split('-')[0]}<br/><small className="font-10 d-block">{file.split('-')[1]}</small><small className="d-block text-dark subfile">{this.cast(resdit, 'cardit.nsetup.document_number')}</small></span><Ry/></a>))}</div>)}
+                {this.state.resdits.unique(it=>it.id).groupBy(it=>it.conveyence_id).map((resdits, index)=><div className="row border-bottom" key={`resdit-files-download-${index}`}>{resdits.filter(it=>it.event!='delivery').map(resdit=>resdit.files.map(file=><a key={`download-${resdit.id}-resdit-${file}-${resdit.files.length}`} className="btn btn-info text-white col-md-3 font-10 pt-2 m-2" {...this.hrefs(file, resdit)}>RESDIT<span className="bg-light d-block font-25 m-2 rounded text-primary">{file.split('-')[0]}<br/><small className="font-10 d-block">{file.split('-')[1]}</small><small className="d-block text-dark subfile">{this.cast(resdit, 'cardit.nsetup.document_number')}</small></span><Ry/></a>))}</div>)}
             </div>
         </div>
         <div className="col-xl-9">

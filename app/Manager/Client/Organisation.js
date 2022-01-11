@@ -168,13 +168,21 @@ class Organisation extends Component
                 <ul className="list-unstyled ramification-airline" ref="organisation">
                     {this.state.customer.companies.map((company, company_index)=>company.deleted?<input key={`company-${company_index}`} type="hidden" name={`deleted_companies[${company_index}]`} value={company.id}/>:<li key={`company-${company_index}`}>
                         <div className="row">
-                            <div className="col-8">
+                            <div className="col-5">
                                 <div className="alert font-24 d-flex justify-content-between">
 									{this.companyHeader(company)}
                                 </div>
                             </div>
                             {this.props.pricing?<React.Fragment>
                                 <span className="company-trait mt-4"></span>
+                                <div className="col-md-3">
+                                    <div className="alert align-items-center d-flex justify-content-between">
+                                        <label className="m-0 text-uppercase">{trans('Abo')} : </label>
+                                        <input className="bg-transparent form-control text-center text-white w-50" type="number" name={`companies[${company.id}][nsetup][membership][value]`} step="0.01" defaultValue={this.cast(company, 'nsetup.membership.value')}/>
+                                        {this.props.data.default_currency.symbol}
+                                        <input type="hidden" name={`companies[${company.id}][nsetup][membership][currency_id]`} value={this.props.data.default_currency.id}/>
+                                    </div>
+                                </div>
                                 <div className="col-md-3">
                                     <div className="alert align-items-center d-flex justify-content-between">
                                         <label className="m-0 text-uppercase">{trans('Com. AD')} : </label>

@@ -5,6 +5,7 @@ import MailManifest from './Item';
 import moment from 'moment';
 import $ from 'jquery';
 import Datepicker from 'ryvendor/bs/Datepicker';
+import swal from 'sweetalert2';
 
 class List extends BaseList
 {
@@ -19,6 +20,34 @@ class List extends BaseList
         this.state.filter.departure_datetime_lt = this.models('props.data.filter.departure_datetime_lt', moment())
         this.state.filter.conveyence_reference = this.models('props.data.filter.conveyence_reference')
         this.handleClearFilter = this.handleClearFilter.bind(this)
+        this.archive = this.archive.bind(this)
+    }
+
+    archive(item) {
+        swal({
+            title: trans('Confirmez-vous l\'archivage?'),
+            text: trans('Cet enregistrement sera archivé'),
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: trans('Oui je confirme')
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    type: 'put',
+                    url : '/mailmanifest',
+                    data : {
+                        id : item.id
+                    },
+                    success : ()=>{
+                        this.setState(state=>{
+                            state.data = state.data.filter(it=>it.id!=item.id)
+                            return state
+                        })
+                    }
+                })
+                
+            }
+        })
     }
 
     handleClearFilter() {
@@ -92,23 +121,24 @@ class List extends BaseList
         return <table className="table table-bordered table-hover table-striped table-liste mail-manifest" cellSpacing="0" cellPadding="0">
             <thead>
                 <tr>
-                    <th width="11%">{trans('Emis le')}</th>
-                    <th width="11%">{trans('N° de conteneur')}</th>
-                    <th width="11%">{trans('Nb sacs')}</th>
-                    <th width="11%">{trans('Poids')}</th>
-                    <th width="11%">{trans('Nº de vol')}</th>
-                    <th width="12%">{trans('Date de départ')}</th>
-                    <th width="11%">{trans('Origine')}</th>
-                    <th width="11%">{trans('Destination')}</th>
-                    <th width="11%">{trans('Mail Manifest')}</th>
+                    <th width="10%">{trans('Emis le')}</th>
+                    <th width="10%">{trans('N° de conteneur')}</th>
+                    <th width="10%">{trans('Nb sacs')}</th>
+                    <th width="10%">{trans('Poids')}</th>
+                    <th width="10%">{trans('Nº de vol')}</th>
+                    <th width="10%">{trans('Date de départ')}</th>
+                    <th width="10%">{trans('Origine')}</th>
+                    <th width="10%">{trans('Destination')}</th>
+                    <th width="10%">{trans('Mail Manifest')}</th>
+                    <th width="10%">{trans('Archiver')}</th>
                 </tr>
             </thead>
             <tbody>
-                {this.state.data.map(item=><MailManifest readOnly={this.readOnly} key={`mail-manifest-${item.id}`} escales={this.escales} data={item} reception={this.reception} assignation={this.assignation} completed={this.completed} consignmentEvents={this.props.data.consignment_events} deliveryConsignmentEvents={this.props.data.delivery_consignment_events} store={this.props.store} theme={this.props.data.theme}/>)}
+                {this.state.data.map(item=><MailManifest archive={()=>this.archive(item)} readOnly={this.readOnly} key={`mail-manifest-${item.id}`} escales={this.escales} data={item} reception={this.reception} assignation={this.assignation} completed={this.completed} consignmentEvents={this.props.data.consignment_events} deliveryConsignmentEvents={this.props.data.delivery_consignment_events} store={this.props.store} theme={this.props.data.theme}/>)}
             </tbody>
             <tfoot className={(this.progressive && this.state.page<this.state.last_page)?'':'d-none'}>
                 <tr>
-                    <td ref="overscroller" colSpan="14" className={`position-relative py-3`}><i className="spinner"></i></td>
+                    <td ref="overscroller" colSpan="15" className={`position-relative py-3`}><i className="spinner"></i></td>
                 </tr>
             </tfoot>
         </table>

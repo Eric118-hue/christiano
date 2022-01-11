@@ -214,6 +214,7 @@ export class CarditInvoice extends Component
             <td>
                 <a href={`#dialog/receptacle_invoices?cardit_id=${this.props.data.id}&customer_id=${this.props.cart.customer_id}`} className="text-info" data-display="modal-xl">{this.props.data.nsetup.document_number}</a>
             </td>
+			<td>{this.models('props.data.lta.code')}</td>
             <td>{this.props.data.nsetup.consignment_category.code}</td>
             <td>{mailclasses}</td>
             <td>{this.models('props.data.nsetup.handover_origin_location.iata')} - {this.models('props.data.nsetup.handover_destination_location.iata', this.models('props.data.nsetup.handover_destination_location.cardit'))}</td>
@@ -373,6 +374,7 @@ class Detail extends Component
                         <th>{trans('CARDIT du')}</th>
                         <th>{trans('à')}</th>
                         <th>{trans("Nº d'expédition")}</th>
+						<th>{trans("N° de LTA")}</th>
                         <th>{trans("Cat.")}</th>
                         <th>{trans("Class")}</th>
                         <th>{trans('Route')}</th>
@@ -389,10 +391,10 @@ class Detail extends Component
                 </tbody>
                 <tfoot>
                     <tr className={this.state.page<this.state.last_page?'':'d-none'}>
-                        <td ref="overscroller" colSpan="16" className={`position-relative py-3`}><i className="spinner"></i></td>
+                        <td ref="overscroller" colSpan="17" className={`position-relative py-3`}><i className="spinner"></i></td>
                     </tr>
                     <tr>
-                        <td colSpan="6" className="text-right">{trans('Total')}</td>
+                        <td colSpan="7" className="text-right">{trans('Total')}</td>
                         <td className="bg-warning">{total_nreceptacles}</td>
                         <td className="bg-warning">{numeral(total_wreceptacles).format('0.0')}</td>
                         <td></td>

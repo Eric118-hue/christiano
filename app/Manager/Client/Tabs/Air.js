@@ -330,6 +330,34 @@ class Air extends Component
                 </div>
                 <div className="card">
                   <div className="card-header">
+                    <strong>{trans('FFR')}</strong>
+                  </div>
+                  <div className="card-body">
+                    <div className="row">
+                      <div className="col-md-4 offset-md-1">
+                        <label className="control-label text-uppercase">
+                            {trans('FFR')}
+                        </label>
+                        <div className="row border-top mx-0 pt-1 mb-2">
+                                <div className="col-md-6">
+                                    <div className="custom-control custom-radio">
+                                        <input type="radio" id={`companies-newair-nsetup-ffr-1`} name={`companies[newair][nsetup][ffr]`} className="custom-control-input" defaultChecked={false} value="1"/>
+                                        <label className="custom-control-label" htmlFor={`companies-newair-nsetup-ffr-1`}>{trans('Oui')}</label>
+                                    </div>
+                                </div>
+                                <div className="col-md-6">
+                                    <div className="custom-control custom-radio">
+                                        <input type="radio" id={`companies-newair-nsetup-ffr-0`} name={`companies[newair][nsetup][ffr]`} className="custom-control-input" defaultChecked={true} value="0"/>
+                                        <label className="custom-control-label" htmlFor={`companies-newair-nsetup-ffr-0`}>{trans('Non')}</label>
+                                    </div>
+                                </div>
+                            </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="card">
+                  <div className="card-header">
                     <strong>{trans('FWB')}</strong>
                   </div>
                   <div className="card-body">
@@ -363,6 +391,7 @@ class Air extends Component
                                 <select name={`companies[newair][nsetup][fwb_version]`} className="form-control">
                                     <option value="17">17</option>
                                     <option value="16">16</option>
+                                    <option value="16A">16 + Eco/Prio</option>
                                 </select>
                             </div>
                             <div className="col-md-6">
@@ -421,6 +450,34 @@ class Air extends Component
                 </div>
                 <div className="card">
                   <div className="card-header">
+                    <strong>{trans('FFR')}</strong>
+                  </div>
+                  <div className="card-body">
+                    <div className="row">
+                      <div className="col-md-4 offset-md-1">
+                        <label className="control-label text-uppercase">
+                            {trans('FFR')}
+                        </label>
+                        <div className="row border-top mx-0 pt-1 mb-2">
+                                <div className="col-md-6">
+                                    <div className="custom-control custom-radio">
+                                        <input type="radio" id={`companies-${company.id}-nsetup-ffr-1`} name={`companies[${company.id}][nsetup][ffr]`} className="custom-control-input" defaultChecked={this.cast(company, 'nsetup.ffr')==1} value="1"/>
+                                        <label className="custom-control-label" htmlFor={`companies-${company.id}-nsetup-ffr-1`}>{trans('Oui')}</label>
+                                    </div>
+                                </div>
+                                <div className="col-md-6">
+                                    <div className="custom-control custom-radio">
+                                        <input type="radio" id={`companies-${company.id}-nsetup-ffr-0`} name={`companies[${company.id}][nsetup][ffr]`} className="custom-control-input" defaultChecked={this.cast(company, 'nsetup.ffr')!=1} value="0"/>
+                                        <label className="custom-control-label" htmlFor={`companies-${company.id}-nsetup-ffr-0`}>{trans('Non')}</label>
+                                    </div>
+                                </div>
+                            </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="card">
+                  <div className="card-header">
                     <strong>{trans('FWB')}</strong>
                   </div>
                   <div className="card-body">
@@ -454,6 +511,7 @@ class Air extends Component
                                 <select name={`companies[${company.id}][nsetup][fwb_version]`} defaultValue={this.cast(company, 'nsetup.fwb_version')} className="form-control">
                                     <option value="17">17</option>
                                     <option value="16">16</option>
+                                    <option value="16A">16 + Eco/Prio</option>
                                 </select>
                             </div>
                             <div className="col-md-6">

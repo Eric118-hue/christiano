@@ -22,6 +22,19 @@ import trans from './translations';
 import Ry from '../vendor/Ry/Core/Ry';
 import Page from '../vendor/Ry/Admin/PageEditor';
 
+/**
+@namespace Manager
+
+@description Manager bootstrap
+
+*/
+
+/**
+@constant Components
+@memberof Manager
+@description Routing to all modules of the pages
+ */
+
 const Components = {
     App : App,
     Ry : {

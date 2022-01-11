@@ -6,6 +6,9 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 module.exports = merge(common, {
   mode : 'production',
   //watch : true,
+  watchOptions: {
+    ignored : [/node_modules/, '/home/airmaildata/www/*']
+  },
   optimization: {
       splitChunks : {
           chunks : 'all'

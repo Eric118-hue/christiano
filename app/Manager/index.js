@@ -7,6 +7,7 @@ import Resdit from './Resdit';
 import Mailmanifest from './Mailmanifest';
 import RoadClient from './RoadClient';
 import Postoffice from './Postoffice';
+import Dashboard from './Dashboard';
 
 const Components = {
     Setup : Setup,
@@ -17,7 +18,8 @@ const Components = {
     Resdit : Resdit,
     Mailmanifest,
 	RoadClient,
-	Postoffice
+	Postoffice,
+    Dashboard
 }
 
 export default Components;

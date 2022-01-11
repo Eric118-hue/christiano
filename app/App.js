@@ -4,6 +4,12 @@ import {Form} from './Air/Airport';
 import Manager from './Manager';
 import Amd from './Amd';
 
+/**
+@constant Components
+@memberof Manager
+@description Loads all manager only actions pages
+ */
+
 const Components = {
     Upu : Upu,
     Airport : Air.Airport,

@@ -11,11 +11,15 @@ export class Form extends Component
     render() {
         return <form name="frm_airport" action="/airport" method="post">
             <input type="hidden" name="id" value={this.props.data.data.id}/>
-            <PopupHeader><h5>{trans("Ville de l'aéroport")}</h5></PopupHeader>
+            <PopupHeader><h5>{trans("Ville et code IMPC par défaut de l'aéroport")}</h5></PopupHeader>
             <PopupBody>
                 <div className="form-group">
                     <label className="control-label">{trans('Ville')}</label>
                     <input type="text" name="ville[nom]" className="form-control" defaultValue={this.models('props.data.data.ville.nom')}/>
+                </div>
+				<div className="form-group">
+                    <label className="control-label">{trans('IMPC par défaut')}</label>
+                    <input type="text" name="default_impc" className="form-control" defaultValue={this.models('props.data.data.default_impc')}/>
                 </div>
             </PopupBody>
             <PopupFooter>
@@ -32,6 +36,7 @@ class Item extends Component
     render() {
         return <tr>
             <td>{this.props.data.iata}</td>
+			<td>{this.props.data.default_impc}</td>
             <td>{this.props.data.name}</td>
             <td>{this.models('props.data.ville.nom')}</td>
             <td>{this.models('props.data.country.nom')}</td>
@@ -117,6 +122,7 @@ class List extends NavigableModel
                         <thead>
                             <tr>
                                 <th className="text-capitalize">{trans('Code')}</th>
+								<th className="text-capitalize">{trans('IMPC par défaut')}</th>
                                 <th className="text-capitalize">{trans('Nom')}</th>
                                 <th className="text-capitalize">{trans('Ville')}</th>
                                 <th className="text-capitalize">{trans('Pays')}</th>
@@ -125,6 +131,9 @@ class List extends NavigableModel
                             <tr className="bg-yellow">
                                 <th>
                                     <input type="search" value={this.state.filter.iata} onChange={e=>this.onFilter(e, 'iata')} className="form-control text-capitalize" placeholder={trans('Filtre')}/>
+                                </th>
+								<th>
+                                    <input type="search" value={this.state.filter.default_impc} onChange={e=>this.onFilter(e, 'default_impc')} className="form-control text-capitalize" placeholder={trans('Filtre')}/>
                                 </th>
                                 <th>
                                     <input type="search" value={this.state.filter.name} onChange={e=>this.onFilter(e, 'name')} className="form-control text-capitalize" placeholder={trans('Filtre')}/>
