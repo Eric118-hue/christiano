@@ -6,8 +6,6 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "webpack --watch --config config/webpack.prod.js",
     "start": "webpack-dev-server --config config/webpack.dev.js",
-    "start-organiste": "webpack-dev-server --config organiste/webpack.dev.js",
-    "build-organiste": "webpack --config organiste/webpack.prod.js",
     "build": "config/prod.js",
     "buildapp": "webpack --config config/webpack.appprod.js",
     "starthttp": "http-server dist",
