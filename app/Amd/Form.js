@@ -3,6 +3,34 @@ import Modelizer from '../../vendor/Ry/Core/Modelizer';
 import {PopupBody, PopupHeader, PopupFooter} from '../../vendor/bs/bootstrap';
 import trans from '../translations';
 import $ from 'jquery';
+import Ry from '../../vendor/Ry/Core/Ry';
+import './style.scss';
+
+class AccountInfo extends Component
+{
+  render() {
+    return <div className={`row input-group align-items-baseline ${this.props.data.deleted?'d-none':' mb-2'}`}>
+      <div className='col-md-6'>
+        <select name={`account_infos[${this.props.index}][customer_id]`} required defaultValue={this.models('props.data.customer_id')} className="form-control">
+          {this.models('props.selectCustomers', []).map(customer=><option key={`customer-${customer.id}`} value={customer.id}>{customer.facturable.name}</option>)}
+        </select>
+      </div>
+      <div className='col-md-2 p-0 account-info'>
+        <input type="text" pattern="\d{7}" maxLength={7} required name={`account_infos[${this.props.index}][iata]`} placeholder={trans('IATA Code')} className='form-control' defaultValue={this.props.data.iata}/>
+      </div>
+      <span className='px-1'>/</span>
+      <div className='col-md-2 p-0 account-info'>
+        <input type="text" pattern="\d{4}" maxLength={4} required name={`account_infos[${this.props.index}][cass]`} placeholder="CASS" className='form-control' defaultValue={this.props.data.cass}/>
+      </div>
+      {this.props.data.deleted?<input type="hidden" name={`account_infos[${this.props.index}][deleted]`} value={true}/>:null}
+      <input type="hidden" name={`account_infos[${this.props.index}][id]`} value={this.props.data.id}/>
+      <button className="btn btn-danger col-md-1 px-0 mx-2" type="button" onClick={this.props.remove}><i class="fa fa-trash"></i></button>
+      <Ry/>
+    </div>
+  }
+}
+
+Modelizer(AccountInfo)
 
 class RySelect extends Component
 {
@@ -101,12 +129,34 @@ class Form extends Component
 {
   constructor(props) {
     super(props)
+    this.id = 0
     this.state = {
       country_id : this.models('props.data.data.adresse.ville.country.id'),
-      currency_id : this.models('props.data.data.currency_id')
+      currency_id : this.models('props.data.data.currency_id'),
+      account_infos : this.models('props.data.data.account_infos', [])
     }
     this.handleCountryChange = this.handleCountryChange.bind(this)
     this.handleCurrencyChange = this.handleCurrencyChange.bind(this)
+    this.addAccountInfo = this.addAccountInfo.bind(this)
+    this.removeAccountInfo = this.removeAccountInfo.bind(this)
+  }
+
+  addAccountInfo() {
+    this.id++
+    this.setState(state=>{
+      state.account_infos.push({
+        id : `new${this.id}`
+      })
+      return state
+    })
+  }
+
+  removeAccountInfo(account_info) {
+    this.setState(state=>{
+      state.account_infos.find(it=>it.id==account_info.id)
+      return state
+    })
+    account_info.deleted = true
   }
 
   handleCountryChange(event) {
@@ -230,9 +280,14 @@ class Form extends Component
                 {this.props.data.currencies.map(currency=><option key={`currency-${currency.id}`} value={currency.id}>{currency.name}</option>)}
               </select>
             </div>
+          </div>
+          <div className='col-md-12'>
             <div className="form-group">
-              <label className="control-label">{trans('Info comptable')}</label>
-              <textarea defaultValue={this.models('props.data.data.nsetup.account.info', '')} name="nsetup[account][info]" className="form-control"/>
+              <label className="control-label">{trans('Info comptable ou AGT code')}</label>
+              <div>
+                {this.state.account_infos.map(account_info=><AccountInfo key={`account-info-${account_info.id}`} index={account_info.id} data={account_info} remove={()=>this.removeAccountInfo(account_info)} selectCustomers={this.props.data.select_customers}/>)}
+              </div>
+              <button className='btn btn-primary' type="button" onClick={this.addAccountInfo}><i className='fa fa-plus'></i> {trans('Ajouter un AGT client')}</button>
             </div>
           </div>
         </div>

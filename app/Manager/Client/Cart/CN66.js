@@ -12,10 +12,12 @@ class CN66 extends Component
     let total_A = 0
     let total_B = 0
     this.models('props.data.cart.route.cardits', []).map(cardit=>{
-      if(cardit.nsetup.consignment_category.code=='A')
-        total_A += parseFloat(cardit.total_quantity)
-      else
-        total_B += parseFloat(cardit.total_quantity)
+      if(cardit.nsetup.message_function!=1) {
+        if(cardit.nsetup.consignment_category.code=='A')
+          total_A += parseFloat(cardit.total_quantity)
+        else
+          total_B += parseFloat(cardit.total_quantity)
+      }
     })
     this.state = {
       cart : this.models('props.data.cart'),
@@ -134,8 +136,8 @@ class CN66 extends Component
                     <td className="text-center">{cardit.proto_receptacle_nsetup.receptacle_id.substr(0,6)}</td>
                     <td className="text-center">{cardit.proto_receptacle_nsetup.receptacle_id.substr(6,6)}</td>
                     <td className="text-center">{cardit.nsetup.transports[0].conveyence_reference}</td>
-                    <td className="text-right">{cardit.nsetup.consignment_category.code=='A'?numeral(parseFloat(cardit.total_quantity)).format('0,0.0')+'Kg':'--'}</td>
-                    <td className="text-right">{cardit.nsetup.consignment_category.code=='B'?numeral(parseFloat(cardit.total_quantity)).format('0,0.0')+'Kg':'--'}</td>
+                    <td className="text-right">{(cardit.nsetup.message_function!=1 && cardit.nsetup.consignment_category.code=='A')?numeral(parseFloat(cardit.total_quantity)).format('0,0.0')+'Kg':'--'}</td>
+                    <td className="text-right">{(cardit.nsetup.message_function!=1 && cardit.nsetup.consignment_category.code=='B')?numeral(parseFloat(cardit.total_quantity)).format('0,0.0')+'Kg':'--'}</td>
                   </tr>)}
                   </tbody>
                   <tfoot>

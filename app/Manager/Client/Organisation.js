@@ -5,6 +5,7 @@ import trans from 'ryapp/translations';
 import $ from 'jquery';
 import Pricing from './Pricing';
 import Autocomplete from './Autocomplete';
+import {Popup, PopupHeader, PopupBody, PopupFooter} from 'ryvendor/bs/bootstrap';
 
 export const CUSTOMER_TYPES = {
     air : trans('Compagnie aérienne'),
@@ -13,6 +14,94 @@ export const CUSTOMER_TYPES = {
     mix : trans('Mix'),
 	water : trans('Maritime')
 }
+
+export class Prealert extends Component
+{
+    constructor(props) {
+        super(props)
+        this.state = {
+            checked : this.models('props.data.nsetup.prealert.enabled', 0)==1,
+            recipients: this.models('props.data.nsetup.prealert.recipients', [''])
+        }
+        this.handleChange = this.handleChange.bind(this)
+        this.add = this.add.bind(this)
+        this.remove = this.remove.bind(this)
+        this.close = this.close.bind(this)
+    }
+
+    handleChange(e) {
+        const checked = e.target.checked
+        this.setState({
+            checked
+        }, ()=>{
+            if(checked) {
+                $(`#${this.props.id}-modal`).modal('show')
+            }
+        })
+    }
+
+    add() {
+        this.setState(state=>{
+            state.recipients.push('')
+            return state
+        })
+    }
+
+    remove(index) {
+        this.setState(state=>{
+            state.recipients.splice(index, 1)
+            return state
+        })
+    }
+
+    close() {
+        $(`#${this.props.id}-modal`).modal('hide')
+    }
+
+    render() {
+        return <div>
+                    {this.props.readOnly?<Popup id={`${this.props.id}-modal`}>
+                        <PopupHeader>
+                            <h4>{trans('Destinataires préalertes')}</h4>
+                        </PopupHeader>
+                        <PopupBody>
+                            <div className="col-md-12">
+                                {this.state.recipients.map((recipient, index)=><div key={`recipient-${index}`}>
+                                    <i className='fa fa-envelope'></i> {recipient}
+                                </div>)}
+                            </div>
+                        </PopupBody>
+                        <PopupFooter className="justify-content-end d-flex">
+                            <button className='btn btn-secondary' type="button" onClick={this.close}>{trans('Fermer')}</button>
+                        </PopupFooter>
+                    </Popup>:<div className="custom-control custom-checkbox">
+                        <input type="checkbox" id={this.props.id} className="custom-control-input" checked={this.state.checked} onChange={this.handleChange} value="1"/>
+                        <label className="custom-control-label" htmlFor={this.props.id}>{trans('Préalerte')}</label>
+                        <input type="hidden" name={`${this.props.name}[enabled]`} value={this.state.checked?1:0}/>
+                        <Popup id={`${this.props.id}-modal`}>
+                            <PopupHeader>
+                                <h4>{trans('Ajouter des emails de destinataires')}</h4>
+                            </PopupHeader>
+                            <PopupBody>
+                                <div className="col-md-12">
+                                    {this.state.recipients.map((recipient, index)=><div key={`recipient-${index}`} className='input-group mb-3'>
+                                        <input type="email" defaultValue={recipient} name={`${this.props.name}[recipients][]`} className="form-control"/>
+                                        <button className='btn btn-danger' type="button" onClick={()=>this.remove(index)}><i className="fa fa-trash-alt"></i></button>
+                                    </div>)}
+                                </div>
+                            </PopupBody>
+                            <PopupFooter className="justify-content-between d-flex">
+                                <button className='btn btn-primary' type="button" onClick={this.add}><i className='fa fa-plus'></i> {trans('Ajouter un destinataire')}</button>
+                                <button className='btn btn-secondary' type="button" onClick={this.close}>{trans('Fermer')}</button>
+                            </PopupFooter>
+                        </Popup>
+                    </div>}
+            {this.state.checked?<button className='btn btn-info' type='button' onClick={()=>$(`#${this.props.id}-modal`).modal('show')}><i className='fa fa-list-ul'></i></button>:null}
+        </div>
+    }
+}
+
+Modelizer(Prealert)
 
 class Organisation extends Component
 {
@@ -390,7 +479,9 @@ class Organisation extends Component
                                                                 %
                                                             </div>
                                                         </div>
-                                                    </React.Fragment>:null}
+                                                    </React.Fragment>:<div className='col-md-2'>
+                                                        <Prealert data={route} id={`companies-${company.id}-edit-${edi_index}-routes-${route_index}-nsetup-prealert`} name={`companies[${company.id}][edis][${edi_index}][routes][${route_index}][nsetup][prealert]`}/>
+                                                    </div>}
                                                     <input type="hidden" name={`companies[${company.id}][edis][${edi_index}][routes][${route_index}][id]`} value={route.id}/>
                                                     {(!this.props.readOnly && edi.routes.filter(item=>!item.deleted).length>1)?<button className="btn position-absolute" type="button" onClick={()=>{
                                                         this.setState(state=>{

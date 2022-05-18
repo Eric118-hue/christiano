@@ -30,6 +30,8 @@ import CN38 from './Manager/Cardit/CN38';
 import Mailmanifest from './Manager/Mailmanifest';
 import Postoffice from './Postoffice';
 import Account from './Air/Account';
+import Display from '../vendor/Ry/Core/Page';
+import Footernav from './Footernav';
 
 __AIRLINE.Cardit.List = CarditList
 
@@ -57,7 +59,10 @@ const Components = {
             AdminTools : __ADMINTOOLS,
             NavigationByRole : __NAVIGATION_BY_ROLE,
             Translator : __TRANSLATOR,
-            Traductions : TraductionsDialog
+            Traductions : TraductionsDialog,
+			Page : {
+				Display
+			}
         },
         Categories : __CATEGORIES,
         Profile : {
@@ -158,9 +163,7 @@ class Cardit
 class Leg2LucidWrapper extends LucidWrapper
 {
     render() {
-        return <Wrapper data={this.props.content} style={{minWidth:960}} altLogo="AIRMAILDATA" footer={()=><div className="footer m-5 text-center">
-				© 2020-2021, Airmail Data
-			</div>}>
+        return <Wrapper data={this.props.content} style={{minWidth:960}} altLogo="AIRMAILDATA" footer={()=><Footernav/>}>
 							<Ry class={this.props.content.view} content={this.props.content} components={this.props.components}/>
 							<div className="ry-float-loading">
 						<div className="ry loading-content">

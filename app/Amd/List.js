@@ -110,7 +110,7 @@ class List extends UPUList
                             </div>
                             <div className="form-group">
                                 <label className="control-label font-11">{trans('Info comptable')}</label>
-                                <div>{this.cast(row.nsetup, 'account.info')}</div>
+                                <div>{this.cast(row.account_infos, '0.iata')}/{this.cast(row.account_infos, '0.cass')}</div>
                             </div>
                         </div>
                     </div>

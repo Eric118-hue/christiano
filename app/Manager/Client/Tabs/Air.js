@@ -418,7 +418,7 @@ class Air extends Component
 	                	<button type="button" onClick={()=>this.remove(company)} className="btn btn-danger text-light"><i className="fa fa-times-circle"></i> {trans("Supprimer la compagnie aérienne")}</button>
 	                </div>}
 	            </div>
-                <MultiForm data={company} namespace={`companies[${company.id}]`} remove={this.removeContact} optional={true}/>
+                <MultiForm data={company} namespace={`companies[${company.id}]`} fwbCancelledNotifyUsersFieldName={`companies[${company.id}][nsetup][fwb_cancelled_notify_users][]`} fwbCancelledNotifyUsers={this.cast(company, 'nsetup.fwb_cancelled_notify_users', [])} remove={this.removeContact} optional={true}/>
                 <div className="card">
                   <div className="card-header">
                     <strong>{trans('Mail manifest & Version MLD')}</strong>
