@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import Modelizer from '../../vendor/Ry/Core/Modelizer';
-import {CUSTOMER_TYPES} from '../Manager/Client/Organisation';
+import {CUSTOMER_TYPES, Prealert} from '../Manager/Client/Organisation';
 import trans from '../translations';
 import $ from 'jquery';
 import Pricing from '../Manager/Client/Pricing';
@@ -334,7 +334,9 @@ class Organisation extends Component
                                                                 %
                                                             </div>
                                                         </div>
-                                                    </React.Fragment>:null}
+                                                    </React.Fragment>:<div className='col-md-2'>
+                                                        <Prealert readOnly={true} data={route} id={`companies-${company.id}-edit-${edi_index}-routes-${route_index}-nsetup-prealert`} name={`companies[${company.id}][edis][${edi_index}][routes][${route_index}][nsetup][prealert]`}/>
+                                                    </div>}
                                                     <input type="hidden" name={`companies[${company.id}][edis][${edi_index}][routes][${route_index}][id]`} value={route.id}/>
                                                     {(!this.props.readOnly && edi.routes.filter(item=>!item.deleted).length>1)?<button className="btn position-absolute" type="button" onClick={()=>{
                                                         this.setState(state=>{

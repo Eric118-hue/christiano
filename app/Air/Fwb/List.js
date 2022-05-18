@@ -52,13 +52,22 @@ class List extends NavigableModel
             {(this.progressive || this.nopaginate)?null:pagination}
         </div>
         {this.searchEngine()}
-        <div className="card mt-3">
-          <div className="card-body">
-            <div className="row my-5 mx-0 bg-light">
-              {this.state.data.map((item, key)=>this.item(item, key))}
+        <hr/>
+        {this.props.customer.companies.length>1?this.props.customer.companies.map(company=><div key={`company-codes-${company.id}`} className="card mt-3">
+            <div className='align-items-baseline card-header d-flex justify-content-between'>
+              <h6 className='m-0'>{this.cast(company, 'nsetup.lta.prefix')} - {company.company.name}</h6>
+              <label className="control-label m-0">{trans('Quantité AWB restants')} : <strong className="font-18 text-orange">{this.state.data.filter(it=>it.customer_company_id==company.id).length}</strong></label>
             </div>
+            <div className="card-body">
+              <div className="row my-5 mx-0 bg-light">
+                {this.state.data.filter(it=>it.customer_company_id==company.id).map((item, key)=>this.item(item, key))}
+              </div>
+            </div>
+        </div>):<div className="card-body">
+          <div className="row my-5 mx-0 bg-light">
+            {this.state.data.map((item, key)=>this.item(item, key))}
           </div>
-        </div>
+        </div>}
         <div ref="overscroller" className="justify-content-between m-0 row">
             {this.afterlist()}
             {(this.progressive || this.nopaginate)?null:pagination}

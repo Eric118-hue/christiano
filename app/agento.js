@@ -26,6 +26,8 @@ import Fwb from './Air/Fwb';
 import CN38 from './Manager/Cardit/CN38';
 import Mailmanifest from './Manager/Mailmanifest';
 import Agent from './Agent';
+import Display from '../vendor/Ry/Core/Page';
+import Footernav from './Footernav';
 
 const Components = {
 	App : {
@@ -46,7 +48,10 @@ const Components = {
             AdminTools : __ADMINTOOLS,
             NavigationByRole : __NAVIGATION_BY_ROLE,
             Translator : __TRANSLATOR,
-            Traductions : TraductionsDialog
+            Traductions : TraductionsDialog,
+			Page : {
+				Display
+			}
         },
         Categories : __CATEGORIES,
         Profile : {
@@ -147,7 +152,7 @@ class Cardit
 class Leg2LucidWrapper extends LucidWrapper
 {
     render() {
-        return <Wrapper data={this.props.content} style={{minWidth:960}}altLogo="AIRMAILDATA">
+        return <Wrapper data={this.props.content} style={{minWidth:960}} altLogo="AIRMAILDATA" footer={()=><Footernav/>}>
             <Ry class={this.props.content.view} content={this.props.content} components={this.props.components}/>
             <div className="ry-float-loading">
 		    	<div className="ry loading-content">

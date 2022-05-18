@@ -354,7 +354,7 @@ class Item extends Component
         return <React.Fragment>
             <Ry/>
             <tr>
-                <td className="green">{moment(this.models('props.data.conveyence.departure_datetime_lt')).format('DD/MM/YYYY')}</td>
+                <td className="green">{moment(this.cast(this.models('props.data.resdits', []).find(it=>it.nsetup.mld), 'nsetup.localtime', this.models('props.data.resdits.0.created_at'))).format('DD/MM/YYYY')}</td>
                 <td>
                     <div className="d-flex align-items-center px-3">
                         <span className="d-inline-block px-2 list-document-number text-blue">{this.props.data.container_id}</span>

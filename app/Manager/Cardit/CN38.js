@@ -201,11 +201,16 @@ class CN38 extends Component
                   </tbody>
               </table>
           </div>
-          <div className="text-right">
-            <input type="hidden" ref={this.format} name="format" value="pdf"/>
-            <input type="hidden" name="id" value={this.props.data.data.id}/>
-            <button className="btn btn-turquoise" type="button" onClick={()=>this.export('xlsx')}><i className="fa fa-file-excel"></i> {trans('Télécharger')} XLSX</button>
-            <button className="btn btn-orange ml-2" type="button" onClick={()=>this.export('pdf')}><i className="fa fa-file-pdf"></i> {trans('Télécharger')} PDF</button>
+          <div className="d-flex justify-content-between align-items-baseline">
+            <div>
+              {(this.models('props.data.data.nsetup.CSD1', false) && this.models('props.data.data.nsetup.RFF.AIA', false) && this.models('props.data.data.nsetup.RFF.AGE', false))?`${this.models('props.data.data.nsetup.CSD1', false)} - ${this.models('props.data.data.nsetup.RFF.AIA.country_iso')}/${this.models('props.data.data.nsetup.RFF.AIA.regulated_agent')}/${this.models('props.data.data.nsetup.RFF.AIA.regulated_agent_no')} - ${this.models('props.data.data.nsetup.RFF.AGE', false)}`:null}
+            </div>
+            <div className="text-right">
+              <input type="hidden" ref={this.format} name="format" value="pdf"/>
+              <input type="hidden" name="id" value={this.props.data.data.id}/>
+              <button className="btn btn-turquoise" type="button" onClick={()=>this.export('xlsx')}><i className="fa fa-file-excel"></i> {trans('Télécharger')} XLSX</button>
+              <button className="btn btn-orange ml-2" type="button" onClick={()=>this.export('pdf')}><i className="fa fa-file-pdf"></i> {trans('Télécharger')} PDF</button>
+            </div>
           </div>
         </div>
       </div>

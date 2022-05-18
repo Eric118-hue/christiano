@@ -109,7 +109,7 @@ class Detail extends Component
                   {this.models('props.data.data.cardit.departure.adresse.ville.country.nom')}</p>
               </td>
               <td colSpan="8" rowSpan="3">
-                {this.models('props.data.data.cardit.departure.nsetup.account.info')}
+                {this.models('props.data.data.cardit.departure.agent_code')}
               </td>
             </tr>
             <tr className="bg-light text-center">
@@ -244,7 +244,7 @@ class Detail extends Component
             </tr>
             <tr className="text-center">
               <td>
-                
+                X
               </td>
             </tr>
             <tr>
@@ -290,7 +290,7 @@ class Detail extends Component
             </tr>
             <tr>
               <td colSpan="2" className="align-baseline">
-                <p>POSTAL MAIL</p>
+                <p>POSTAL MAIL {this.models('props.data.data.cardit.nsetup.document_number')}</p>
                 MAL
               </td>
             </tr>

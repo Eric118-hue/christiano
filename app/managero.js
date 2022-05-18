@@ -21,6 +21,8 @@ import $ from 'jquery';
 import trans from './translations';
 import Ry from '../vendor/Ry/Core/Ry';
 import Page from '../vendor/Ry/Admin/PageEditor';
+import Display from '../vendor/Ry/Core/Page';
+
 
 const Components = {
     App : App,
@@ -33,7 +35,8 @@ const Components = {
             Translator : __TRANSLATOR,
             Traductions : TraductionsDialog,
             Page : {
-                Form : Page
+                Form : Page,
+                Display
             }
         },
         Categories : __CATEGORIES,

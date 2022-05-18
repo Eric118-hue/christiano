@@ -57,10 +57,10 @@ class ReceptacleItem extends Component
         <td className="text-left">
             {this.props.data.nsetup.receptacle_id}
         </td>
-        <td>{this.props.data.nsetup.handling}</td>
+        <td>{this.props.messageFunction}</td>
         <td>{this.props.data.nsetup.nesting}</td>
         <td>{this.props.data.nsetup.type.interpretation}</td>
-        <td>{this.props.data.nsetup.free?0:this.props.data.nsetup.weight}</td>
+        <td>{this.props.data.nsetup.free?0:(this.props.messageFunction==1?0:this.props.data.nsetup.weight)}</td>
         <td>{numeral(this.props.data.price_ht).format('0.00')}</td>
         <td>
             <label className="fancy-checkbox">
@@ -83,7 +83,7 @@ class Receptacles extends Component
         let commissions = 0
         let total_ttc = 0
         this.props.data.receptacles.map(receptacle=>{
-            if(!receptacle.nsetup.free) {
+            if(!receptacle.nsetup.free && this.models('props.data.nsetup.message_function', -1)!=1) {
                 total_weight += parseFloat(receptacle.nsetup.weight)
                 total_ht += parseFloat(receptacle.price_ht)
                 commissions += parseFloat(receptacle.commission)
@@ -119,7 +119,9 @@ class Receptacles extends Component
             state.commissions = 0
             state.total_ttc = 0
             state.receptacles.map(receptacle=>{
-                state.total_weight += parseFloat(receptacle.nsetup.weight)
+                if(this.models('props.data.nsetup.message_function', -1)!=1) {
+                    state.total_weight += parseFloat(receptacle.nsetup.weight)
+                }
                 state.total_ht += parseFloat(receptacle.price_ht)
                 state.commissions += parseFloat(receptacle.commission)
                 state.total_ttc += parseFloat(receptacle.price_ttc)
@@ -163,7 +165,7 @@ class Receptacles extends Component
                     <thead>
                         <tr>
                             <th>{trans('Numéro du récipient')}</th>
-                            <th>{trans('Flag')} <i className="icon-info"></i></th>
+                            <th>{trans('Statut')}</th>
                             <th>{trans('Container Journey ID')}</th>
                             <th>{trans('Type de récipient')}</th>
                             <th>{trans('Poids')} (Kg)</th>
@@ -172,7 +174,7 @@ class Receptacles extends Component
                         </tr>
                     </thead>
                     <tbody>
-                        {this.state.receptacles.map(receptacle=><ReceptacleItem key={`receptacle-${receptacle.id}`} handleFree={checked=>this.handleFree(checked, receptacle)} data={receptacle}/>)}
+                        {this.state.receptacles.map(receptacle=><ReceptacleItem key={`receptacle-${receptacle.id}`} messageFunction={this.models('props.data.nsetup.message_function')} handleFree={checked=>this.handleFree(checked, receptacle)} data={receptacle}/>)}
                     </tbody>
                     <tfoot>
                         <tr>
@@ -340,7 +342,9 @@ class Detail extends Component
             total_ttc += parseFloat(cardit.total_ttc)
             total_commissions += parseFloat(cardit.commissions)
             total_nreceptacles += parseInt(cardit.nsetup.nreceptacles)
-            total_wreceptacles += parseFloat(cardit.total_weight)
+            if(cardit.nsetup.message_function!=1) {
+                total_wreceptacles += parseFloat(cardit.total_weight)
+            }
         })
         return <div className="p-3">
             <div className="row justify-content-between">
