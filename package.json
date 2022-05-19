@@ -5,7 +5,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "webpack --watch --config config/webpack.prod.js",
+    "watch-gha": "webpack --watch --config config/webpack.gha.prod.js",
     "start": "webpack-dev-server --config config/webpack.dev.js",
+    "start-gha": "webpack-dev-server --config config/webpack.gha.dev.js",
     "build": "config/prod.js",
     "buildapp": "webpack --config config/webpack.appprod.js",
     "starthttp": "http-server dist",

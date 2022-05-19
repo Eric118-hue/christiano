@@ -1,0 +1,117 @@
+.ramification-client {
+
+    ul:not([class^="parsley"]) {
+        margin-left: 100px;
+    }
+
+    .alert {
+        background: #37b6db;
+        color: #fff;
+    }
+
+    ul, li {
+        position: relative;
+    }
+
+    li:not([class^="parsley"]) {
+        &::before, &::after {
+            position: absolute;
+            content: '';
+            left: -12px;
+        }
+
+        &::before {
+            border-top: 1px solid #000;
+            top: 32px;
+            height: 0;
+            width: 50px;
+            left: -50px;
+        }
+
+        &::after {
+            border-left: 1px solid #000;
+            height: calc(100% + 16px);
+            width: 0px;
+            top: -16px;
+            left: -50px;
+        }
+
+        &:last-child {
+            &::after {
+                height: 37px;
+            }
+        }
+
+        &:last-child::before {
+            top: 20px;
+        }
+
+        li {
+            &::before {
+                top: 24px;
+            }
+
+            li {
+                li {
+                    &::after {
+                        top: -16px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.ramification-airline {
+    .alert {
+        background: #9cca22;
+        color: #fff;
+    }
+    .btn-add {
+        color: #9cca22;
+    }
+
+    .airline-trait {
+        border-top: 5px solid #9cca22;
+        padding: 0 10px;
+    }
+}
+
+.ramification-edi {
+    .alert {
+        background: #fc6b60;
+        color: #fff;
+    }
+    .btn-add {
+        color: #fc6b60;
+    }
+
+    .edi-trait {
+        border-top: 5px solid #fc6b60;
+        padding: 0 10px;
+    }
+
+    .ramification-agent {
+        .alert {
+            background: #f4c73c;
+            color: #fff;
+        }
+        .btn-add {
+            color: #f4c73c;
+        }
+    }
+    
+    .ramification-route {
+        .alert {
+            background: #fc9046;
+            color: #fff;
+        }
+        .btn-add {
+            color: #fc9046;
+        }
+
+        .edi-trait {
+            border-top: 5px solid #fc9046;
+        }
+    }
+}

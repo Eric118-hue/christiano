@@ -7,3 +7,5 @@ node_modules/
 /cenv.js
 /vendor
 .history
+/config/webpack.gha.dev.js
+/config/webpack.gha.prod.js
