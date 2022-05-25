@@ -57,6 +57,13 @@ const Components = {
 
 class GHALucidWrapper extends LucidWrapper
 {
+    componentDidMount() {
+        $('a[href="/logout"]').on('click', e=>{
+            e.preventDefault()
+            $('#logout_form').trigger('submit')
+        })
+    }
+
     render() {
         return <Wrapper data={this.props.content} style={{minWidth:960}}altLogo="GHA">
             <Ry class={this.props.content.view} content={this.props.content} components={this.props.components}/>
@@ -65,6 +72,9 @@ class GHALucidWrapper extends LucidWrapper
 		    		<i className="fa fa-2x fa-sync-alt fa-spin"></i> {trans("Patientez")}
 		    	</div>
 		    </div>
+            <form method='post' action='/logout' id='logout_form'>
+                <input type="hidden" name="_token" value={$('meta[name="csrf-token"]').attr('content')}/>
+            </form>
         </Wrapper>
     }
 }

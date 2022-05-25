@@ -7,6 +7,7 @@ const config = require("../cenv-gha");
 module.exports = {
   entry: {
     manager : './gha/managero.js',
+    gha: './gha/gha.js',
     cardit : './gha/cardit.js',
     ryadmin : './gha/admin.js'
   },
