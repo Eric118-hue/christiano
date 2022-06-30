@@ -144,7 +144,20 @@ $max-menu-level: 5;
 	line-height: 1.2;
 }
 
-.navbar-fixed-top {
+.navbar-right{
+	width: calc(100% - 450px) !important;
+	
+	@include max-screen($break-1024){
+		width: calc(100% - 350px) !important;
+	}
+
+	@include max-screen($break-medium){
+		width: calc(100% - 360px) !important;
+	}
+	@include max-screen($break-small){
+		width: calc(100% - 360px) !important;
+	}
+	
 	.navbar-brand {
 		img {
 			object-fit: cover;
@@ -261,12 +274,6 @@ $max-menu-level: 5;
 .btn.collapsed {
 	background:$stone;
     border-color: $stone;
-}
-
-@media screen and (max-width: 1024px) {
-	.navbar-fixed-top .navbar-right {
-		width: calc(100% - 290px) !important;
-	}
 }
 
 .row-danger td {

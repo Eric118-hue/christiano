@@ -1,52 +1,39 @@
-/*
-  Icon Font: leg2
-*/
-
 @font-face {
-  font-family: "leg2";
-  src: url("./leg2_ed9b993207da7751fc45a48aa5a761a5.eot");
-  src: url("./leg2_ed9b993207da7751fc45a48aa5a761a5.eot?#iefix") format("embedded-opentype"),
-       url("./leg2_ed9b993207da7751fc45a48aa5a761a5.woff2") format("woff2"),
-       url("./leg2_ed9b993207da7751fc45a48aa5a761a5.woff") format("woff"),
-       url("./leg2_ed9b993207da7751fc45a48aa5a761a5.ttf") format("truetype"),
-       url("./leg2_ed9b993207da7751fc45a48aa5a761a5.svg#leg2") format("svg");
-  font-weight: normal;
-  font-style: normal;
-}
-
-@media screen and (-webkit-min-device-pixel-ratio:0) {
-  @font-face {
     font-family: "leg2";
-    src: url("./leg2_ed9b993207da7751fc45a48aa5a761a5.svg#leg2") format("svg");
-  }
+    src: url("./leg2.eot?1e899b85d2568e39dbfa34da0ca34234#iefix") format("embedded-opentype"),
+url("./leg2.woff2?1e899b85d2568e39dbfa34da0ca34234") format("woff2"),
+url("./leg2.woff?1e899b85d2568e39dbfa34da0ca34234") format("woff");
 }
 
-[data-icon]:before { content: attr(data-icon); }
+i[class^="l2-"]:before, i[class*=" l2-"]:before {
+    font-family: leg2 !important;
+    font-style: normal;
+    font-weight: normal !important;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
 
-[data-icon]:before,
-.l2-arrival:before,
-.l2-departure:before,
-.l2-destination:before,
-.l2-receipt:before,
-.l2-resize:before,
+.l2-arrival:before {
+    content: "\f101";
+}
+.l2-departure:before {
+    content: "\f102";
+}
+.l2-destination:before {
+    content: "\f103";
+}
+.l2-receipt:before {
+    content: "\f104";
+}
+.l2-resize:before {
+    content: "\f105";
+}
+.l2-warehouse-gha:before {
+    content: "\f106";
+}
 .l2-warehouse:before {
-  display: inline-block;
-  font-family: "leg2";
-  font-style: normal;
-  font-weight: normal;
-  font-variant: normal;
-  line-height: 1;
-  text-decoration: inherit;
-  text-rendering: optimizeLegibility;
-  text-transform: none;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
-  font-smoothing: antialiased;
+    content: "\f107";
 }
-
-.l2-arrival:before { content: "\f100"; }
-.l2-departure:before { content: "\f101"; }
-.l2-destination:before { content: "\f102"; }
-.l2-receipt:before { content: "\f103"; }
-.l2-resize:before { content: "\f105"; }
-.l2-warehouse:before { content: "\f104"; }

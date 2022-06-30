@@ -279,13 +279,6 @@ $max-menu-level: 5;
 	}
 }
 
-
-@media screen and (max-width: 1024px) {
-	.navbar-fixed-top .navbar-right {
-		width: calc(100% - 290px) !important;
-	}
-}
-
 .vol-container .card-bureau .form-group .transport-datepicker input:not(.bs-default), .vol-container .card-bureau .form-group .transport-datepicker  select {
 	margin: 0;
 }

@@ -65,7 +65,7 @@ class GHALucidWrapper extends LucidWrapper
     }
 
     render() {
-        return <Wrapper data={this.props.content} style={{minWidth:960}}altLogo="GHA">
+        return <Wrapper data={this.props.content} style={{minWidth:960}}altLogo="GHA AIRMAILDATA">
             <Ry class={this.props.content.view} content={this.props.content} components={this.props.components}/>
             <div className="ry-float-loading">
 		    	<div className="ry loading-content">
