@@ -8,6 +8,7 @@ import Mailmanifest from './Mailmanifest';
 import RoadClient from './RoadClient';
 import Postoffice from './Postoffice';
 import Dashboard from './Dashboard';
+import Charges from './Charges';
 
 const Components = {
     Setup : Setup,
@@ -19,7 +20,8 @@ const Components = {
     Mailmanifest,
 	RoadClient,
 	Postoffice,
-    Dashboard
+    Dashboard,
+    Charges
 }
 
 export default Components;

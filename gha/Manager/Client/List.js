@@ -4,7 +4,6 @@ import trans from '../../translations';
 import swal from 'sweetalert2';
 import $ from 'jquery';
 import Modelizer from 'ryvendor/Ry/Core/Modelizer';
-import { CUSTOMER_TYPES } from './Organisation';
 
 class List extends NavigableModel
 {
@@ -60,71 +59,11 @@ class List extends NavigableModel
     }
 
     item(customer, key) {
-        let badge_color = 'azur'
-        switch(customer.type) {
-            case 'air':
-                badge_color = 'rose'
-                break;
-            case 'gsa':
-                badge_color = 'blue'
-                break;
-            case 'land':
-                badge_color = 'turquoise'
-                break;
-            case 'mix':
-                badge_color = 'violet'
-                break;
-			default:
-			case 'water':
-                badge_color = 'azur'
-                break;
-        }
-        const mailmanifest_checked = customer.nsetup.mail_manifest==1 && customer.companies.length>0 && customer.companies.filter(it=>it.nsetup.mail_manifest==1).length==customer.companies.length
-        const fwb_checked = customer.nsetup.fwb==1 && customer.companies.length>0 && customer.companies.filter(it=>it.nsetup.fwb==1).length==customer.companies.length
         return <tr key={`customer-${customer.id}`}>
             <td>{customer.id}</td>
             <td>{customer.facturable.name}</td>
             <td>
-                <div className={`badge badge-${badge_color}`}>{CUSTOMER_TYPES[customer.type]}</div>
-            </td>
-            <td className="text-center">
-                {customer.type=='airline'?customer.facturable.icao_code:'--'}
-            </td>
-            <td className="text-center">
-                {customer.type=='airline'?customer.facturable.iata_code:'--'}
-            </td>
-            <td className="text-center">
-                {customer.type=='airline'?customer.facturable.edi_code:'--'}
-            </td>
-            <td className="text-center">
-                <label className="fancy-checkbox">
-                    <input type="checkbox" checked={customer.nsetup.resdit?true:false} onChange={e=>this.handleSetup(e, key, 'resdit')} value="1"/>
-                    <span></span>
-                </label>
-            </td>
-            <td className="text-center">
-                <label className="fancy-checkbox">
-                    <input type="checkbox" checked={fwb_checked} onChange={e=>this.handleSetup(e, key, 'fwb')} value="1"/>
-                    <span></span>
-                </label>
-            </td>
-            <td className="text-center">
-                <label className="fancy-checkbox">
-                    <input type="checkbox" checked={customer.nsetup.invoice?true:false} onChange={e=>this.handleSetup(e, key, 'invoice')} value="1"/>
-                    <span></span>
-                </label>
-            </td>
-            <td className="text-center">
-                <label className="fancy-checkbox">
-                    <input type="checkbox" checked={customer.nsetup.stat?true:false} onChange={e=>this.handleSetup(e, key, 'stat')} value="1"/>
-                    <span></span>
-                </label>
-            </td>
-            <td className="text-center">
-                <label className="fancy-checkbox">
-                    <input type="checkbox" checked={mailmanifest_checked} onChange={e=>this.handleSetup(e, key, 'mail_manifest')} value="1"/>
-                    <span></span>
-                </label>
+                <div className={`badge badge-rose`}>{trans('GHA')}</div>
             </td>
             <td className="text-right">
                 <a className="btn btn-primary" href={`/client_edit?id=${customer.id}`}><i className="fa fa-edit"></i> {trans('Éditer')}</a>
@@ -167,14 +106,6 @@ class List extends NavigableModel
                                 <th>ID</th>
                                 <th>{trans('Nom')}</th>
                                 <th>{trans('Type')}</th>
-                                <th>{trans('Code OACI')}</th>
-                                <th>{trans('Code IATA')}</th>
-                                <th>{trans('Code GXS')}</th>
-                                <th className="text-uppercase">{trans('RESDIT')}</th>
-                                <th className="text-uppercase">{trans('AWB/FWB')}</th>
-                                <th className="text-uppercase">{trans('Facturation')}</th>
-                                <th className="text-uppercase">{trans('Stats')}</th>
-                                <th className="text-uppercase">{trans('Mail Manifest')}</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -194,11 +125,11 @@ class List extends NavigableModel
 
 Modelizer(List)
 
-class AirlineList extends Component
+class GHAList extends Component
 {
     render() {
         return <List store={this.props.store} data={this.props.data.data}/>
     }
 }
 
-export default AirlineList;
+export default GHAList;

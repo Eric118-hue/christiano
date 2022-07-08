@@ -3,11 +3,8 @@ import trans from '../../translations';
 import Modelizer from '../../../vendor/Ry/Core/Modelizer';
 import $ from 'jquery';
 import MultiForm from '../../../vendor/Ry/Admin/User/Multiform';
-import Organisation from './Organisation';
 import swal from 'sweetalert2';
-import LandTab from './Tabs/Land';
-import WaterTab from './Tabs/Water';
-import AirTab from './Tabs/Air';
+import AirportTab from './Tabs/Airport';
 import './Form.scss';
 
 class Form extends Component
@@ -20,7 +17,6 @@ class Form extends Component
             errors : [],
             errorMessages : [],
             oncevalidate : false,
-            type : this.models('props.data.row.type', 'air'),
             name_search : this.models('props.data.row.facturable.name'),
             airlines : [],
             select_airline : false,
@@ -28,7 +24,6 @@ class Form extends Component
         }
         this.handleSelectAirline = this.handleSelectAirline.bind(this)
         this.handleSearch = this.handleSearch.bind(this)
-        this.handleTypeChange = this.handleTypeChange.bind(this)
         this.handleNameChange = this.handleNameChange.bind(this)
         this.offClick = this.offClick.bind(this)
         this.removeContact = this.removeContact.bind(this)
@@ -72,10 +67,6 @@ class Form extends Component
         this.setState({
             name_search : event.target.value
         })
-    }
-
-    handleTypeChange(event, type) {
-        this.setState({type})
     }
 
     handleSearch(event) {
@@ -143,56 +134,13 @@ class Form extends Component
                 $('#tab-form a[href="#client-account"]').tab('show')
                 notabshown = false
             }
-            if(this.refs.client_form) {
-                if(this.state.type=='air' && !this.models('state.facturable.id', false)) {
-                    errors.push('no_airline_match')
-                    errorMessages.push(trans("La compagnie aérienne n'est pas valide."))
+            if(this.refs.airportTab) {
+                let airport_errors = this.refs.airportTab.validate()
+                if(airport_errors.length>0) {
+                    errors = errors.concat(airport_errors)
+                    errorMessages.push(trans("Veuillez remplir des aéroports."))
                     if(!notabshown) {
-                        $('#tab-form a[href="#client-account"]').tab('show')
-                        notabshown = false
-                    }
-                }
-            }
-            if(this.refs.organisation) {
-                let organisation_errors = this.refs.organisation.validate()
-                if(organisation_errors.length>0) {
-                    errors = errors.concat(organisation_errors)
-                    errorMessages.push(trans("Veuillez remplir l'organisation."))
-                    if(!notabshown) {
-                        $('#tab-form a[href="#organisation"]').tab('show')
-                        notabshown = false
-                    }
-                }
-            }
-            if(this.refs.airTab) {
-                let air_errors = this.refs.airTab.validate()
-                if(air_errors.length>0) {
-                    errors = errors.concat(air_errors)
-                    errorMessages.push(trans("Veuillez remplir airlines."))
-                    if(!notabshown) {
-                        $('#tab-form a[href="#air"]').tab('show')
-                        notabshown = false
-                    }
-                }
-            }
-            if(this.refs.landTab) {
-                let land_errors = this.refs.landTab.validate()
-                if(land_errors.length>0) {
-                    errors = errors.concat(land_errors)
-                    errorMessages.push(trans("Veuillez remplir road."))
-                    if(!notabshown) {
-                        $('#tab-form a[href="#land"]').tab('show')
-                        notabshown = false
-                    }
-                }
-            }
-            if(this.refs.WaterTab) {
-                let water_errors = this.refs.waterTab.validate()
-                if(water_errors.length>0) {
-                    errors = errors.concat(water_errors)
-                    errorMessages.push(trans("Veuillez remplir maritime."))
-                    if(!notabshown) {
-                        $('#tab-form a[href="#water"]').tab('show')
+                        $('#tab-form a[href="#airports"]').tab('show')
                         notabshown = false
                     }
                 }
@@ -236,110 +184,37 @@ class Form extends Component
                         <ul className="nav nav-tabs" role="tablist" id="tab-form">
                             <li className="nav-item">
                                 <a className={`nav-link ${this.state.tab=='client-account'?'active':''}`}
-                        data-toggle="tab" href={`#client-account`} role="tab"
-                        aria-controls="client-account"
-                        aria-selected="true">{trans('Compte client')}</a>
+                                data-toggle="tab" href={`#client-account`} role="tab"
+                                aria-controls="client-account"
+                                aria-selected="true">{trans('Compte client')}</a>
                             </li>
-                            {this.props.data.row.id?<React.Fragment>
-                                {this.models('props.data.row.transport_types', []).indexOf('air')>=0?<li className="nav-item">
-                                    <a className={`nav-link ${this.state.tab=='air'?'active':''}`}
-                            data-toggle="tab" href={`#air`} role="tab"
-                            aria-controls="air">{trans('Airlines')}</a>
-                                </li>:null}
-                                {this.models('props.data.row.transport_types', []).indexOf('land')>=0?<li className="nav-item">
-                                    <a className={`nav-link ${this.state.tab=='land'?'active':''}`}
-                            data-toggle="tab" href={`#land`} role="tab"
-                            aria-controls="land">{trans('Roads')}</a>
-                                </li>:null}
-                                {this.models('props.data.row.transport_types', []).indexOf('water')>=0?<li className="nav-item">
-                                    <a className={`nav-link ${this.state.tab=='water'?'active':''}`}
-                            data-toggle="tab" href={`#water`} role="tab"
-                            aria-controls="water">{trans('Maritimes')}</a>
-                                </li>:null}
-                                <li className="nav-item">
-                                    <a className={`nav-link ${this.state.tab=='organisation'?'active':''}`}
-                            data-toggle="tab" href={`#organisation`} role="tab"
-                            aria-controls="organisation">{trans('Organisation')}</a>
-                                </li>
-                                <li className="nav-item">
-                                    <a className={`nav-link ${this.state.tab=='pricing'?'active':''}`}
-                            data-toggle="tab" href={`#pricing`} role="tab"
-                            aria-controls="pricing">{trans('Tarifications')}</a>
-                                </li>
-                                <li className="nav-item">
-                                    <a className={`nav-link`} href={`/carts?customer_id=${this.props.data.row.id}`}
-                            aria-controls="invoices">{trans('Facturations')}</a>
-                                </li>
-                            </React.Fragment>:null}
+                            {this.props.data.row.id?<li className="nav-item">
+                                    <a className={`nav-link ${this.state.tab=='airports'?'active':''}`}
+                            data-toggle="tab" href={`#airports`} role="tab"
+                            aria-controls="airports">{trans('Aéroports')}</a>
+                            </li>:null}
                         </ul>
                         <div className="tab-content border-bottom border-left border-right p-4 mb-4">
                             <div className={`tab-pane ${this.state.tab=='client-account'?'active':''} first-section`}
                             id={`client-account`} role="tabpanel" aria-labelledby="client-account-tab">
-                                <div className="row">
-                                    <div className="col-md-1-10">
-                                        <div className="custom-control custom-radio">
-                                            <input type="radio" id="type-air" name="type" className="custom-control-input" onChange={event=>this.handleTypeChange(event, 'air')} checked={this.state.type=='air'} value="air"/>
-                                            <label className="custom-control-label" htmlFor="type-air">{trans('Compagnie aérienne')}</label>
-                                        </div>
-                                    </div>
-                                    <div className="col-md-1-10">
-                                        <div className="custom-control custom-radio">
-                                            <input type="radio" id="type-gsa" name="type" className="custom-control-input" onChange={event=>this.handleTypeChange(event, 'gsa')} checked={this.state.type=='gsa'} value="gsa"/>
-                                            <label className="custom-control-label" htmlFor="type-gsa">{trans('GSA')}</label>
-                                        </div>
-                                    </div>
-                                    <div className="col-md-1-10">
-                                        <div className="custom-control custom-radio">
-                                            <input type="radio" id="type-land" name="type" className="custom-control-input" onChange={event=>this.handleTypeChange(event, 'land')} checked={this.state.type=='land'} value="land"/>
-                                            <label className="custom-control-label" htmlFor="type-land">{trans('Road')}</label>
-                                        </div>
-                                    </div>
-									<div className="col-md-1-10">
-                                        <div className="custom-control custom-radio">
-                                            <input type="radio" id="type-water" name="type" className="custom-control-input" onChange={event=>this.handleTypeChange(event, 'water')} checked={this.state.type=='water'} value="water"/>
-                                            <label className="custom-control-label" htmlFor="type-water">{trans('Maritime')}</label>
-                                        </div>
-                                    </div>
-                                    <div className="col-md-1-10">
-                                        <div className="custom-control custom-radio">
-                                            <input type="radio" id="type-mix" name="type" className="custom-control-input" onChange={event=>this.handleTypeChange(event, 'mix')} checked={this.state.type=='mix'} value="mix"/>
-                                            <label className="custom-control-label" htmlFor="type-mix">{trans('Mix')}</label>
-                                        </div>
-                                    </div>
-									{this.state.type=='mix'?<React.Fragment>
-	                                    <div className="col-md-2">
-	                                        <div className="custom-control custom-checkbox">
-	                                            <input type="checkbox" id="mix-air" name="nsetup[transport_types][]" className="custom-control-input" defaultChecked={this.models('props.data.row.nsetup.transport_types', ['air']).indexOf('air')>=0} value="air"/>
-	                                            <label className="custom-control-label" htmlFor="mix-air">{trans('Compagnie aérienne')}</label>
-	                                        </div>
-	                                    </div>
-	                                    <div className="col-md-2">
-	                                        <div className="custom-control custom-checkbox">
-	                                            <input type="checkbox" id="mix-land" name="nsetup[transport_types][]" className="custom-control-input" defaultChecked={this.models('props.data.row.nsetup.transport_types', ['land']).indexOf('land')>=0} value="land"/>
-	                                            <label className="custom-control-label" htmlFor="mix-land">{trans('Road')}</label>
-	                                        </div>
-	                                    </div>
-	                                    <div className="col-md-2">
-	                                        <div className="custom-control custom-checkbox">
-	                                            <input type="checkbox" id="mix-water" name="nsetup[transport_types][]" className="custom-control-input" defaultChecked={this.models('props.data.row.nsetup.transport_types', ['water']).indexOf('water')>=0} value="water"/>
-	                                            <label className="custom-control-label" htmlFor="mix-water">{trans('Maritime')}</label>
-	                                        </div>
-	                                    </div>
-	                                </React.Fragment>:null}
-                                </div>
                                     <div className="row">
 	                                    <div className="col-md-6">
-	                                        {this.state.type=='air'?<div className="form-group position-relative mt-2">
-	                                            <label className="control-label">{trans('Nom')}</label>
-	                                            <input type="text" value={this.state.name_search} onChange={this.handleSearch} onClick={this.handleSearch} name="name" autoComplete="bistrict" required className={`form-control ${this.state.errors.indexOf('no_airline_match')>=0?'error':''}`}/>
-	                                            <div className={`dropdown-menu overflow-auto w-100 ${this.state.select_airline?'show':''}`} style={{maxHeight:200}}>
-	                                                {this.state.airlines.map(airline=><a key={`airline-${airline.id}`} className="dropdown-item" href="#" onClick={e=>this.handleSelectAirline(e, airline)}>{airline.name}</a>)}
-	                                            </div>
-	                                        </div>:<div className="form-group position-relative mt-2">
-	                                            <label className="control-label">{trans('Nom')}</label>
-	                                            <input type="text" className="form-control" value={this.state.name_search} name="name" autoComplete="bistrict" onChange={this.handleNameChange} required/>
-	                                        </div>}
+	                                        <div className="form-inline position-relative mt-2">
+	                                            <label className="control-label col-md-3 justify-content-end">{trans('Nom')}</label>
+	                                            <input type="text" className="form-control col-md-9" value={this.state.name_search} name="name" autoComplete="bistrict" onChange={this.handleNameChange} required/>
+	                                        </div>
 	                                    </div>
+                                        <div className='col-md-6'>
+                                            <div className="form-inline position-relative mt-2">
+	                                            <label className="control-label col-md-3 justify-content-end">{trans('Abonnement')}</label>
+	                                            <input type="number" step={0.01} className="form-control col-md-5 mr-2" defaultValue={this.models('props.data.row.nsetup.subscription')} name="nsetup[subscription]" autoComplete="bistrict" required/> {trans(':currency/mois', {currency:this.models('props.data.default_currency.symbol', '€')})}
+
+	                                        </div>
+                                            <div className="form-inline position-relative mt-2">
+	                                            <label className="control-label col-md-3 justify-content-end">{trans('Tarif/kilos')}</label>
+	                                            <input type="number" step={0.01} className="form-control col-md-5 mr-2" defaultValue={this.models('props.data.row.nsetup.kg_rate')} name="nsetup[kg_rate]" autoComplete="bistrict" required/> {trans(':currency/Kg', {currency:this.models('props.data.default_currency.symbol', '€')})}
+	                                        </div>
+                                        </div>
 									</div>
 									<div>
                                     <div className="col-md-12 mt-2">
@@ -449,10 +324,7 @@ class Form extends Component
                                     </div>
                                 </div>
                             </div>
-                            {this.props.data.row.id && this.models('props.data.row.transport_types', []).indexOf('air')>=0?<AirTab ref="airTab" data={this.props.data}/>:null}
-                            {this.props.data.row.id && this.models('props.data.row.transport_types', []).indexOf('land')>=0?<LandTab ref="landTab" data={this.props.data}/>:null}
-                            {this.props.data.row.id && this.models('props.data.row.transport_types', []).indexOf('water')>=0?<WaterTab ref="waterTab" data={this.props.data}/>:null}
-                            <Organisation tabbed={true} ref="organisation" data={this.props.data} store={this.props.store}/>
+                            {this.props.data.row.id?<AirportTab ref="airportTab" store={this.props.store} data={this.props.data}/>:null}
                         </div>
                         <input type="hidden" name="id" value={this.models('props.data.row.id')}/>
                         <div className="d-flex justify-content-end">

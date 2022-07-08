@@ -6,3 +6,95 @@
     border: 1px solid #dee2e6;
     color: #5a5a5a;
 }
+
+.ramification-airport {
+
+    ul:not([class^="parsley"]) {
+        margin-left: 24px;
+    }
+
+    .alert {
+        background: #37b6db;
+        color: #fff;
+    }
+
+    ul, li {
+        position: relative;
+    }
+
+    li:not([class^="parsley"]) {
+        &::before {
+            position: absolute;
+            content: '\f0DA';
+            left: -12px;
+            font-family: "Font Awesome 5 Free" !important;
+        }
+
+       &::after {
+            position: absolute;
+            content: '';
+            left: -12px;
+        }
+
+        &::before {
+            border-top: 1px solid #dee2e6;
+            top: 32px;
+            height: 0;
+            width: 12px;
+            left: -12px;
+        }
+
+        &::after {
+            border-left: 1px solid #dee2e6;
+            height: calc(100% + 16px);
+            width: 0px;
+            top: -6px;
+            left: -12px;
+        }
+
+        &:last-child {
+            &::after {
+                height: 26px;
+            }
+        }
+
+        &:last-child::before {
+            top: 20px;
+        }
+
+        li {
+            &::before {
+                top: 24px;
+            }
+
+            li {
+                li {
+                    &::after {
+                        top: -16px;
+                    }
+                }
+            }
+        }
+    }
+
+    .fancy-checkbox input[type=checkbox]:checked + span:before {
+        transform: scale(.5);
+    }
+}
+
+.nav-client-active {
+    background-color: #00a3e6;
+    color: #fff !important;
+}
+
+.tab-nav-airline {
+    width: 210px;
+}
+
+.tab-content-airline {
+    width: calc(100% - 210px);
+}
+
+.nav-link-airline.active {
+    background-color: #00638a !important;
+}

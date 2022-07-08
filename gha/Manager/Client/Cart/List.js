@@ -256,7 +256,7 @@ class Invoice extends Component
                 <div className="tab-content border-bottom border-left border-right p-4 mb-4">
                     <div className={`tab-pane active`}
                         id={`invoices`} role="tabpanel" aria-labelledby="invoices-tab">
-                            <List data={{data:this.props.data.row.carts}} companies={this.props.data.row.companies} store={this.props.store} customerId={this.props.data.row.id} me={this.props.data.row}/>
+                            <List data={{data:this.props.data.row.carts}} companies={this.props.data.row.facturable.airports} store={this.props.store} customerId={this.props.data.row.id} me={this.props.data.row}/>
                         </div>
                     </div>
                 </div>
