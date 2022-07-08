@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import NavigableModel from '../../vendor/Ry/Core/NavigableModel'
-import trans from '../../app/translations';
+import trans from '../translations';
 import $ from 'jquery';
 import qs from 'qs';
 

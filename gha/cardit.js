@@ -5,7 +5,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Ry from '../vendor/Ry/Core/Ry';
 import Dropzone from '../vendor/Ry/Core/dropzone';
-import trans, {nophoto, LOADINGEND, LOADINGSTART} from '../app/translations';
+import trans, {nophoto, LOADINGEND, LOADINGSTART} from './translations';
 import __OPTIONTREE from '../vendor/Ry/Core/OptionTree';
 import __ADMINTOOLS from '../vendor/Ry/Admin/AdminTools';
 import __NAVIGATION_BY_ROLE from '../vendor/Ry/Admin/NavigationByRole';

@@ -1,5 +1,6 @@
 import Setup from './Setup';
-import Cardit from './Cardit';
+import CarditExport from './CarditExport';
+import CarditImport from './CarditImport';
 import Client from './Client';
 import User from './User';
 import Agent from './Agent';
@@ -12,7 +13,8 @@ import Charges from './Charges';
 
 const Components = {
     Setup : Setup,
-    Cardit : Cardit,
+    CarditExport,
+    CarditImport,
     Client : Client,
     User : User,
     Agent : Agent,

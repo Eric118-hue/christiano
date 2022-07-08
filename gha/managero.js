@@ -16,7 +16,7 @@ import __EDITOR from '../vendor/Ry/Profile/Editor';
 import __CATEGORIES from '../vendor/Ry/Categories';
 import __TUTO from '../vendor/Ry/Core/Tuto';
 import App from './App';
-import Cardit from './Manager/Cardit';
+import Cardit from './Manager/CarditExport';
 import $ from 'jquery';
 import trans from './translations';
 import Ry from '../vendor/Ry/Core/Ry';
