@@ -346,11 +346,11 @@ class Airport extends Component
                       {trans('Cover')} : 
                   </label>
                   <div className="custom-control custom-radio mr-2">
-                      <input type="radio" id={`airports-${airport.id}-airlines-${airline.id}-nsetup-cover-1`} name={`airports[${airport.id}][airlines][${airline.id}][nsetup][cover]`} className="custom-control-input" defaultChecked={true} value="1"/>
+                      <input type="radio" id={`airports-${airport.id}-airlines-${airline.id}-nsetup-cover-1`} name={`airports[${airport.id}][airlines][${airline.id}][nsetup][cover]`} className="custom-control-input" defaultChecked={this.cast(airline, 'nsetup.cover', 1)==1} value="1"/>
                       <label className="custom-control-label" htmlFor={`airports-${airport.id}-airlines-${airline.id}-nsetup-cover-1`}>{trans('Oui')}</label>
                   </div>
                   <div className="custom-control custom-radio">
-                      <input type="radio" id={`airports-${airport.id}-airlines-${airline.id}-nsetup-cover-0`} name={`airports[${airport.id}][airlines][${airline.id}][nsetup][cover]`} className="custom-control-input" defaultChecked={false} value="0"/>
+                      <input type="radio" id={`airports-${airport.id}-airlines-${airline.id}-nsetup-cover-0`} name={`airports[${airport.id}][airlines][${airline.id}][nsetup][cover]`} className="custom-control-input" defaultChecked={this.cast(airline, 'nsetup.cover', 0)==0} value="0"/>
                       <label className="custom-control-label" htmlFor={`airports-${airport.id}-airlines-${airline.id}-nsetup-cover-0`}>{trans('Non')}</label>
                   </div>
                 </div>
