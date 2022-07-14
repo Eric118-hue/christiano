@@ -9,13 +9,12 @@ import numeral from 'numeral';
 import Modelizer from 'ryvendor/Ry/Core/Modelizer';
 import swal from 'sweetalert2';
 import './List.scss';
-import sample from './sample.json';
 
 class List2 extends NavigableModel
 {
     constructor(props) {
         super(props)
-        this.endpoint = '/cardits'
+        this.endpoint = '/cardits/exports'
         this.model = 'cardit'
         this.nopaginate = true
         this.readOnly = false
@@ -682,11 +681,11 @@ class List2 extends NavigableModel
             
         switch(k) {
             case 0:
-                return <a className={`align-items-center badge badge-orange border-0`} href="#" style={{height:20,width:20}}><span></span><span></span> {true?null:<i className="icon-pencil"></i>}</a>
+                return <a className={`align-items-center badge badge-orange border-0`} href="#" style={{height:20,width:20}}><span></span><span></span></a>
             case 5:
                 return <a className="align-items-center cursor-default badge badge-theme border-0 text-white" href="#" style={{height:20,width:20}}>AMD</a>
             case 3:
-                return <a className="align-items-center cursor-default badge badge-blue border-0 text-white" href="#" style={{height:20,width:20}}>MLD</a>
+                return <a className="align-items-center cursor-default badge badge-turquoise border-0 text-white" href="#" style={{height:20,width:20}}><span></span></a>
             case 4:
                 return <a className="align-items-center cursor-default badge badge-army border-0 text-white" href="#" style={{height:20,width:20}}>IFTSTA</a>
             case 2:
@@ -1072,7 +1071,7 @@ class List1 extends List2
 {
     constructor(props) {
         super(props)
-        this.state.data = sample //this.props.data.data.data
+        this.state.data = this.props.data.data.data
         this.state.total = this.props.data.data.total
         let total_weight = 0
         let nreceptacles = 0

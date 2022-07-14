@@ -448,9 +448,30 @@ class Item extends Component
         super(props)
         this.state = {
             data : null,
-            open : false
+            open : false,
+            awb : this.models('props.data.lta.medias', []).length>0
         }
         this.detail = this.detail.bind(this)
+        this.toAwb = this.toAwb.bind(this)
+    }
+
+    toAwb(e) {
+        const awb = e.target.checked
+        this.setState({
+            awb
+        })
+        if(awb) {
+            this.props.store.dispatch({
+                type: 'insert_awb',
+                cardit: this.props.data
+            })
+        }
+        else {
+            this.props.store.dispatch({
+                type: 'delete_awb',
+                cardit: this.props.data
+            })
+        }
     }
 
     detail(e) {
@@ -494,11 +515,17 @@ class Item extends Component
                         {this.models('props.data.nsetup.exceptions.bgms')?<i className="fa fa-2x fa-exclamation-triangle ml-2 text-danger"></i>:null}
                         {this.props.readOnly?<a href={`#dialog/cardit_file?id=${this.props.data.id}`} className="mr-2"><i className="icon-info"></i></a>:(this.models('props.data.nsetup.message_function')==1?<b className="text-danger mr-2">1</b>:null)}<span className={`d-inline-block px-2 list-document-number ${(this.models('props.data.nsetup.message_function')==1 && this.props.readOnly)?'text-danger':''}`}>{this.props.data.nsetup.document_number}</span>
                         {this.models('props.data.nsetup.exceptions.bgms')?null:<a href="#" onClick={this.detail} className="btnAccord"><i className={`fa ${this.state.open?'fa-sort-up':'fa-sort-down'}`}></i></a>}
-                        {this.models('props.data.lta')?<React.Fragment>
-                            <a href={`#dialog/awb?cardit_id=${this.models('props.data.id')}`} target="_blank" className="btn-success ml-2 px-3 py-1 text-white w-auto" data-display="modal-xl">{trans('AWB')}</a>
-                            {this.models('props.data.lta.medias', []).filter(it=>it.descriptif=='ffr').length>0?<a href={`#dialog/ffr?cardit_id=${this.models('props.data.id')}`} className={`btn-azur ml-2 px-3 py-1 text-white w-auto`}>{trans('FFR')}</a>:null}
-                            {this.models('props.data.lta.medias', []).filter(it=>it.descriptif=='fwb').length>0?<a href={`#dialog/fwb?cardit_id=${this.models('props.data.id')}`} className={`btn-rose ml-2 px-3 py-1 text-white w-auto`}>{trans('FWB')}</a>:null}
-                        </React.Fragment>:null}
+                        <label className="fancy-checkbox m-0 ml-5">
+                            <input type="checkbox" checked={this.state.awb} onChange={this.toAwb} value="1"/>
+                            <span></span>
+                        </label>
+                        <div className='flex-fill justify-content-between'>
+                            {this.models('props.data.scans', []).length>0?<a href={`#dialog/scan?cardit_id=${this.models('props.data.id')}`} className="btn-theme ml-2 mr-5 text-capitalize px-3 py-1 text-white w-auto" data-display="modal-xl">{trans('Scan')}</a>:null}
+                            {this.models('props.data.nsetup.consignment_category.code')=='A'?<a href={trans('/cn38?id=:id', {id:this.props.data.id})} target="_blank" className="btn-orange ml-2 px-3 py-1 text-white w-auto">CN 38</a>
+                            :(this.models('props.data.nsetup.consignment_category.code')=='B' && mailclass_concat!='T')?<a href={trans('/cn41?id=:id', {id:this.props.data.id})} target="_blank" className="btn-orange ml-2 px-3 py-1 text-white w-auto">CN 41</a>
+                            :(this.models('props.data.nsetup.consignment_category.code')=='B' && mailclass_concat=='T')?<a href={trans('/cn41?id=:id', {id:this.props.data.id})} type="button" className="btn-orange ml-2 px-3 py-1 text-white w-auto">CN 47</a>:null}
+                            <a href={`#dialog/fwb?cardit_id=${this.models('props.data.id')}`} className={`btn-orange ml-2 px-3 py-1 text-white w-auto`}>{trans('CSD')}</a>
+                        </div>
                     </div>
                 </td>
                 <td>{this.models('props.data.nsetup.consignment_category.code')}</td>

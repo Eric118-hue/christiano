@@ -32,7 +32,7 @@ import Account from './Air/Account';
 import Display from '../vendor/Ry/Core/Page';
 import Footernav from './Footernav';
 
-__AIRLINE.Cardit.List = CarditList
+__GHA.CarditExport.List = CarditList
 
 const Components = {
 	App : {
@@ -161,7 +161,7 @@ class Cardit
 class Leg2LucidWrapper extends LucidWrapper
 {
     render() {
-        return <Wrapper data={this.props.content} style={{minWidth:960}} altLogo="AIRMAILDATA" footer={()=><Footernav/>}>
+        return <Wrapper data={this.props.content} style={{minWidth:960}} altLogo="GHA AIRMAILDATA" footer={()=><Footernav/>}>
 							<Ry class={this.props.content.view} content={this.props.content} components={this.props.components}/>
 							<div className="ry-float-loading">
 						<div className="ry loading-content">

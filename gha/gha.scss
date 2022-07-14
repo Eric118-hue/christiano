@@ -345,3 +345,30 @@ nav.navbar.navbar-fixed-top .navbar-right {
 .ry-float-loading {
 	z-index: 2000000001 !important;
 }
+
+@media screen and (max-width: 1024px) {
+	.navbar-fixed-top .navbar-right {
+		width: calc(100% - 290px) !important;
+	}
+}
+
+.navbar-right{
+	width: calc(100% - 450px) !important;
+	
+	@include max-screen($break-1024){
+		width: calc(100% - 350px) !important;
+	}
+
+	@include max-screen($break-medium){
+		width: calc(100% - 360px) !important;
+	}
+	@include max-screen($break-small){
+		width: calc(100% - 360px) !important;
+	}
+	
+	.navbar-brand {
+		img {
+			object-fit: cover;
+		}
+	}
+}

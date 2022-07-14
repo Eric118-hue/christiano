@@ -1,5 +1,5 @@
 import React from 'react';
-import List from 'ryvendor/Ry/Airline/Cardit/List';
+import List from 'ryvendor/Ry/Gha/Cardit/List';
 import Cardit, {FullDetail, StepView} from 'ryvendor/Ry/Airline/Cardit/Item';
 import Ry from 'ryvendor/Ry/Core/Ry';
 import moment from 'moment';
@@ -171,8 +171,9 @@ class CarditRow extends Cardit
                     </PopupBody>
                 </Popup></td>
             <td>{this.cast(this.props.data.transports.find(it=>it.pivot.step==0), 'reference')}</td>
+            <td>{moment(this.models('props.data.transports.0.departure_datetime_lt')).format('DD/MM/YYYY')}</td>
+            <td>{moment(this.models('props.data.transports.0.departure_datetime_lt')).format('HH:mm')}</td>
             <td className="p-2">{this.props.reception(this.props.data)}</td>
-            <td className="p-2">{this.props.completed(this.props.data)}</td>
         </tr>
         {(this.state.data && this.state.open)?<RoadFullDetail data={this.state.data} consignmentEvents={this.state.consignment_events} deliveryConsignmentEvents={this.state.delivery_consignment_events} store={this.props.store} readOnly={this.props.readOnly}/>:null}
     </React.Fragment>
@@ -196,9 +197,10 @@ class CarditList extends List
                 <th>{trans('Poids')}</th>
                 <th>{trans('Orig.')}</th>
                 <th>{trans('Dest.')}</th>
-                <th>{trans('Route')}</th>
-                <th>{trans('Réception')}</th>
-                <th>{trans('Trip completed')}</th>
+                <th>{trans('Nº de vol')}</th>
+                <th>{trans('Départ prévu le')}</th>
+                <th>{trans('à')}</th>
+                <th>{trans('REC')}</th>
             </tr>
         </thead>
         <tbody>
