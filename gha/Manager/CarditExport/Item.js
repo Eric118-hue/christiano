@@ -14,7 +14,7 @@ export class StepView extends Component
         super(props)
         this.state = {
             transportIndex : 0,
-            resdits : this.props.data.resdits
+            scans: []
         }
         this.assignate = this.assignate.bind(this)
         this.departure = this.departure.bind(this)
@@ -24,16 +24,13 @@ export class StepView extends Component
     componentDidMount() {
         this.props.store.subscribe(()=>{
             const storeState = this.props.store.getState()
-            if(storeState.type=='resdit') {
+            if(storeState.type=='scan') {
                 this.setState(state=>{
                     if(storeState.data) {
-                        state.resdits = state.resdits.concat(storeState.data)
+                        state.scans = state.scans.concat(storeState.data)
                     }
                     else if(storeState.reception) {
-                        state.resdits = state.resdits.concat(storeState.reception)
-                    }
-                    else if(storeState.delivery) {
-                        state.resdits = state.resdits.concat(storeState.delivery)
+                        state.scans = state.scans.concat(storeState.reception)
                     }
                     return state
                 })
@@ -66,42 +63,12 @@ export class StepView extends Component
         return <div className="recipientContainer">
             <div className="d-flex justify-content-center align-items-center stepContainer">
                 <div className="asideList">{this.props.data.nsetup.handover_origin_location.iata}</div>
-                <div className={`recipientList d-flex flex-column justify-content-between align-items-center ${this.props.step=='reception'?'red':(this.state.resdits.find(item=>{
+                <div className={`recipientList d-flex flex-column justify-content-between align-items-center ${this.props.step=='reception'?'red':(this.state.scans.find(item=>{
                         return (item.reception && item.reception.length>0) || item.event=='reception'
                     })?'text-success':'')}`}>
                     <div className="mouse-pointable w-100" onClick={this.props.reception}>
                         <i className="font-50 l2-receipt"></i>
-                        <span className="text-capitalize">{trans('Réception')}</span>
-                    </div>
-                    <i className="fa fa-circle"></i>
-                </div>
-                {this.props.data.nsetup.transports.map((transport, index)=><React.Fragment key={`cardit-${this.props.data.id}-transport-${index}`}>
-                    
-                    <div className={`recipientList d-flex flex-column justify-content-between align-items-center  ${(this.props.step=='departure' && this.state.transportIndex==index)?'red':(this.state.resdits.find(item=>{
-                        return item.event == 'departure' && item.transport_step==index
-                    })?'text-success':'')}`}>
-                        <div className="mouse-pointable w-100" onClick={()=>this.departure(index)}>
-                            <i className="font-50 l2-departure"></i>
-                            <span className="text-capitalize">{trans('Départ')}</span>
-                        </div>
-                        <i className="fa fa-circle"></i>
-                    </div>
-                    <div className={`recipientList d-flex flex-column justify-content-between align-items-center ${(this.props.step=='arrival' && this.state.transportIndex==index)?'red':(this.state.resdits.find(item=>{
-                        return item.event == 'arrival' && item.transport_step==index
-                    })?'text-success':'')}`}>
-                        <div className="mouse-pointable w-100" onClick={()=>this.arrival(index)}>
-                            <i className="font-50 l2-arrival"></i>
-                            <span className="text-capitalize">{trans('Arrivée')}</span>
-                        </div>
-                        <i className="fa fa-circle"></i>
-                    </div>
-                </React.Fragment>)}
-                <div className={`recipientList d-flex flex-column justify-content-between align-items-center last ${this.props.step=='delivery'?'red':(this.state.resdits.find(item=>{
-                        return item.event == 'delivery'
-                    })?'text-success':'')}`}>
-                    <div className="mouse-pointable w-100" onClick={this.props.delivery}>
-                        <i className="font-50 l2-destination"></i>
-                        <span className="text-capitalize">{trans('Livraison')}</span>
+                        <span className="text-capitalize">{trans('MLD REC')}</span>
                     </div>
                     <i className="fa fa-circle"></i>
                 </div>
@@ -226,9 +193,9 @@ export class FullDetail extends Component
         }
         this.unsubscribe = this.props.store.subscribe(()=>{
             const storeState = this.props.store.getState()
-            if(storeState.type=='resdit' && storeState.data && storeState.data.length>0) {
+            if(storeState.type=='scan' && storeState.data && storeState.data.length>0) {
                 this.setState(state=>{
-                    state.data.resdits = state.data.resdits.concat(storeState.data)
+                    state.data.scans = state.data.scans.concat(storeState.data)
                     return state
                 })
             }
@@ -332,35 +299,12 @@ export class FullDetail extends Component
     }
 
     getHeadStep() {
-        let headStep = null;
-        let transport = this.props.data.transports.find(it=>it.pivot.step==this.state.transport_index)
-        switch(this.state.step) {
-            case 'reception':
-                headStep = <div className="centerText">
-                    {trans("Réception : récipients au départ de l'aéroport d'origine")} : {this.props.data.nsetup.handover_origin_location.country.nom} - {this.props.data.nsetup.handover_origin_location.iata} - {this.props.data.nsetup.handover_origin_location.name}
-                </div>
-                break;
-            case 'delivery':
-                headStep = <div className="centerText">
-                    {trans("Livraison des récipients à destination : :country_name - :iata - :airport_name", {
-                        country_name : this.models('props.data.nsetup.handover_destination_location.country.nom', this.models('props.data.nsetup.handover_destination_location.adresse.ville.country.nom')),
-                        iata : this.models('props.data.nsetup.handover_destination_location.iata', this.models('props.data.nsetup.handover_destination_location.cardit')),
-                        airport_name : this.props.data.nsetup.handover_destination_location.name
-                    })}
-                </div>
-                break;
-            case 'departure':
-                headStep = <div className="centerText">
-                    {trans("Départ des récipients sur le vol Nº:vol au départ de l'aéroport :country_name - :iata - :airport_name", {vol:transport.reference, country_name:transport.departure_location.country.nom, iata:transport.departure_location.iata, airport_name:transport.departure_location.name})}
-                </div>
-                break;
-            case 'arrival':
-                headStep = <div className="centerText">
-                    {trans("Arrivée des récipients à l'aéroport :airport_name (:iata) - :country_name - Vol :vol", {vol:transport.reference, airport_name:this.cast(transport, 'arrival_location.name'), iata:this.cast(transport, 'arrival_location.iata', this.cast(transport, 'arrival_location.cardit')), country_name:this.cast(transport, 'arrival_location.country.nom', this.cast(transport, 'arrival_location.adresse.ville.country.nom'))})}
-                </div>
-                break;
-        }
-        return headStep
+        return <div className="centerText">
+            {trans("MLD REC envoyé le :date à :airline", {
+                date: moment().format('DD/MM/YYYY'),
+                airline: this.models('props.data.nsetup.transports.0.airlines.0')
+            })}
+        </div>
     }
 
     render() {
@@ -483,7 +427,7 @@ class Item extends Component
             return false
         }
         $.ajax({
-            url : '/cardit',
+            url : '/cardit_export',
             data : {
                 id : this.props.data.id,
                 json : true

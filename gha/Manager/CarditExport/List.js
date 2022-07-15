@@ -1091,37 +1091,87 @@ class List0 extends List1
     constructor(props) {
         super(props)
         this.progressive = true
+        this.state.awbs = []
+    }
+
+    componentDidMount() {
+        super.componentDidMount()
+        this.props.store.subscribe(()=>{
+            const storeState = this.props.store.getState()
+            if(storeState.type==='insert_awb') {
+                this.setState(state=>{
+                    state.awbs.push(storeState.cardit)
+                    return state
+                })
+            }
+            else if(storeState.type==='delete_awb') {
+                this.setState(state=>{
+                    state.awbs = state.awbs.filter(it=>it.id!=storeState.cardit.id)
+                    return state
+                })
+            }
+        })
     }
 
     table() {
-        return <table className="table table-bordered table-hover table-striped table-liste" cellSpacing="0" cellPadding="0" id="recipientTable">
-            <thead>
-                <tr>
-                    <th>{trans('Emis le')}</th>
-                    <th>{trans('à')}</th>
-                    <th>{trans('N° d’expédition')}</th>
-                    <th>{trans('Cat.')}</th>
-                    <th>{trans('Clas.')}</th>
-                    <th>{trans('Qté')}</th>
-                    <th>{trans('Poids')}</th>
-                    <th>{trans('Orig.')}</th>
-                    <th>{trans('Escale')}</th>
-                    <th>{trans('Dest.')}</th>
-                    <th>{trans('Nº de vol')}</th>
-                    <th>{trans('Départ prévu le')}</th>
-                    <th>{trans('à')}</th>
-                    <th>{trans('REC')}</th>
-                </tr>
-            </thead>
-            <tbody>
-                {this.state.data.map(item=><Cardit readOnly={this.readOnly} key={`cardit-${item.id}`} escales={this.escales} data={item} reception={this.reception} consignmentEvents={this.props.data.consignment_events} deliveryConsignmentEvents={this.props.data.delivery_consignment_events} store={this.props.store}/>)}
-            </tbody>
-            <tfoot className={(this.progressive && this.state.page<this.state.last_page)?'':'d-none'}>
-                <tr>
-                    <td ref="overscroller" colSpan="14" className={`position-relative py-3`}><i className="spinner"></i></td>
-                </tr>
-            </tfoot>
-        </table>
+        return <React.Fragment>
+            <table className="table table-bordered table-hover table-striped table-liste" cellSpacing="0" cellPadding="0" id="recipientTable">
+                <thead>
+                    <tr>
+                        <th>{trans('Emis le')}</th>
+                        <th>{trans('à')}</th>
+                        <th>{trans('N° d’expédition')}</th>
+                        <th>{trans('Cat.')}</th>
+                        <th>{trans('Clas.')}</th>
+                        <th>{trans('Qté')}</th>
+                        <th>{trans('Poids')}</th>
+                        <th>{trans('Orig.')}</th>
+                        <th>{trans('Escale')}</th>
+                        <th>{trans('Dest.')}</th>
+                        <th>{trans('Nº de vol')}</th>
+                        <th>{trans('Départ prévu le')}</th>
+                        <th>{trans('à')}</th>
+                        <th>{trans('REC')}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {this.state.data.map(item=><Cardit readOnly={this.readOnly} key={`cardit-${item.id}`} escales={this.escales} data={item} reception={this.reception} consignmentEvents={this.props.data.consignment_events} deliveryConsignmentEvents={this.props.data.delivery_consignment_events} store={this.props.store}/>)}
+                </tbody>
+                <tfoot className={(this.progressive && this.state.page<this.state.last_page)?'':'d-none'}>
+                    <tr>
+                        <td ref="overscroller" colSpan="14" className={`position-relative py-3`}><i className="spinner"></i></td>
+                    </tr>
+                </tfoot>
+            </table>
+            <div className={`awbs border border-turquoise m-5 p-3 position-fixed rounded ${this.state.awbs.length>0?'':'d-none'}`}>
+                <div className='text-center'><strong>{trans("Assemblage des numéros d'expédition sur une AWB")}</strong></div>
+                <div className='awbs-content'>
+                    {this.state.awbs.map(awb=><div key={`awbed-${awb.id}`} className='d-flex justify-content-between border-bottom py-2'>{awb.nsetup.document_number}</div>)}
+                </div>
+                <div className="input-group">
+                    <input type="text" aria-label="First name" className="form-control" placeholder={trans('Code Cie')}/>
+                    <input type="text" aria-label="Last name" className="form-control" placeholder={trans('Nº AWB')}/>
+                </div>
+                <div className="row my-2">
+                    <div className="col-6 input-group">
+                        <div className="input-group-prepend">
+                            <div className="input-group-text">{trans('Qté')}</div>
+                        </div>
+                        <input type="text" className="form-control" readOnly={true} value={this.state.nawbs}/>
+                    </div>
+                    <div className="col-6 input-group">
+                        <div className="input-group-prepend">
+                            <div className="input-group-text">{trans('Poids')}</div>
+                        </div>
+                        <input type="text" className="form-control" readOnly={true} value={this.state.wawbs}/>
+                    </div>
+                </div>
+                <div className='row px-3'>
+                    <button className='col-6 btn btn-grey text-light' type='button'>{trans('Annuler')}</button>
+                    <button className='col-6 btn btn-turquoise text-light' type='button'>{trans('Confirmer')}</button>
+                </div>
+            </div>
+        </React.Fragment>
     }
 }
 
