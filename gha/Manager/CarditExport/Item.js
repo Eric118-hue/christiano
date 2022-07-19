@@ -399,11 +399,19 @@ class Item extends Component
         this.toAwb = this.toAwb.bind(this)
     }
 
+    componentDidMount() {
+        this.props.store.subscribe(()=>{
+            const storeState = this.props.store.getState()
+            if((storeState.type==='insert_awb' || storeState.type==='delete_awb') && storeState.cardit.id === this.props.data.id) {
+                this.setState({
+                    awb: storeState.type==='insert_awb'
+                })
+            }
+        })
+    }
+
     toAwb(e) {
         const awb = e.target.checked
-        this.setState({
-            awb
-        })
         if(awb) {
             this.props.store.dispatch({
                 type: 'insert_awb',

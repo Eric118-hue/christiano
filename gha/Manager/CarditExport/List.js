@@ -931,7 +931,7 @@ class List2 extends NavigableModel
                                         </select>
                                     </div>
                                 </div>
-                                <div className={`pr-md-0`}>
+                                <div className={`col-md-2`}>
                                     <div className="align-items-baseline d-flex form-group ml-2">
                                         <label className="control-label mr-2">{trans('Origine')}</label>
                                         <select className="form-control" value={this.state.filter.handover_origin_location} onChange={e=>this.onFilter(e, 'handover_origin_location')} ref="origin">
@@ -940,9 +940,9 @@ class List2 extends NavigableModel
                                         </select>
                                     </div>
                                 </div>
-                                <div className={`pr-md-0`}>
+                                <div className={`col-md-2`}>
                                     <div className="align-items-baseline d-flex form-group ml-2">
-                                        <label className="control-label mr-2">{trans('Destination')}</label>
+                                        <label className="control-label mr-2">{trans('Dest.')}</label>
                                         <select className="form-control" value={this.state.filter.handover_destination_location} onChange={e=>this.onFilter(e, 'handover_destination_location')} ref="destination">
                                             <option value="">{trans('Tous')}</option>
                                             {this.props.data.select_destinations.map(handover_destination_location=><option key={`select-handover-destination-location-${handover_destination_location.iata}`} value={handover_destination_location.iata}>{handover_destination_location.iata}</option>)}
@@ -1092,6 +1092,10 @@ class List0 extends List1
         super(props)
         this.progressive = true
         this.state.awbs = []
+        this.state.nawbs = 0
+        this.state.wawbs = 0
+        this.removeAwb = this.removeAwb.bind(this)
+        this.cancelAwbs = this.cancelAwbs.bind(this)
     }
 
     componentDidMount() {
@@ -1101,15 +1105,43 @@ class List0 extends List1
             if(storeState.type==='insert_awb') {
                 this.setState(state=>{
                     state.awbs.push(storeState.cardit)
+                    state.nawbs = 0
+                    state.wawbs = 0
+                    state.awbs.map(awb=>{
+                        state.nawbs += parseInt(awb.nsetup.nreceptacles)
+                        state.wawbs += parseFloat(awb.nsetup.wreceptacles)
+                    })
                     return state
                 })
             }
             else if(storeState.type==='delete_awb') {
                 this.setState(state=>{
                     state.awbs = state.awbs.filter(it=>it.id!=storeState.cardit.id)
+                    state.nawbs = 0
+                    state.wawbs = 0
+                    state.awbs.map(awb=>{
+                        state.nawbs += parseInt(awb.nsetup.nreceptacles)
+                        state.wawbs += parseFloat(awb.nsetup.wreceptacles)
+                    })
                     return state
                 })
             }
+        })
+    }
+
+    removeAwb(awb) {
+        this.props.store.dispatch({
+            type: 'delete_awb',
+            cardit: awb
+        })
+    }
+
+    cancelAwbs() {
+        this.state.awbs.map(awb=>{
+            this.props.store.dispatch({
+                type: 'delete_awb',
+                cardit: awb
+            })
         })
     }
 
@@ -1146,29 +1178,32 @@ class List0 extends List1
             <div className={`awbs border border-turquoise m-5 p-3 position-fixed rounded ${this.state.awbs.length>0?'':'d-none'}`}>
                 <div className='text-center'><strong>{trans("Assemblage des numéros d'expédition sur une AWB")}</strong></div>
                 <div className='awbs-content'>
-                    {this.state.awbs.map(awb=><div key={`awbed-${awb.id}`} className='d-flex justify-content-between border-bottom py-2'>{awb.nsetup.document_number}</div>)}
+                    {this.state.awbs.map(awb=><div key={`awbed-${awb.id}`} onClick={()=>this.removeAwb(awb)} role="button" className='d-flex justify-content-between align-items-center border-bottom py-2'>
+                        <span>{awb.nsetup.document_number}</span>
+                        <span className="text-turquoise"><i className='fa fa-square-full'></i></span>
+                    </div>)}
                 </div>
-                <div className="input-group">
-                    <input type="text" aria-label="First name" className="form-control" placeholder={trans('Code Cie')}/>
+                <div className="input-group mt-2">
+                    <input type="text" aria-label="First name" className="form-control" placeholder={trans('Préfixe')}/>
                     <input type="text" aria-label="Last name" className="form-control" placeholder={trans('Nº AWB')}/>
                 </div>
                 <div className="row my-2">
                     <div className="col-6 input-group">
                         <div className="input-group-prepend">
-                            <div className="input-group-text">{trans('Qté')}</div>
+                            <div className="input-group-text font-10">{trans('Qté')}</div>
                         </div>
-                        <input type="text" className="form-control" readOnly={true} value={this.state.nawbs}/>
+                        <input type="text" className="form-control" value={this.state.nawbs} onChange={e=>null}/>
                     </div>
                     <div className="col-6 input-group">
                         <div className="input-group-prepend">
-                            <div className="input-group-text">{trans('Poids')}</div>
+                            <div className="input-group-text font-10">{trans('Poids')}</div>
                         </div>
-                        <input type="text" className="form-control" readOnly={true} value={this.state.wawbs}/>
+                        <input type="text" className="form-control" value={numeral(this.state.wawbs).format('0.00')} onChange={e=>null}/>
                     </div>
                 </div>
-                <div className='row px-3'>
-                    <button className='col-6 btn btn-grey text-light' type='button'>{trans('Annuler')}</button>
-                    <button className='col-6 btn btn-turquoise text-light' type='button'>{trans('Confirmer')}</button>
+                <div className='btn-group w-100'>
+                    <button className='btn btn-grey text-light' type='button' onClick={this.cancelAwbs}>{trans('Annuler')}</button>
+                    <button className='btn btn-turquoise text-light' type='button'>{trans('Confirmer')}</button>
                 </div>
             </div>
         </React.Fragment>

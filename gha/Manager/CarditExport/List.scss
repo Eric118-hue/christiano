@@ -7,10 +7,11 @@
 }
 
 .awbs {
-    bottom: 0;
+    top: 0;
     right: 0;
     width: 250px;
     background-color: #fff;
+    z-index: 100;
     
     .awbs-content {
         max-height: 50vh;
