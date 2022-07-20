@@ -1102,15 +1102,22 @@ class List0 extends List1
         super.componentDidMount()
         this.props.store.subscribe(()=>{
             const storeState = this.props.store.getState()
+            if(storeState.type==='awbs') {
+                setTimeout(()=>{
+                    document.location.reload()
+                }, 1000)
+            }
             if(storeState.type==='insert_awb') {
                 this.setState(state=>{
-                    state.awbs.push(storeState.cardit)
-                    state.nawbs = 0
-                    state.wawbs = 0
-                    state.awbs.map(awb=>{
-                        state.nawbs += parseInt(awb.nsetup.nreceptacles)
-                        state.wawbs += parseFloat(awb.nsetup.wreceptacles)
-                    })
+                    if(state.awbs.length==0 || (state.awbs.length>0 && state.awbs[0].nsetup.handover_destination_location.id==storeState.cardit.nsetup.handover_destination_location.id)) {
+                        state.awbs.push(storeState.cardit)
+                        state.nawbs = 0
+                        state.wawbs = 0
+                        state.awbs.map(awb=>{
+                            state.nawbs += parseInt(awb.nsetup.nreceptacles)
+                            state.wawbs += parseFloat(awb.nsetup.wreceptacles)
+                        })
+                    }
                     return state
                 })
             }
@@ -1167,7 +1174,7 @@ class List0 extends List1
                     </tr>
                 </thead>
                 <tbody>
-                    {this.state.data.map(item=><Cardit readOnly={this.readOnly} key={`cardit-${item.id}`} escales={this.escales} data={item} reception={this.reception} consignmentEvents={this.props.data.consignment_events} deliveryConsignmentEvents={this.props.data.delivery_consignment_events} store={this.props.store}/>)}
+                    {this.state.data.map(item=><Cardit destFocus={this.models('state.awbs.0.nsetup.handover_destination_location.id')} readOnly={this.readOnly} key={`cardit-${item.id}`} escales={this.escales} data={item} reception={this.reception} consignmentEvents={this.props.data.consignment_events} deliveryConsignmentEvents={this.props.data.delivery_consignment_events} store={this.props.store}/>)}
                 </tbody>
                 <tfoot className={(this.progressive && this.state.page<this.state.last_page)?'':'d-none'}>
                     <tr>
@@ -1175,37 +1182,36 @@ class List0 extends List1
                     </tr>
                 </tfoot>
             </table>
-            <div className={`awbs border border-turquoise m-5 p-3 position-fixed rounded ${this.state.awbs.length>0?'':'d-none'}`}>
+            <form action={`/awb`} method="post" className={`awbs border border-turquoise m-5 p-3 position-fixed rounded ${this.state.awbs.length>0?'':'d-none'}`}>
+                <input type="hidden" name="ry"/>
                 <div className='text-center'><strong>{trans("Assemblage des numéros d'expédition sur une AWB")}</strong></div>
                 <div className='awbs-content'>
                     {this.state.awbs.map(awb=><div key={`awbed-${awb.id}`} onClick={()=>this.removeAwb(awb)} role="button" className='d-flex justify-content-between align-items-center border-bottom py-2'>
                         <span>{awb.nsetup.document_number}</span>
                         <span className="text-turquoise"><i className='fa fa-square-full'></i></span>
+                        <input type='hidden' name={`cardits[]`} value={awb.id}/>
                     </div>)}
                 </div>
                 <div className="input-group mt-2">
-                    <input type="text" aria-label="First name" className="form-control" placeholder={trans('Préfixe')}/>
-                    <input type="text" aria-label="Last name" className="form-control" placeholder={trans('Nº AWB')}/>
+                    <input type="text" aria-label="prefix" required data-parsley-errors-container="#awb-errors" data-parsley-required-message={trans('Le préfixe est obligatoire')} data-parsley-pattern="\d{3}" data-parsley-pattern-message={trans("Le préfixe n'est pas bon")} className="form-control" name="prefix" placeholder={trans('Préfixe')}/>
+                    <input type="text" aria-label="code" required data-parsley-errors-container="#awb-errors" data-parsley-required-message={trans('Le Nº AWB est obligatoire')} data-parsley-pattern="\d{8}" data-parsley-pattern-message={trans("Le Nº AWB n'est pas bon")} className="form-control" name="code" placeholder={trans('Nº AWB')}/>
                 </div>
-                <div className="row my-2">
-                    <div className="col-6 input-group">
-                        <div className="input-group-prepend">
-                            <div className="input-group-text font-10">{trans('Qté')}</div>
-                        </div>
-                        <input type="text" className="form-control" value={this.state.nawbs} onChange={e=>null}/>
+                <div id="awb-errors"></div>
+                <div className="input-group my-2">
+                    <div className="input-group-prepend">
+                        <div className="input-group-text font-10">{trans('Qté')}</div>
                     </div>
-                    <div className="col-6 input-group">
-                        <div className="input-group-prepend">
-                            <div className="input-group-text font-10">{trans('Poids')}</div>
-                        </div>
-                        <input type="text" className="form-control" value={numeral(this.state.wawbs).format('0.00')} onChange={e=>null}/>
+                    <input type="text" className="form-control" required name="nsetup[nreceptacles]" value={this.state.nawbs} onChange={e=>null}/>
+                    <div className="input-group-prepend">
+                        <div className="input-group-text font-10">{trans('Poids')}</div>
                     </div>
+                    <input type="text" className="form-control" required name="nsetup[wreceptacles]" value={numeral(this.state.wawbs).format('0.00')} onChange={e=>null}/>
                 </div>
                 <div className='btn-group w-100'>
                     <button className='btn btn-grey text-light' type='button' onClick={this.cancelAwbs}>{trans('Annuler')}</button>
-                    <button className='btn btn-turquoise text-light' type='button'>{trans('Confirmer')}</button>
+                    <button className='btn btn-turquoise text-light'>{trans('Confirmer')}</button>
                 </div>
-            </div>
+            </form>
         </React.Fragment>
     }
 }
