@@ -10,6 +10,18 @@ import Modelizer from 'ryvendor/Ry/Core/Modelizer';
 import swal from 'sweetalert2';
 import './List.scss';
 
+Array.prototype.groupBy = function(fn){
+    let ar = []
+    let subar = []
+    this.map(it=>{
+        let i = fn(it)
+        if(ar.indexOf(i)<0)
+            ar.push(fn(it))
+    })
+    ar.map(a=>subar.push(this.filter(it=>fn(it)==a)))
+    return subar
+}
+
 class List2 extends NavigableModel
 {
     constructor(props) {
@@ -609,76 +621,12 @@ class List2 extends NavigableModel
     }
 
     reception(cardit) {
-        let k = 0
-        let nmrd = 0
-        let nmld = 0
-        let niftsta = 0
-        if(cardit.resdits && cardit.resdits.find(item=>{
-            return item.event == 'reception'
-        })) {
-            k = 2
-            let item = cardit.resdits.find(item=>{
-                return item.event == 'reception'
-            })
-            if(item.receptacles.find(receptacle=>{
-                return receptacle.nsetup.source=='appscan'
-            })) {
-                k = 5
-                nmrd = 0
-                cardit.resdits.map(resdit=>{
-                    resdit.receptacles.map(receptacle=>{
-                        if(receptacle.nsetup.mrd)
-                            nmrd++
-                    })
-                })
-            }
-            else if(cardit.resdits.filter(item=>{
-                return item.nsetup.mrd && item.event == 'reception'
-            }).length>0) {
+        let k = 0 
+        cardit.receptacles.map(receptacle=>{
+            if(this.cast(receptacle, 'nsetup.poc.value')) {
                 k = 1
-                nmrd = 0
-                cardit.resdits.map(resdit=>{
-                    if(resdit.nsetup.mrd && resdit.event=='reception') {
-                        resdit.receptacles.map(receptacle=>{
-                            if(receptacle.nsetup.mrd)
-                                nmrd++
-                        })
-                    }
-                })
             }
-            else if(item.receptacles.find(receptacle=>{
-                return receptacle.nsetup.mld
-            })) {
-                k = 3
-                nmld = 0
-                cardit.resdits.map(resdit=>{
-                    resdit.receptacles.map(receptacle=>{
-                        if(this.cast(receptacle, 'nsetup.mld'))
-                            nmld++
-                    })
-                })
-            }
-            else if(item.receptacles.find(receptacle=>{
-                return receptacle.nsetup.iftsta
-            })) {
-                k = 4
-                niftsta = 0
-                cardit.resdits.map(resdit=>{
-                    resdit.receptacles.map(receptacle=>{
-                        if(receptacle.nsetup.iftsta)
-                            niftsta++
-                    })
-                })
-            }
-        }
-
-        if(k==1) {
-            return <a className="btn btn-blue cursor-default d-flex text-white justify-content-center pr-1 align-items-center" href="#" style={{height:34}}>MRD</a>
-        }
-        else if(cardit.nsetup.COR) {
-            return <a className={`btn ${(cardit.resdits.filter(it=>!it.mrd).length+cardit.resdits.filter(it=>!it.mld).length)>0?'btn-success':'btn-dark'} cursor-default d-flex ${true?'justify-content-center':'justify-content-between'} pr-1 align-items-center`} href="#" style={{height:34}}><span></span><span>COR</span> {true?null:<i className="icon-pencil"></i>}</a>
-        }
-            
+        })
         switch(k) {
             case 0:
                 return <a className={`align-items-center badge badge-orange border-0`} href="#" style={{height:20,width:20}}><span></span><span></span></a>
@@ -688,9 +636,8 @@ class List2 extends NavigableModel
                 return <a className="align-items-center cursor-default badge badge-turquoise border-0 text-white" href="#" style={{height:20,width:20}}><span></span></a>
             case 4:
                 return <a className="align-items-center cursor-default badge badge-army border-0 text-white" href="#" style={{height:20,width:20}}>IFTSTA</a>
-            case 2:
-                return <a className={`align-items-center cursor-default badge badge-success border-0 text-white`} href="#" style={{height:20,width:20}}><span></span><i className="fa fa-check text-white"></i>{true?null:<i className="fa fa-info-circle text-white"></i>}</a>
-            
+            case 1:
+                return <a className={`align-items-center badge badge-turquoise border-0`} href="#" style={{height:20,width:20}}><span></span></a>   
         }
     }
 
@@ -1094,8 +1041,46 @@ class List0 extends List1
         this.state.awbs = []
         this.state.nawbs = 0
         this.state.wawbs = 0
+        this.state.prefix = ''
+        this.state.code = ''
         this.removeAwb = this.removeAwb.bind(this)
         this.cancelAwbs = this.cancelAwbs.bind(this)
+        this.handleNawbsChange = this.handleNawbsChange.bind(this)
+        this.handleWawbsChange = this.handleWawbsChange.bind(this)
+        this.handleCode = this.handleCode.bind(this)
+        this.handlePrefix = this.handlePrefix.bind(this)
+    }
+
+    handlePrefix(e) {
+        const prefix = e.target.value
+        if(/^\d{0,3}$/.test(prefix)) {
+            this.setState({
+                prefix
+            })
+        }
+    }
+
+    handleCode(e) {
+        const code = e.target.value
+        if(/^\d{0,8}$/.test(code)) {
+            this.setState({
+                code
+            })
+        }
+    }
+
+    handleNawbsChange(e) {
+        const nawbs = e.target.value
+        this.setState({
+            nawbs
+        })
+    }
+
+    handleWawbsChange(e) {
+        const wawbs = e.target.value
+        this.setState({
+            wawbs
+        })
     }
 
     componentDidMount() {
@@ -1159,7 +1144,7 @@ class List0 extends List1
                     <tr>
                         <th>{trans('Emis le')}</th>
                         <th>{trans('à')}</th>
-                        <th>{trans('N° d’expédition')}</th>
+                        <th colSpan={3}>{trans('N° d’expédition')}</th>
                         <th>{trans('Cat.')}</th>
                         <th>{trans('Clas.')}</th>
                         <th>{trans('Qté')}</th>
@@ -1174,7 +1159,15 @@ class List0 extends List1
                     </tr>
                 </thead>
                 <tbody>
-                    {this.state.data.map(item=><Cardit destFocus={this.models('state.awbs.0.nsetup.handover_destination_location.id')} readOnly={this.readOnly} key={`cardit-${item.id}`} escales={this.escales} data={item} reception={this.reception} consignmentEvents={this.props.data.consignment_events} deliveryConsignmentEvents={this.props.data.delivery_consignment_events} store={this.props.store}/>)}
+                    {this.state.data.groupBy(it=>`${this.cast(it, 'lta_id', 'cardit'+it.id)}`).map((group, groupIndex)=>{
+                        let wreceptacles = 0
+                        let nreceptacles = 0
+                        group.map(item=>{
+                            wreceptacles += parseFloat(item.nsetup.wreceptacles)
+                            nreceptacles += parseInt(item.nsetup.nreceptacles)
+                        })
+                        return group.map((item, index)=><Cardit bg={`bg${groupIndex%2?1:2}`} destFocus={this.models('state.awbs.0.nsetup.handover_destination_location.id')} readOnly={this.readOnly} escales={this.escales} data={item} reception={this.reception} consignmentEvents={this.props.data.consignment_events} deliveryConsignmentEvents={this.props.data.delivery_consignment_events} store={this.props.store} wreceptacles={wreceptacles} nreceptacles={nreceptacles} pindex={index} nrows={group.length} key={`cardit-group-${item.id}`} group={`cardit-group-${this.cast(item, 'lta_id')}`}/>)
+                    })}
                 </tbody>
                 <tfoot className={(this.progressive && this.state.page<this.state.last_page)?'':'d-none'}>
                     <tr>
@@ -1193,19 +1186,19 @@ class List0 extends List1
                     </div>)}
                 </div>
                 <div className="input-group mt-2">
-                    <input type="text" aria-label="prefix" required data-parsley-errors-container="#awb-errors" data-parsley-required-message={trans('Le préfixe est obligatoire')} data-parsley-pattern="\d{3}" data-parsley-pattern-message={trans("Le préfixe n'est pas bon")} className="form-control" name="prefix" placeholder={trans('Préfixe')}/>
-                    <input type="text" aria-label="code" required data-parsley-errors-container="#awb-errors" data-parsley-required-message={trans('Le Nº AWB est obligatoire')} data-parsley-pattern="\d{8}" data-parsley-pattern-message={trans("Le Nº AWB n'est pas bon")} className="form-control" name="code" placeholder={trans('Nº AWB')}/>
+                    <input type="number" aria-label="prefix" required data-parsley-errors-container="#awb-errors" data-parsley-required-message={trans('Le préfixe est obligatoire')} data-parsley-pattern="\d{3}" data-parsley-pattern-message={trans("Le préfixe doit comporter 3 chiffres")} className="form-control" name="prefix" placeholder={trans('Préfixe')} value={this.state.prefix} onChange={this.handlePrefix}/>
+                    <input type="number" aria-label="code" required data-parsley-errors-container="#awb-errors" data-parsley-required-message={trans('Le Nº AWB est obligatoire')} data-parsley-pattern="\d{8}" data-parsley-pattern-message={trans("Le N° de LTA doit comporter 8 chiffres")} className="form-control" name="code" placeholder={trans('Nº AWB')} value={this.state.code} onChange={this.handleCode}/>
                 </div>
                 <div id="awb-errors"></div>
                 <div className="input-group my-2">
                     <div className="input-group-prepend">
                         <div className="input-group-text font-10">{trans('Qté')}</div>
                     </div>
-                    <input type="text" className="form-control" required name="nsetup[nreceptacles]" value={this.state.nawbs} onChange={e=>null}/>
+                    <input type="number" className="form-control" required name="nsetup[nreceptacles]" value={this.state.nawbs} onChange={this.handleNawbsChange}/>
                     <div className="input-group-prepend">
                         <div className="input-group-text font-10">{trans('Poids')}</div>
                     </div>
-                    <input type="text" className="form-control" required name="nsetup[wreceptacles]" value={numeral(this.state.wawbs).format('0.00')} onChange={e=>null}/>
+                    <input type="number" className="form-control" required name="nsetup[wreceptacles]" value={this.state.wawbs} onChange={this.handleWawbsChange}/>
                 </div>
                 <div className='btn-group w-100'>
                     <button className='btn btn-grey text-light' type='button' onClick={this.cancelAwbs}>{trans('Annuler')}</button>

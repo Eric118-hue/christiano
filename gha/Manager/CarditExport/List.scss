@@ -1,5 +1,67 @@
-.vol-container .card-bureau table.table-liste td:nth-child(13) {
-    color: #dc3546;
+$ramification: #dee2e6;
+
+.vol-container .card-bureau table.table-liste {
+    tr.bg1 td {
+		background: #fff8e8 !important;
+	}
+	
+	tr.bg2 td {
+		background: #edefee !important;
+	}
+    td:nth-child(15) {
+        color: #dc3546;
+    }
+    td.text-danger:nth-child(8) {
+        color: #dc3546;
+    }
+    td.text-success:nth-child(8) {
+        color: #5cb85c;
+    }
+    td.text-danger:nth-child(9) {
+        color: #dc3546;
+    }
+    td.text-success:nth-child(9) {
+        color: #5cb85c;
+    }
+    .awb-line {
+        position: relative;
+
+        &::before {
+            position: absolute;
+            content: '';
+            left: -12px;
+            border-top: 1px solid $ramification;
+            top: 12px;
+            height: 0;
+            width: 10px;
+            left: -10px;
+        }
+    }
+    .awb-checkbox {
+        position: relative;
+
+        &::before, &::after {
+            position: absolute;
+            content: '';
+            right: -12px;
+        }
+
+        &::before {
+            border-top: 1px solid $ramification;
+            top: 10px;
+            height: 0;
+            width: 10px;
+            right: -14px;
+        }
+
+        &:not(.awb-checkbox-last-child)::after {
+            border-left: 1px solid $ramification;
+            height: calc(100% + 22px);
+            width: 0px;
+            top: 10px;
+            right: -14px;
+        }
+    }
 }
 
 .card-bureau {

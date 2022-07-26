@@ -309,7 +309,7 @@ export class FullDetail extends Component
 
     render() {
         return <tr className={`detail`}>
-        <td colSpan="14" className="no-padding">
+        <td colSpan="16" className="no-padding">
             <div className="bandeau">
                 <span className="title-bandeau">{trans('Liste des récipients')} </span>
                 {this.getHeadStep()}
@@ -457,34 +457,41 @@ class Item extends Component
         let mailclass_concat = Object.keys(this.models('props.data.nsetup.mail_classes', {})).join(' ')
         if(mailclass_concat)
             mailclasses = mailclass_concat
+        const nscanned = this.models('props.data.receptacles', []).filter(it=>it.scan_file_id).length
+        let wscanned = 0
+        this.models('props.data.receptacles', []).filter(it=>it.scan_file_id).map(it=>{
+            wscanned += parseFloat(it.nsetup.weight)
+        })
         return <React.Fragment>
             <Ry/>
-            <tr>
+            <tr className={`${this.props.bg}`}>
                 <td className="green">{moment(this.models('props.data.nsetup.message_function')==1?this.props.data.nsetup.consignment_completion_lt:this.props.data.nsetup.preparation_datetime_lt).format('DD/MM/YYYY')}</td>
                 <td className="green">{moment(this.models('props.data.nsetup.message_function')==1?this.props.data.nsetup.consignment_completion_lt:this.props.data.nsetup.preparation_datetime_lt).format('HH:mm')}</td>
-                <td>
+                <td className='border-right-0'>
                     <div className="d-flex align-items-center px-3">
                         {this.models('props.data.nsetup.exceptions.bgms')?<i className="fa fa-2x fa-exclamation-triangle ml-2 text-danger"></i>:null}
                         {this.props.readOnly?<a href={`#dialog/cardit_file?id=${this.props.data.id}`} className="mr-2"><i className="icon-info"></i></a>:(this.models('props.data.nsetup.message_function')==1?<b className="text-danger mr-2">1</b>:null)}<span className={`d-inline-block px-2 list-document-number ${(this.models('props.data.nsetup.message_function')==1 && this.props.readOnly)?'text-danger':''}`}>{this.props.data.nsetup.document_number}</span>
                         {this.models('props.data.nsetup.exceptions.bgms')?null:<a href="#" onClick={this.detail} className="btnAccord"><i className={`fa ${this.state.open?'fa-sort-up':'fa-sort-down'}`}></i></a>}
-                        <label className="fancy-checkbox m-0 ml-5">
+                        <label className={`fancy-checkbox m-0 ml-4 ${this.props.nrows>1?'awb-checkbox':''} ${this.props.pindex==this.props.nrows-1?'awb-checkbox-last-child':''}`}>
                             <input type="checkbox" checked={this.state.awb} onChange={this.toAwb} disabled={this.props.destFocus && this.props.destFocus!=this.props.data.nsetup.handover_destination_location.id} value="1"/>
                             <span></span>
                         </label>
-                        <div className='flex-fill justify-content-between'>
-                            {this.models('props.data.scans', []).length>0?<a href={`#dialog/scan?cardit_id=${this.models('props.data.id')}`} className="btn-theme ml-2 mr-5 text-capitalize px-3 py-1 text-white w-auto" data-display="modal-xl">{trans('Scan')}</a>:null}
-                            {this.models('props.data.lta.id')?<a href={`#dialog/awb?id=${this.models('props.data.lta.id')}`} className="btn-success ml-2 mr-5 text-capitalize px-3 py-1 text-white w-auto" data-display="modal-xl">{trans('AWB')}</a>:null}
-                            {this.models('props.data.nsetup.consignment_category.code')=='A'?<a href={trans('/cn38?id=:id', {id:this.props.data.id})} target="_blank" className="btn-orange ml-2 px-3 py-1 text-white w-auto">CN 38</a>
-                            :(this.models('props.data.nsetup.consignment_category.code')=='B' && mailclass_concat!='T')?<a href={trans('/cn41?id=:id', {id:this.props.data.id})} target="_blank" className="btn-orange ml-2 px-3 py-1 text-white w-auto">CN 41</a>
-                            :(this.models('props.data.nsetup.consignment_category.code')=='B' && mailclass_concat=='T')?<a href={trans('/cn41?id=:id', {id:this.props.data.id})} type="button" className="btn-orange ml-2 px-3 py-1 text-white w-auto">CN 47</a>:null}
-                            <a href={`#dialog/fwb?cardit_id=${this.models('props.data.id')}`} className={`btn-orange ml-2 px-3 py-1 text-white w-auto`}>{trans('CSD')}</a>
-                        </div>
                     </div>
+                </td>
+                {(this.props.nrows>0 && this.props.pindex==0)?<td rowSpan={this.props.nrows+(this.state.groupOpen?1:0)} className='border-right-0 border-left-0'>
+                    {this.models('props.data.lta.id')?<a href={`#dialog/awb?id=${this.models('props.data.lta.id')}`} className="btn-success ml-2 text-capitalize px-3 py-1 text-white w-auto awb-line" data-display="modal-xl">{trans('AWB')}</a>:null}
+                </td>:null}
+                <td className='border-left-0'>
+                    {this.models('props.data.receptacles', []).filter(it=>it.scan_file_id).length>0?<a href={`#scan-${this.models('props.data.id')}`} className="btn-theme ml-2 text-capitalize px-3 py-1 text-white w-auto" data-display="modal-xl">{trans('Scan')}</a>:null}
+                    {this.models('props.data.nsetup.consignment_category.code')=='A'?<a href={trans('/cn38?id=:id', {id:this.props.data.id})} target="_blank" className="btn-orange ml-2 px-3 py-1 text-white w-auto">CN 38</a>
+                    :(this.models('props.data.nsetup.consignment_category.code')=='B' && mailclass_concat!='T')?<a href={trans('/cn41?id=:id', {id:this.props.data.id})} target="_blank" className="btn-orange ml-2 px-3 py-1 text-white w-auto">CN 41</a>
+                    :(this.models('props.data.nsetup.consignment_category.code')=='B' && mailclass_concat=='T')?<a href={trans('/cn41?id=:id', {id:this.props.data.id})} type="button" className="btn-orange ml-2 px-3 py-1 text-white w-auto">CN 47</a>:null}
+                    {this.models('props.data.nsetup.csd', []).length>0?<a href={`#dialog/csd?cardit_id=${this.models('props.data.id')}`} className={`btn-orange ml-2 px-3 py-1 text-white w-auto`}>{trans('CSD')}</a>:null}
                 </td>
                 <td>{this.models('props.data.nsetup.consignment_category.code')}</td>
                 <td>{mailclasses}</td>
-                <td>{this.props.data.nsetup.nreceptacles}</td>
-                <td>{numeral(parseFloat(this.props.data.nsetup.wreceptacles)).format('0,0.[00]')}</td>
+                <td className={nscanned>0?(this.props.data.nsetup.nreceptacles!=nscanned?'text-danger':'text-success'):''}>{this.props.data.nsetup.nreceptacles}</td>
+                <td className={wscanned>0?(numeral(parseFloat(this.props.data.nsetup.wreceptacles)).format('0.00')!=numeral(wscanned).format('0.00')?'text-danger':'text-success'):''}>{numeral(parseFloat(this.props.data.nsetup.wreceptacles)).format('0,0.[00]')}</td>
                 <td className="w-info">{this.props.data.nsetup.handover_origin_location.iata} <a href="#" onClick={e=>{
                     e.preventDefault()
                     $(`#origin-${this.props.data.id}`).modal('show')

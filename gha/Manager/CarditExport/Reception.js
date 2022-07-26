@@ -41,7 +41,7 @@ class ReceptacleLine extends Component
         }
         else {
             resdit = <label className="fancy-radio m-auto custom-color-green">
-                <input name={`receptacles[${this.props.data.id}][status]`} type="radio" {...disableMrd} value={consignment_event.code} checked={false} onChange={()=>this.props.handleReceptacleStatusChange(consignment_event.code)}/>
+                <input name={`receptacles[${this.props.data.id}][nsetup][poc][value]`} type="radio" {...disableMrd} value={consignment_event.code} checked={this.models('props.data.nsetup.poc.value')==consignment_event.code} onChange={()=>this.props.handleReceptacleStatusChange(consignment_event.code)}/>
                 <span><i className="mr-0"></i></span>
             </label>
         }
@@ -90,7 +90,8 @@ class Reception extends Component
         super(props)
         this.state = {
             receptacles : this.props.data.receptacles,
-            dialogs : [{}]
+            dialogs : [{}],
+            dirty: false
         }
         this.handleReceptacleStatusChange = this.handleReceptacleStatusChange.bind(this)
         this.handleAllReceptacleStatusChange = this.handleAllReceptacleStatusChange.bind(this)
@@ -113,11 +114,26 @@ class Reception extends Component
     }
 
     handleReceptacleStatusChange(receptacle, status) {
-        
+        this.setState(state=>{
+            const _receptacle = state.receptacles.find(it=>it.id == receptacle.id)
+            state.dirty = true
+            _receptacle.nsetup.poc = {
+                value : status
+            }
+            return state
+        })
     }
 
     handleAllReceptacleStatusChange(status) {
-        
+        this.setState(state=>{
+            state.dirty = true
+            state.receptacles.map(it=>{
+                it.nsetup.poc = {
+                    value : status
+                }
+            })
+            return state
+        })
     }
 
     render() {
@@ -152,7 +168,7 @@ class Reception extends Component
                             :(this.models('props.data.nsetup.consignment_category.code')=='B' && mailclass_concat!='T')?<a href={trans('/cn41?id=:id', {id:this.props.data.id})} target="_blank" className="btn btn-beige w-25 text-light">CN 41</a>
                             :(this.models('props.data.nsetup.consignment_category.code')=='B' && mailclass_concat=='T')?<button href={trans('/cn41?id=:id', {id:this.props.data.id})} type="button" className="btn btn-danger w-25 text-light">CN 47</button>
                             :null}
-                            <a href={trans('/csd?id=:id', {id:this.props.data.id})} target="_blank" className="btn btn-beige w-25 text-light ml-2">CSD</a>
+                            {this.models('props.data.nsetup.csd', []).length>0?<a href={`#dialog/csd?cardit_id=${this.models('props.data.id')}`} target="_blank" className="btn btn-beige w-25 text-light ml-2">CSD</a>:null}
                         </li>
                         
                         <li>
@@ -218,7 +234,7 @@ class Reception extends Component
                                 <tr>
                                     <td colSpan="6" className="border-right-0 noBg"></td>
                                     <td colSpan={this.props.consignmentEvents.length} className="border-left-0 border-right-0 p-0">
-                                        
+                                        {this.state.dirty?<button className="btn btn-orange rounded-0">{trans('Valider')}</button>:null}
                                     </td>
                                 </tr>
                             </tbody>

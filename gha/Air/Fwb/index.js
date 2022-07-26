@@ -4,6 +4,7 @@ import List from './List';
 import Detail from './Detail';
 import Fhl from './Fhl';
 import Ffr from './Ffr';
+import Csd from './Csd';
 
 const Components = {
   Form,
@@ -11,7 +12,8 @@ const Components = {
   List,
   Detail,
   Fhl,
-  Ffr
+  Ffr,
+  Csd
 }
 
 export default Components;
