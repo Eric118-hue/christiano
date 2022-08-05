@@ -8,8 +8,8 @@ $ramification: #dee2e6;
 	tr.bg2 td {
 		background: #edefee !important;
 	}
-    td:nth-child(15) {
-        color: #dc3546;
+    td.text-danger {
+        color: #dc3546 !important;
     }
     td.text-danger:nth-child(8) {
         color: #dc3546;

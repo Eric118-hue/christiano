@@ -3,6 +3,22 @@ import trans from 'ryapp/translations';
 import Modelizer from 'ryvendor/Ry/Core/Modelizer';
 import $ from 'jquery';
 
+class MldTypes extends Component
+{
+    render() {
+        const prefix = this.props.prefix ? this.props.prefix + '[nsetup]' : 'nsetup'
+        return <div className="align-items-center mb-2 row">
+            <div className="col-md-6">
+                <select className="form-control" name={`${prefix}[mld_type]`} defaultValue={this.models('props.data.nsetup.mld_type')}>
+                    {this.props.selectTypes.map(type=><option key={`mld-type-${type.id}`} value={type.id}>{type.label}</option>)}
+                </select>
+            </div>
+        </div>
+    }
+}
+
+Modelizer(MldTypes)
+
 class RepoItem extends Component
 {
     render() {
@@ -189,6 +205,9 @@ class Repository extends Component
                     {trans('Dépôt MLD')}
                 </div>
                 <div className="body">
+                    <div className='form-group pt-3 border-bottom col-md-4'>
+                        <MldTypes prefix={this.props.prefix} data={this.props.data} selectTypes={[{id:'V1',label:'V1'}, {id:'CV',label:trans('Simple')}]}/>
+                    </div>
                     {this.state.mld_repos.filter(it=>!it.deleted).map((repo, index)=><RepoItem pkey={index} pkey2={this.props.data.id} prefix={this.props.prefix} key={`repo-${index}`} name="mld" data={repo} remove={()=>this.removeLine(index, 'mld_repos')}/>)}
                     <button type="button" className="btn btn-primary mb-4" onClick={()=>this.addLine('mld_repos')}><i className="fa fa-plus"></i> {trans('Ajouter un dépôt')}</button>
                 </div>

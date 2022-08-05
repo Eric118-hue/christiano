@@ -479,14 +479,14 @@ class Item extends Component
                     </div>
                 </td>
                 {(this.props.nrows>0 && this.props.pindex==0)?<td rowSpan={this.props.nrows+(this.state.groupOpen?1:0)} className='border-right-0 border-left-0'>
-                    {this.models('props.data.lta.id')?<a href={`#dialog/awb?id=${this.models('props.data.lta.id')}`} className="btn-success ml-2 text-capitalize px-3 py-1 text-white w-auto awb-line" data-display="modal-xl">{trans('AWB')}</a>:null}
+                    {this.models('props.data.lta.id')?<a href={`#dialog/awb?id=${this.models('props.data.lta.id')}`} className={`btn-success ml-2 text-capitalize px-3 py-1 text-white w-auto awb-line ${this.state.open?'d-none':''}`} data-display="modal-xl">{trans('AWB')}</a>:null}
                 </td>:null}
                 <td className='border-left-0'>
                     {this.models('props.data.receptacles', []).filter(it=>it.scan_file_id).length>0?<a href={`#scan-${this.models('props.data.id')}`} className="btn-theme ml-2 text-capitalize px-3 py-1 text-white w-auto" data-display="modal-xl">{trans('Scan')}</a>:null}
                     {this.models('props.data.nsetup.consignment_category.code')=='A'?<a href={trans('/cn38?id=:id', {id:this.props.data.id})} target="_blank" className="btn-orange ml-2 px-3 py-1 text-white w-auto">CN 38</a>
                     :(this.models('props.data.nsetup.consignment_category.code')=='B' && mailclass_concat!='T')?<a href={trans('/cn41?id=:id', {id:this.props.data.id})} target="_blank" className="btn-orange ml-2 px-3 py-1 text-white w-auto">CN 41</a>
                     :(this.models('props.data.nsetup.consignment_category.code')=='B' && mailclass_concat=='T')?<a href={trans('/cn41?id=:id', {id:this.props.data.id})} type="button" className="btn-orange ml-2 px-3 py-1 text-white w-auto">CN 47</a>:null}
-                    {this.models('props.data.nsetup.csd', []).length>0?<a href={`#dialog/csd?cardit_id=${this.models('props.data.id')}`} className={`btn-orange ml-2 px-3 py-1 text-white w-auto`}>{trans('CSD')}</a>:null}
+                    {this.models('props.data.nsetup.csd', []).length>0?<a href={`#dialog/csd?cardit_id=${this.models('props.data.id')}`} className={`btn-blue ml-2 px-3 py-1 text-white w-auto`}>{trans('CSD')}</a>:null}
                 </td>
                 <td>{this.models('props.data.nsetup.consignment_category.code')}</td>
                 <td>{mailclasses}</td>
@@ -623,7 +623,7 @@ class Item extends Component
                     </Popup>
                 </td>
                 <td className="p-2">{moment(this.models('props.data.transports.0.departure_datetime_lt')).format('DD/MM/YYYY')}</td>
-                <td className="p-2">{moment(this.models('props.data.transports.0.departure_datetime_lt')).format('HH:mm')}</td>
+                <td className="p-2 text-danger">{moment(this.models('props.data.transports.0.departure_datetime_lt')).format('HH:mm')}</td>
                 <td className="p-2">{this.props.reception(this.props.data)}</td>
             </tr>
             {(this.state.data && this.state.open)?<FullDetail data={this.state.data} consignmentEvents={this.state.consignment_events} deliveryConsignmentEvents={this.state.delivery_consignment_events} store={this.props.store} readOnly={this.props.readOnly}/>:null}

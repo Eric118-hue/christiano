@@ -1,0 +1,208 @@
+$z-custom: 1031;
+$aubergine: #9c5374;
+$orange: #fc8269;
+$violet: #9972b5;
+
+$primary: #1fb5ac;
+$light: #eaeaec;
+$max-menu-level: 5;
+$form-check-input-margin-y: .1rem;
+$menu-width: 216px;
+$theme-colors: (
+    "aubergine": $aubergine,
+	"orange": $orange,
+	"violet": $violet
+);
+$nav-tabs-border-width: 0px;
+$nav-tabs-link-active-bg: $orange;
+$nav-tabs-link-active-color: #fff;
+$flag-icon-css-path: '/flags';
+$spacer: .5rem;
+$thumbnail-padding: .15rem;
+
+// Body
+$body-bg: #f1f2f7;
+$gray-300: #f0f2f4;
+$gray-900: #767676;
+$enable-shadows: true;
+
+$line-height-base: 1.2;
+$box-shadow: 0 1px 3px rgba(#000000, .15);
+
+// Typography
+$font-family-sans-serif: "Nunito", sans-serif;
+$font-size-base: 0.8rem;
+
+@import "node_modules/bootstrap/scss/bootstrap";
+@import "node_modules/flag-icon-css/sass/flag-icon";
+@import "../components/Drawer";
+@import "../components/Core";
+@import "../components/Editor";
+
+@include flag-icon(en);
+@include flag-icon(ia);
+
+.top-container {
+	@include media-breakpoint-up('md', $grid-breakpoints) {
+		margin-top: 62px;
+		margin-bottom: 34px;
+	}
+	@include media-breakpoint-down('md', $grid-breakpoints) {
+		margin-top: 42px;
+		margin-bottom: 34px;
+	}
+}
+
+.navbar.fixed-top {
+	z-index : $z-custom + 2;
+	
+	@include media-breakpoint-up('md', $grid-breakpoints) {
+		padding-left: 222px;
+		
+		a.navbar-brand {
+			position: absolute;
+		    left: 0;
+		    width: $menu-width;
+		    height: 62px;
+		}
+		
+		a:hover.navbar-brand {
+	    	background: $primary !important;
+	    	color: $white !important;
+	    }
+	}
+	
+	@include media-breakpoint-down('md', $grid-breakpoints) {
+		a.navbar-brand {
+			small {
+				display: none;
+			}	
+		}
+	}
+}
+
+.nav-item {
+	margin-left: $spacer;
+	
+	&:first-child() {
+		margin-left: 0;
+	}
+}
+
+.nav-link {
+	color: inherit;
+	border-color: $border-color !important;
+	border-width: 1px !important;
+}
+
+.accordion {
+  .card {
+    overflow: initial !important;
+  }
+}
+
+.btn-circle {
+  	border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    padding: 0;
+}
+
+body.full-screen {
+	background: $aubergine;
+	height: 100vh; 
+	display: flex; 
+	flex-flow: column;
+}
+
+.card-header.login-header {
+	background: #aec785;
+	text-align: center;
+	color: #fff;
+	border-bottom: 10px solid #a0b87e
+}
+
+.card-header.login-header h2 {
+	font-size: 16px;
+}
+
+.mouse-pointable {
+	cursor: pointer;
+}
+
+input[type=file]::-webkit-file-upload-button {
+	visibility: hidden;
+}
+
+.nav-tabs {
+	.nav-link {
+		background: lighten($secondary, 40%);
+	}
+}
+
+.toast-header {
+	img {
+		width: 16px;
+		height: 16px;
+		object-fit: cover;
+	}
+}
+
+.charts {
+	@include make-grid-columns(100, $grid-gutter-width);
+}
+
+.line {
+    fill: none;
+    stroke: $primary;
+    stroke-width: 5;
+}
+  
+.overlay {
+  fill: $secondary;
+  pointer-events: all;
+}
+
+/* Style the dots by assigning a fill and stroke */
+.dot {
+    fill: $white;
+	stroke: $primary;
+	stroke-width: 5;
+
+	&:hover {
+		stroke: $orange;
+		stroke-width: 20px;
+		stroke-opacity: 0.6;
+	}
+}
+
+.area {
+	fill : transparentize($orange, 0.7);
+}
+
+.line-10 {
+    fill: none;
+    stroke: $primary;
+    stroke-width: 1;
+}
+
+.dot-10 {
+    fill: $white;
+	stroke: $primary;
+	stroke-width: 1;
+
+	&:hover {
+		stroke: $orange;
+		stroke-width: 10px;
+		stroke-opacity: 0.6;
+	}
+}
+
+.linebar-toggle {
+    @include media-breakpoint-up('md', $grid-breakpoints) {
+        position: absolute;
+        right: 20px;
+        top: 20px;
+	}
+}

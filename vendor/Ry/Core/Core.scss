@@ -1,0 +1,265 @@
+@import "./Charts/Chart.scss";
+
+.overlay {
+    fill: $secondary;
+    pointer-events: all;
+}
+
+.dropdown-submenu a::after {
+  transform: rotate(-90deg);
+  position: absolute;
+  right: 6px;
+  top: .8em;
+}
+
+.dropdown-submenu .dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-left: .1rem;
+  margin-right: .1rem;
+}
+
+.dropdown-submenu {
+  position: relative;
+}
+
+.ry-float-loading {
+    position: fixed;
+    padding: 14px;
+    top: 100px;
+    z-index: 100000;
+    color: lighten($primary, 0.8);
+    right: 0;
+    background: transparentize($dark, 0.2);
+    border-top-left-radius: 56px;
+    border-bottom-left-radius: 56px;
+}
+
+body .ry-float-loading {
+    transform: translateX(259px);
+    transition: transform .4s;
+}
+
+body.ry-loading .ry-float-loading {
+    transform: translateX(0px);
+    transition: transform .4s;
+}
+
+.loading-content {
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+}
+
+.loading-content i {
+    margin-right: 15px;
+}
+
+$bg-breadcrumb: $card-cap-bg;
+$hover-breadcrumb : lighten($primary, 3%);
+
+.breadcrumbs-alt {
+    list-style-type:none;
+    margin:0;
+    overflow:hidden;
+    padding:0;
+}
+
+.breadcrumbs-alt li {
+    float:left;
+    margin:0 25px 0 0;
+    transition:all 0.3s ease-in-out 0s;
+}
+
+.breadcrumbs-alt a:before {
+	border-color:$bg-breadcrumb $bg-breadcrumb $bg-breadcrumb rgba(0,0,0,0);
+	border-style:solid;
+	border-width:1.5em 0 1.7em 1em;
+	content:"";
+	left:-1em;
+	margin-top:-1.6em;
+	position:absolute;
+	top:50%;
+	transition:all 0.3s ease-in-out 0s;
+}
+
+.breadcrumbs-alt a:after {
+	border-bottom:1.5em solid rgba(0,0,0,0);
+	border-left:1em solid $bg-breadcrumb;
+	border-top:1.5em solid rgba(0,0,0,0);
+	content:"";
+	margin-top: -1.5em;
+	position:absolute;
+	right:-1em;
+	top:50%;
+	transition:all 0.3s ease-in-out 0s;
+}
+
+.breadcrumbs-alt a {
+	background:$bg-breadcrumb;
+	color:$dark;
+	float:left;
+	font-size:12px;
+	padding:10px;
+	position:relative;
+	text-decoration:none;
+	transition: all 0.3s ease-in-out 0s;
+}
+
+/*active and hover*/
+.breadcrumbs-alt a:hover:before,.breadcrumbs-alt a.current:before {
+	border-color:$hover-breadcrumb $hover-breadcrumb $hover-breadcrumb rgba(0,0,0,0);
+	border-style:solid;
+	border-width:1.5em 0 1.7em 1em;
+	content:"";
+	left:-1em;
+	margin-top:-1.6em;
+	position:absolute;
+	top:50%;
+	transition:all 0.3s ease-in-out 0s;
+}
+
+.breadcrumbs-alt a:hover:after,.breadcrumbs-alt a.current:after {
+    border-bottom:1.5em solid rgba(0,0,0,0);
+    border-left:1em solid $hover-breadcrumb;
+    border-top:1.5em solid rgba(0,0,0,0);
+    content:"";
+    margin-top:-1.5em;
+    position:absolute;
+    right:-1em;
+    top:50%;
+    transition:all 0.3s ease-in-out 0s;
+}
+
+.breadcrumbs-alt a:hover,.breadcrumbs-alt a.current {
+	background:$hover-breadcrumb;
+	color:$white;
+	float:left;
+	font-size:12px;
+	padding:10px;
+	position:relative;
+	text-decoration:none;
+	transition: all 0.3s ease-in-out 0s;
+}
+
+$radius-harmonic: (
+    "20": 20px,
+    "40": 40px,
+    "54": 54px,
+    "60" : 60px,
+    "110" : 110px,
+    "160" : 160px
+);
+
+@each $radius, $value in $radius-harmonic {
+    .icon-#{$radius} {
+        width: $value;
+        height: $value;
+        line-height: $value;
+        object-fit: cover;
+    }
+    .icon-scale-down-#{$radius} {
+        width: $value;
+        height: $value;
+        background: $white;
+        line-height: $value;
+        object-fit: scale-down;
+    }
+}
+
+@each $size, $value in $grid-breakpoints {
+    .position-absolute-#{$size} {
+        @include media-breakpoint-down($size, $grid-breakpoints) {
+            position: absolute;
+        }
+    }
+}
+
+.ry-dropzone {
+    border: 2px dashed $secondary;
+    border-radius: $border-radius;
+    align-content: center;
+
+    &.ry-dropzone-empty::before {
+        content: attr(data-label); 
+    }
+
+    &.ry-dropzone-content-m60::before {
+        margin: 60px auto;
+    }
+
+    &.ry-dropzone-content-m0::before {
+        margin: 0 auto;
+    }
+}
+
+.btn-outline-orange, .btn-orange {
+    &:hover {
+        color: $white;
+    }
+}
+
+@for $i from 1 through 10 {
+    .alpha-#{$i*10} {
+        opacity : $i/10;
+        transition : opacity .4s;
+  }
+}
+
+.mouse-pointable {
+	cursor: pointer;
+}
+
+.disabled {
+    cursor: not-allowed;
+
+    * {
+        cursor: not-allowed;
+    }
+}
+
+$orange: #fc8269;
+
+.dropdown.bootstrap-select.form-control {
+	border: 1px solid #dee2e6;
+
+	button.btn.dropdown-toggle.btn-light {
+		border: none;
+		background: linear-gradient(-90deg, $orange 3.3rem, transparent 1px, transparent 100%);
+
+		&::after {
+			color: #fff;
+			margin-right: 5px;
+			margin-left: 1.55em;
+		}
+
+		&:hover {
+			background: linear-gradient(-90deg, $orange 3.3rem, transparent 1px, transparent 100%);
+		}
+	}
+}
+
+@each $color, $value in $theme-colors {
+	.dropdown.bootstrap-select.form-control.select-#{$color} {
+		border: 1px solid #dee2e6;
+
+		button.btn.dropdown-toggle.btn-light {
+			border: none;
+			background: linear-gradient(-90deg, $value 3.3rem, transparent 1px, transparent 100%) !important;
+
+			&:hover {
+				background: linear-gradient(-90deg, $value 3.3rem, transparent 1px, transparent 100%) !important;
+			}
+		}
+	}
+}
+
+.error {
+    .bootstrap-select {
+        border-color: $danger !important;
+    }
+}
+
+.fa-lock.text-orange {
+	font-size: 66%;
+}

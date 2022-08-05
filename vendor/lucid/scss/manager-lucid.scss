@@ -1,0 +1,184 @@
+body.full-screen {
+	background: #32323A;
+	height: 100vh; 
+	display: flex; 
+	flex-flow: column;
+}
+
+.card-header.login-header {
+	background: #aec785;
+	text-align: center;
+	color: #fff;
+	border-bottom: 10px solid #a0b87e
+}
+
+.card-header.login-header h2 {
+	font-size: 16px;
+}
+$body-bg: #f4f7f6;
+$flag-icon-css-path: '/flags';
+$z-custom: 1031;
+$aubergine: #9c5374;
+$orange: #fc8269;
+$violet: #9972b5;
+$turquoise : #1fb5ac;
+$primary: $turquoise;
+$max-menu-level: 5;
+$theme-colors: (
+    "aubergine": $aubergine,
+	"orange": $orange,
+    "violet": $violet,
+    "turquoise": $turquoise
+);
+
+@import "node_modules/bootstrap/scss/bootstrap";
+@import "node_modules/flag-icon-css/sass/flag-icon";
+@import "../components/Core";
+@import "../components/Editor";
+@import "../components/Categorie";
+@import "../vendor/light/assets/scss/main.scss";
+@import "node_modules/toastr/toastr.scss";
+@import "../fontawesome/scss/fontawesome.scss";
+@import "../fontawesome/scss/solid.scss";
+@import "../fontawesome/scss/regular.scss";
+@import "../fontawesome/scss/brands.scss";
+@import "../components/Categorie.scss";
+@import "../components/Pim/Sourcing.scss";
+
+@for $i from 1 through 10 {
+  	.alpha-#{$i*10} {
+  		opacity : $i/10;
+  		transition : opacity .4s;
+	}
+}
+
+@each $size, $length in $spacers {
+	.custom-control-label.custom-control-mt-#{$size} {
+		&::before {
+			margin-top: $length;
+		}
+		&::after {
+			margin-top: $length;
+		}
+	}
+}
+
+.top-container {
+	@include media-breakpoint-up('md', $grid-breakpoints) {
+		margin-top: 62px;
+	}
+	@include media-breakpoint-down('md', $grid-breakpoints) {
+		margin-top: 42px;
+	}
+}
+
+.btn-circle {
+  	border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+	padding: 0;
+	
+	i {
+		font-size: 10px;
+		display: block;
+	}
+}
+
+.mouse-pointable {
+	cursor: pointer;
+}
+
+.charts {
+	@include make-grid-columns(100, $grid-gutter-width);
+}
+
+.line {
+    fill: none;
+    stroke: $primary;
+    stroke-width: 3;
+}
+  
+.overlay {
+  fill: $secondary;
+  pointer-events: all;
+}
+
+/* Style the dots by assigning a fill and stroke */
+.dot {
+    fill: $white;
+	stroke: $primary;
+	stroke-width: 5;
+
+	&:hover {
+		stroke: $orange;
+		stroke-width: 20px;
+		stroke-opacity: 0.6;
+	}
+}
+
+.line-10 {
+    fill: none;
+	stroke: transparentize($primary, 0.7);
+	stroke-dasharray: 0.3;
+    stroke-width: 2;
+}
+
+.dot-10 {
+    fill: $primary;
+	stroke: $primary;
+	stroke-width: 1;
+
+	&:hover {
+		stroke: $orange;
+		stroke-width: 10px;
+		stroke-opacity: 0.6;
+	}
+}
+
+.linebar-toggle {
+    @include media-breakpoint-up('md', $grid-breakpoints) {
+        position: absolute;
+        right: 20px;
+        top: 20px;
+	}
+}
+
+.lining-enter {
+	opacity: 0.01;
+}
+  
+.lining-enter.lining-enter-active {
+	opacity: 1;
+	transition: opacity 500ms ease-in;
+}
+  
+.lining-leave {
+	opacity: 1;
+}
+  
+.lining-leave.lining-leave-active {
+	opacity: 0.01;
+	transition: opacity 300ms ease-in;
+}
+
+.btn-orange {
+	color: $white !important;
+}
+
+.fa-lock.text-orange {
+	font-size: 66%;
+}
+
+.table.table-separated {
+	border-collapse: separate;
+	border-spacing: 10px;
+	
+	td, th {
+		padding: 0;
+	}
+}
+
+.input-group-text {
+	line-height: 1.2;
+}

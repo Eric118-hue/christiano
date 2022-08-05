@@ -5,7 +5,6 @@ node_modules/
 /config/webpack.dev.js
 /env.js
 /cenv.js
-/vendor
 .history
 /config/webpack.gha.dev.js
 /config/webpack.gha.prod.js

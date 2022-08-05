@@ -27,7 +27,7 @@ import CarditList from './Air/Cardit/List';
 import Fwb from './Air/Fwb';
 import Amd from './Amd';
 import CN38 from './Manager/CarditExport/CN38';
-import Mailmanifest from './Manager/Mailmanifest';
+import Flight from './Manager/Flight';
 import Account from './Air/Account';
 import Display from '../vendor/Ry/Core/Page';
 import Footernav from './Footernav';
@@ -44,7 +44,7 @@ const Components = {
 			Cardit : {
 				CN38
 			},
-			Mailmanifest
+			Flight
 		},
 		Fwb,
 		Amd,

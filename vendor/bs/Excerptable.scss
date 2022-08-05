@@ -1,0 +1,16 @@
+.excerptable {
+
+  &.longtext {
+      .longtext {
+          display: block;
+      }
+
+      .excerpt {
+          display: none;
+      }
+  }
+
+  .longtext {
+      display: none;
+  }
+}

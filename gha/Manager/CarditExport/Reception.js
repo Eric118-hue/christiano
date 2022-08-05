@@ -25,11 +25,7 @@ class ReceptacleLine extends Component
 {
     constructor(props) {
         super(props)
-        this.isApp = (this.models('props.data.scans', []).find(it=>(it.consignment_event_code==74 || it.consignment_event_code==43) && this.cast(it.nsetup, 'mrd', 1)))
-        this.isMrd = (this.models('props.data.scans', []).find(it=>(it.consignment_event_code==74 || it.consignment_event_code==43) && this.cast(it.nsetup, 'mrd', 1)))
-        this.isMrd82 = (this.models('props.data.scans', []).find(it=>it.consignment_event_code==82 && this.cast(it.nsetup, 'mrd', 1)))
-        this.isApp82 = (this.models('props.data.scans', []).find(it=>it.consignment_event_code==82))
-        this.isMld = (this.models('props.data.scans', []).find(it=>(it.consignment_event_code==74 || it.consignment_event_code==43)))
+        this.isMld = this.models('props.data.nsetup.poc.value')
         this.scan = this.scan.bind(this)
     }
 
@@ -37,7 +33,7 @@ class ReceptacleLine extends Component
         const disableMrd = (this.isMld && !this.props.data.nsetup.reference_receptacle_id) ? {disabled:true} : {}
         let resdit = null
         if(this.isMld && (consignment_event.code==74 || consignment_event.code==43)) {
-            resdit = <div className="btn btn-xs btn-rose">MLD {moment().format('DD/MM')}</div>
+            resdit = <div className="btn btn-xs btn-rose">MLD {moment(this.models('props.data.nsetup.poc.updated_at')).format('DD/MM')}</div>
         }
         else {
             resdit = <label className="fancy-radio m-auto custom-color-green">
@@ -110,6 +106,11 @@ class Reception extends Component
                     return state
                 })
             }
+            if(storeState.type==='mld_sent') {
+                setTimeout(()=>{
+                    document.location.reload()
+                }, 1000)
+            }
         })
     }
 
@@ -169,6 +170,7 @@ class Reception extends Component
                             :(this.models('props.data.nsetup.consignment_category.code')=='B' && mailclass_concat=='T')?<button href={trans('/cn41?id=:id', {id:this.props.data.id})} type="button" className="btn btn-danger w-25 text-light">CN 47</button>
                             :null}
                             {this.models('props.data.nsetup.csd', []).length>0?<a href={`#dialog/csd?cardit_id=${this.models('props.data.id')}`} target="_blank" className="btn btn-beige w-25 text-light ml-2">CSD</a>:null}
+                            {this.models('props.data.receptacles', []).filter(it=>this.cast(it, 'nsetup.poc.mld_type')=='CV' && this.cast(it, 'nsetup.poc.filename')).length>0?<a href={`#dialog/mlds?filename=${this.models('props.data.receptacles', []).find(it=>this.cast(it, 'nsetup.poc.mld_type')=='CV').nsetup.poc.filename}`} target="_blank" className="btn btn-beige w-25 text-light ml-2">MLD</a>:null}
                         </li>
                         
                         <li>

@@ -1102,6 +1102,7 @@ class List0 extends List1
                             state.nawbs += parseInt(awb.nsetup.nreceptacles)
                             state.wawbs += parseFloat(awb.nsetup.wreceptacles)
                         })
+                        state.wawbs = state.wawbs.toFixed(2)
                     }
                     return state
                 })
@@ -1115,6 +1116,7 @@ class List0 extends List1
                         state.nawbs += parseInt(awb.nsetup.nreceptacles)
                         state.wawbs += parseFloat(awb.nsetup.wreceptacles)
                     })
+                    state.wawbs = state.wawbs.toFixed(2)
                     return state
                 })
             }
@@ -1171,7 +1173,7 @@ class List0 extends List1
                 </tbody>
                 <tfoot className={(this.progressive && this.state.page<this.state.last_page)?'':'d-none'}>
                     <tr>
-                        <td ref="overscroller" colSpan="14" className={`position-relative py-3`}><i className="spinner"></i></td>
+                        <td ref="overscroller" colSpan="16" className={`position-relative py-3`}><i className="spinner"></i></td>
                     </tr>
                 </tfoot>
             </table>
