@@ -33,7 +33,7 @@ class List extends BaseList
         }).then((result) => {
             if (result.value) {
                 $.ajax({
-                    type: 'put',
+                    type: 'delete',
                     url : '/flight',
                     data : {
                         id : item.id

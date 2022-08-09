@@ -358,7 +358,7 @@ class Item extends Component
         return <React.Fragment>
             <Ry/>
             <tr>
-                <td className="green">{moment(this.cast(this.models('props.data.resdits', []).find(it=>it.nsetup.mld), 'nsetup.localtime', this.models('props.data.resdits.0.created_at'))).format('DD/MM/YYYY')}</td>
+                <td className="green">{moment(this.models('props.data.created_at')).format('DD/MM/YYYY')}</td>
                 <td>
                     <div className="d-flex align-items-center px-3">
                         <span className="d-inline-block px-2 list-document-number text-blue">{this.state.row_data.container_id}</span>
@@ -391,6 +391,7 @@ class Item extends Component
                             <form className="text-left" method='post' name='frm_edit' action='/flight'>
                                 <input type="hidden" name="ry"/>
                                 <input type="hidden" name="id" value={this.props.data.id}/>
+                                <input type="hidden" name="conveyence_id" value={this.props.data.conveyence_id}/>
                                 <div className="form-group">
                                     <label className="control-label">
                                         {trans('Nº de conteneur')}
