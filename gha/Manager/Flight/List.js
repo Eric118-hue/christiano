@@ -17,7 +17,7 @@ class List extends BaseList
         this.state.t = moment()
         this.containerSearch = this.containerSearch.bind(this)
         this.state.filter.container_id = this.models('props.data.filter.container_id', '')
-        this.state.filter.departure_datetime_lt = this.models('props.data.filter.departure_datetime_lt', moment())
+        this.state.filter.departure_datetime_lt = this.models('props.data.filter.departure_datetime_lt', moment().format('YYYY-MM-DD HH:mm:ss'))
         this.state.filter.conveyence_reference = this.models('props.data.filter.conveyence_reference')
         this.handleClearFilter = this.handleClearFilter.bind(this)
         this.archive = this.archive.bind(this)
@@ -56,7 +56,7 @@ class List extends BaseList
         }
         this.setState({
             filter : {
-                departure_datetime_lt : moment()
+                departure_datetime_lt : moment().format('YYYY-MM-DD HH:mm:ss')
             },
             t : moment()
         })
