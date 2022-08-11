@@ -267,10 +267,7 @@ class Status extends Component
         let resdit_files = []
         let flights = []
         let files = []
-        let files_tablet = [<div className="row" key={`mail-manifest-file-tablet-${this.props.data.id}`}>
-            <a key={`download-tablet-${this.props.data.id}-mail-manifest`} className="btn btn-orange text-white col-md-3 font-10 pt-2 m-2" {...flightHref}><span className="bg-light pt-1 d-block font-25 m-2 rounded text-primary"><i className="fa fa-file-contract fa-2x text-orange"></i></span></a>
-            <Ry/>
-        </div>]
+        let files_tablet = []
         this.models('props.data.resdits', []).map(resdit=>{
             resdit.files.map(file=>{
                 files.push(<a key={`download-${this.props.data.id}-resdit-${file}-${files.length}`} className="btn btn-info text-white col-md-3 font-10 pt-2 m-2" {...this.hrefs(file, resdit)}>RESDIT<span className="bg-light d-block font-25 m-2 rounded text-primary">{file.split('-')[0]}<br/><small className="font-10 d-block">{file.split('-')[1]}</small></span></a>)
@@ -298,6 +295,7 @@ class Status extends Component
         this.handleAllReceptacleTransportChange = this.handleAllReceptacleTransportChange.bind(this)
         this.handleAllReceptacleUldChange = this.handleAllReceptacleUldChange.bind(this)
         this.handleUldChange = this.handleUldChange.bind(this)
+        this.handleDirection = this.handleDirection.bind(this)
         this.hrefs = this.hrefs.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
         this.handleValidate = this.handleValidate.bind(this)
@@ -306,6 +304,12 @@ class Status extends Component
         this.form = React.createRef()
         this.move = this.move.bind(this)
         this.remove = this.remove.bind(this)
+    }
+
+    handleDirection() {
+        this.setState({
+            changed: true
+        })
     }
 
     move() {
@@ -632,7 +636,7 @@ class Status extends Component
                             </tr>
                         </thead>
                         <tbody>
-                            {this.state.receptacles.map((receptacle, index)=><ReceptacleLine key={`content-mail-manifest-${this.props.transportIndex}-${receptacle.id}`} handleUldChange={checked=>this.handleUldChange(checked, receptacle)} defaultConveyence={this.props.data.conveyence} pkey={this.props.data.id} data={receptacle} selectTransports={this.props.selectTransports} transportIndex={this.props.transportIndex} handleReceptacleTransportChange={(select_transport, checked)=>this.handleReceptacleTransportChange(receptacle, select_transport, checked)} readOnly={this.props.readOnly} store={this.props.store} departureSent={this.models('props.data.resdits', []).find(it=>it.event=='departure')}/>)}
+                            {this.state.receptacles.map((receptacle, index)=><ReceptacleLine key={`content-flight-${this.props.transportIndex}-${receptacle.id}`} handleUldChange={checked=>this.handleUldChange(checked, receptacle)} defaultConveyence={this.props.data.conveyence} pkey={this.props.data.id} data={receptacle} selectTransports={this.props.selectTransports} transportIndex={this.props.transportIndex} handleReceptacleTransportChange={(select_transport, checked)=>this.handleReceptacleTransportChange(receptacle, select_transport, checked)} readOnly={this.props.readOnly} store={this.props.store} departureSent={this.models('props.data.resdits', []).find(it=>it.event=='departure')}/>)}
                             <tr>
                                 <td className="border-right-0 border-top-0 border-bottom-0 noBg">
                                     <div className="dropdown">
@@ -675,20 +679,20 @@ class Status extends Component
                                 <label className="control-label">
                                     {trans('Nº de conteneur')}
                                 </label>
-                                <input type="text" name="container_id" className="form-control bs-default" required defaultValue={this.props.data.container_id}/>
+                                <input type="text" name="container_id" className="form-control bs-default" onChange={this.handleDirection} required defaultValue={this.props.data.container_id}/>
                             </div>
                             <div className="form-group">
                                 <label className="control-label">
                                     {trans('Nº de vol')}
                                 </label>
-                                <input type="text" name="conveyence[reference]" className="form-control bs-default" required defaultValue={this.models('props.data.conveyence.reference')}/>
+                                <input type="text" name="conveyence[reference]" className="form-control bs-default" required onChange={this.handleDirection} defaultValue={this.models('props.data.conveyence.reference')}/>
                             </div>
                             <div className="form-group">
                                 <label className="control-label text-capitalize">
                                     {trans("Date de départ")}
                                 </label>
                                 <div ref={this.departure_date} className="input-group date">
-                                    <input type="text" className="form-control bs-default" required data-parsley-errors-container={`#departure_date-${this.props.data.id}-error`} defaultValue={moment(this.models('state.conveyence.departure_datetime_lt')).format('DD/MM/YYYY')}/>
+                                    <input type="text" onChange={this.handleDirection} className="form-control bs-default" required data-parsley-errors-container={`#departure_date-${this.props.data.id}-error`} defaultValue={moment(this.models('state.conveyence.departure_datetime_lt')).format('DD/MM/YYYY')}/>
                                     <div className="input-group-append"> 
                                         <button className="btn-primary btn text-light pl-3 pr-3" type="button"><i className="fa fa-calendar-alt"></i></button>
                                     </div>
@@ -696,7 +700,7 @@ class Status extends Component
                                 <span id={`departure_date-${this.props.data.id}-error`}></span>
                             </div>
                             <input type="hidden" name="conveyence[departure_datetime_lt]" value={this.models('state.conveyence.departure_datetime_lt')}/>
-                            <input type='hidden' name='upl' value={this.state.changed}/>
+                            <input type='hidden' name='mail_direction' value={this.state.changed?'ALL':'UPL'}/>
                             <button className="btn btn-orange py-2 font-18 text-capitalize" type="button" onClick={this.handleValidate}>{trans('Confirmer')}</button>
                         </PopupBody>
                     </Popup>

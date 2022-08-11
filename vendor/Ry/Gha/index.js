@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import Cardit from './Cardit';
+import CarditExport from './CarditExport';
 import Resdit from './Resdit';
 import Pricing from './Pricing';
 import List from '../../../app/Air/Cart/List';
@@ -21,7 +21,7 @@ class Invoice extends Component
 }
 
 const Components = {
-    CarditExport : Cardit,
+    CarditExport,
     Resdit : Resdit,
     Pricing : Pricing,
     Dashboard,

@@ -6,11 +6,7 @@ const config = require("../cenv");
 
 module.exports = {
   entry: {
-    manager : './app/managero.js',
-    cardit : './app/cardit.js',
-    ryadmin : './app/admin.js',
-    airline : './app/airline.js',
-    agent : './app/agento.js'
+    manager : './app/managero.js'
   },
   resolve: {
     alias : {
@@ -33,8 +29,8 @@ module.exports = {
     })
   ],
   output: {
-    filename: '[name].amelior.js',
-    chunkFilename: '[name].amelior.js',
+    filename: '[name].manager.js',
+    chunkFilename: '[name].manager.js',
     path: config.laravel.public,
     library: 'Ry'
   },

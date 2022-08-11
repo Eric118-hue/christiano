@@ -23,7 +23,7 @@ import __CARDIT from '../vendor/Ry/Cardit';
 import __GHA from '../vendor/Ry/Gha';
 import CarditDetail from './Manager/CarditExport/Detail';
 import Cart from './Manager/Client/Cart';
-import CarditList from './Air/Cardit/List';
+import CarditList from './Air/CarditExport/List';
 import Fwb from './Air/Fwb';
 import Amd from './Amd';
 import CN38 from './Manager/CarditExport/CN38';
@@ -31,20 +31,22 @@ import Flight from './Manager/Flight';
 import Account from './Air/Account';
 import Display from '../vendor/Ry/Core/Page';
 import Footernav from './Footernav';
+import CarditImport from './Manager/CarditImport';
 
 __GHA.CarditExport.List = CarditList
 
 const Components = {
 	App : {
-		Cardit : CarditDetail,
+		CarditExport : CarditDetail,
 		Manager : {
 			Client : {
 				Cart : Cart
 			},
-			Cardit : {
+			CarditExport : {
 				CN38
 			},
-			Flight
+			Flight,
+            CarditImport
 		},
 		Fwb,
 		Amd,
@@ -67,7 +69,7 @@ const Components = {
             Contact : __EMAILS,
             Editor : __EDITOR
 		},
-		Cardit : __CARDIT,
+		CarditExport : __CARDIT,
 		Gha : __GHA
     },
     Core : {

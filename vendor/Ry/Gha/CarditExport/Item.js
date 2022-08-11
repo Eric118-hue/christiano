@@ -1,14 +1,11 @@
 import React, {Component} from 'react';
 import moment from 'moment';
-import {Popup, PopupHeader, PopupBody} from '../../../bs/bootstrap';
+import {Popup, PopupHeader, PopupBody} from 'ryvendor/bs/bootstrap';
 import $ from 'jquery';
 import Reception from './Reception';
-import Assignation from './Assignation';
-import Status from './Status';
-import Delivery from './Delivery';
 import trans from '../../../../app/translations';
-import Ry from '../../Core/Ry';
-import Modelizer from '../../Core/Modelizer';
+import Ry from 'ryvendor/Ry/Core/Ry';
+import Modelizer from 'ryvendor/Ry/Core/Modelizer';
 import numeral from 'numeral';
 
 export class StepView extends Component
@@ -17,7 +14,7 @@ export class StepView extends Component
         super(props)
         this.state = {
             transportIndex : 0,
-            resdits : this.props.data.resdits
+            scans: []
         }
         this.assignate = this.assignate.bind(this)
         this.departure = this.departure.bind(this)
@@ -27,16 +24,13 @@ export class StepView extends Component
     componentDidMount() {
         this.props.store.subscribe(()=>{
             const storeState = this.props.store.getState()
-            if(storeState.type=='resdit') {
+            if(storeState.type=='scan') {
                 this.setState(state=>{
                     if(storeState.data) {
-                        state.resdits = state.resdits.concat(storeState.data)
+                        state.scans = state.scans.concat(storeState.data)
                     }
                     else if(storeState.reception) {
-                        state.resdits = state.resdits.concat(storeState.reception)
-                    }
-                    else if(storeState.delivery) {
-                        state.resdits = state.resdits.concat(storeState.delivery)
+                        state.scans = state.scans.concat(storeState.reception)
                     }
                     return state
                 })
@@ -69,50 +63,12 @@ export class StepView extends Component
         return <div className="recipientContainer">
             <div className="d-flex justify-content-center align-items-center stepContainer">
                 <div className="asideList">{this.props.data.nsetup.handover_origin_location.iata}</div>
-                <div className={`recipientList d-flex flex-column justify-content-between align-items-center ${this.props.step=='reception'?'red':(this.state.resdits.find(item=>{
+                <div className={`recipientList d-flex flex-column justify-content-between align-items-center ${this.props.step=='reception'?'red':(this.state.scans.find(item=>{
                         return (item.reception && item.reception.length>0) || item.event=='reception'
                     })?'text-success':'')}`}>
                     <div className="mouse-pointable w-100" onClick={this.props.reception}>
                         <i className="font-50 l2-receipt"></i>
-                        <span className="text-capitalize">{trans('Réception')}</span>
-                    </div>
-                    <i className="fa fa-circle"></i>
-                </div>
-                {this.props.data.nsetup.transports.map((transport, index)=><React.Fragment key={`cardit-${this.props.data.id}-transport-${index}`}>
-                    <div className={`recipientList d-flex flex-column justify-content-between align-items-center ${(this.props.step=='assignation' && this.state.transportIndex==index)?'red':(this.state.resdits.find(item=>{
-                        return item.event == 'assignation' && item.transport_step==index
-                    })?'text-success':'')}`}>
-                        <div className="mouse-pointable w-100" onClick={()=>this.assignate(index)}>
-                            <i className="font-50 l2-warehouse"></i>
-                            <span className="text-capitalize">{trans('Assignation')}</span>
-                        </div>
-                        <i className="fa fa-circle"></i>
-                    </div>
-                    <div className={`recipientList d-flex flex-column justify-content-between align-items-center  ${(this.props.step=='departure' && this.state.transportIndex==index)?'red':(this.state.resdits.find(item=>{
-                        return item.event == 'departure' && item.transport_step==index
-                    })?'text-success':'')}`}>
-                        <div className="mouse-pointable w-100" onClick={()=>this.departure(index)}>
-                            <i className="font-50 l2-departure"></i>
-                            <span className="text-capitalize">{trans('Départ')}</span>
-                        </div>
-                        <i className="fa fa-circle"></i>
-                    </div>
-                    <div className={`recipientList d-flex flex-column justify-content-between align-items-center ${(this.props.step=='arrival' && this.state.transportIndex==index)?'red':(this.state.resdits.find(item=>{
-                        return item.event == 'arrival' && item.transport_step==index
-                    })?'text-success':'')}`}>
-                        <div className="mouse-pointable w-100" onClick={()=>this.arrival(index)}>
-                            <i className="font-50 l2-arrival"></i>
-                            <span className="text-capitalize">{trans('Arrivée')}</span>
-                        </div>
-                        <i className="fa fa-circle"></i>
-                    </div>
-                </React.Fragment>)}
-                <div className={`recipientList d-flex flex-column justify-content-between align-items-center last ${this.props.step=='delivery'?'red':(this.state.resdits.find(item=>{
-                        return item.event == 'delivery'
-                    })?'text-success':'')}`}>
-                    <div className="mouse-pointable w-100" onClick={this.props.delivery}>
-                        <i className="font-50 l2-destination"></i>
-                        <span className="text-capitalize">{trans('Livraison')}</span>
+                        <span className="text-capitalize">{trans('MLD REC')}</span>
                     </div>
                     <i className="fa fa-circle"></i>
                 </div>
@@ -237,9 +193,9 @@ export class FullDetail extends Component
         }
         this.unsubscribe = this.props.store.subscribe(()=>{
             const storeState = this.props.store.getState()
-            if(storeState.type=='resdit' && storeState.data && storeState.data.length>0) {
+            if(storeState.type=='scan' && storeState.data && storeState.data.length>0) {
                 this.setState(state=>{
-                    state.data.resdits = state.data.resdits.concat(storeState.data)
+                    state.data.scans = state.data.scans.concat(storeState.data)
                     return state
                 })
             }
@@ -343,72 +299,24 @@ export class FullDetail extends Component
     }
 
     getHeadStep() {
-        let headStep = null;
-        let transport = this.props.data.transports.find(it=>it.pivot.step==this.state.transport_index)
-        switch(this.state.step) {
-            case 'reception':
-                headStep = <div className="centerText">
-                    {trans("Réception : récipients au départ de l'aéroport d'origine")} : {this.props.data.nsetup.handover_origin_location.country.nom} - {this.props.data.nsetup.handover_origin_location.iata} - {this.props.data.nsetup.handover_origin_location.name}
-                </div>
-                break;
-            case 'delivery':
-                headStep = <div className="centerText">
-                    {trans("Livraison des récipients à destination : :country_name - :iata - :airport_name", {
-                        country_name : this.models('props.data.nsetup.handover_destination_location.country.nom', this.models('props.data.nsetup.handover_destination_location.adresse.ville.country.nom')),
-                        iata : this.models('props.data.nsetup.handover_destination_location.iata', this.models('props.data.nsetup.handover_destination_location.cardit')),
-                        airport_name : this.props.data.nsetup.handover_destination_location.name
-                    })}
-                </div>
-                break;
-            case 'assignation':
-            //todo : choices available transport at same point
-                headStep = <div className="centerText">
-                    {trans("Assignation : récipients assignés au vol :vol au départ de l'aéroport :country_name - :iata - :airport_name", {vol:transport.reference, country_name:transport.departure_location.country.nom, iata:transport.departure_location.iata, airport_name:transport.departure_location.name})}
-                </div>
-                break;
-            case 'departure':
-                headStep = <div className="centerText">
-                    {trans("Départ des récipients sur le vol Nº:vol au départ de l'aéroport :country_name - :iata - :airport_name", {vol:transport.reference, country_name:transport.departure_location.country.nom, iata:transport.departure_location.iata, airport_name:transport.departure_location.name})}
-                </div>
-                break;
-            case 'arrival':
-                headStep = <div className="centerText">
-                    {trans("Arrivée des récipients à l'aéroport :airport_name (:iata) - :country_name - Vol :vol", {vol:transport.reference, airport_name:this.cast(transport, 'arrival_location.name'), iata:this.cast(transport, 'arrival_location.iata', this.cast(transport, 'arrival_location.cardit')), country_name:this.cast(transport, 'arrival_location.country.nom', this.cast(transport, 'arrival_location.adresse.ville.country.nom'))})}
-                </div>
-                break;
-        }
-        return headStep
+        return <div className="centerText">
+            {trans("MLD REC envoyé le :date à :airline", {
+                date: moment().format('DD/MM/YYYY'),
+                airline: this.models('props.data.nsetup.transports.0.airlines.0')
+            })}
+        </div>
     }
 
     render() {
-        let step = null;
-        switch(this.state.step) {
-            case 'reception':
-                step = <Reception data={this.props.data} consignmentEvents={this.props.consignmentEvents} store={this.props.store} readOnly={this.props.readOnly}/>
-                break;
-            case 'delivery':
-                step = <Delivery readOnly={this.props.readOnly} data={this.props.data} consignmentEvents={this.props.deliveryConsignmentEvents} store={this.props.store} readOnly={this.props.readOnly}/>
-                break;
-            case 'assignation':
-            //todo : choices available transport at same point
-                step = <Assignation key={`assignation-${this.props.data.id}-${this.state.transport_index}`} readOnly={this.props.readOnly} data={this.props.data} transportIndex={this.state.transport_index} selectTransports={this.state.transports.filter(it=>it.pivot.step==this.state.transport_index)} addTransport={this.addTransport} consignmentEvent="assignation" handleAllReceptacleTransportChange={transport=>this.handleAllReceptacleTransportChange(transport)} allTransport={this.state.allTransports[this.state.transport_index].assignation} store={this.props.store} readOnly={this.props.readOnly}/>
-                break;
-            case 'departure':
-                step = <Status key={`departure-${this.props.data.id}-${this.state.transport_index}`} readOnly={this.props.readOnly} data={this.state.data} transportIndex={this.state.transport_index} selectTransports={this.state.transports.filter(it=>it.pivot.step==this.state.transport_index)} addTransport={this.addTransport} consignmentEvent="departure" handleAllReceptacleTransportChange={transport=>this.handleAllReceptacleTransportChange(transport)} allTransport={this.state.allTransports[this.state.transport_index].departure} store={this.props.store} readOnly={this.props.readOnly}/>
-                break;
-            case 'arrival':
-                step = <Status key={`arrival-${this.props.data.id}-${this.state.transport_index}`} readOnly={this.props.readOnly} data={this.state.data} transportIndex={this.state.transport_index} selectTransports={this.state.transports.filter(it=>it.pivot.step==this.state.transport_index)} addTransport={this.addTransport} consignmentEvent="arrival" handleAllReceptacleTransportChange={transport=>this.handleAllReceptacleTransportChange(transport)} allTransport={this.state.allTransports[this.state.transport_index].arrival} store={this.props.store} readOnly={this.props.readOnly}/>
-                break;
-        }
         return <tr className={`detail`}>
-        <td colSpan="14" className="no-padding">
+        <td colSpan="16" className="no-padding">
             <div className="bandeau">
                 <span className="title-bandeau">{trans('Liste des récipients')} </span>
                 {this.getHeadStep()}
             </div>
             {this.getStepView()}
             <div className="tableBottom">
-                {step}
+                <Reception data={this.props.data} consignmentEvents={this.props.consignmentEvents} store={this.props.store} readOnly={this.props.readOnly}/>
             </div>
             <Popup id={`transport_popup_${this.props.data.id}`} className="modal-sm">
                 <PopupBody>
@@ -484,9 +392,38 @@ class Item extends Component
         super(props)
         this.state = {
             data : null,
-            open : false
+            open : false,
+            awb : this.models('props.data.lta.medias', []).length>0
         }
         this.detail = this.detail.bind(this)
+        this.toAwb = this.toAwb.bind(this)
+    }
+
+    componentDidMount() {
+        this.props.store.subscribe(()=>{
+            const storeState = this.props.store.getState()
+            if((storeState.type==='insert_awb' || storeState.type==='delete_awb') && storeState.cardit.id === this.props.data.id) {
+                this.setState({
+                    awb: storeState.type==='insert_awb'
+                })
+            }
+        })
+    }
+
+    toAwb(e) {
+        const awb = e.target.checked
+        if(awb) {
+            this.props.store.dispatch({
+                type: 'insert_awb',
+                cardit: this.props.data
+            })
+        }
+        else {
+            this.props.store.dispatch({
+                type: 'delete_awb',
+                cardit: this.props.data
+            })
+        }
     }
 
     detail(e) {
@@ -498,7 +435,7 @@ class Item extends Component
             return false
         }
         $.ajax({
-            url : '/cardit',
+            url : '/cardit_export',
             data : {
                 id : this.props.data.id,
                 json : true
@@ -520,27 +457,41 @@ class Item extends Component
         let mailclass_concat = Object.keys(this.models('props.data.nsetup.mail_classes', {})).join(' ')
         if(mailclass_concat)
             mailclasses = mailclass_concat
+        const nscanned = this.models('props.data.receptacles', []).filter(it=>it.scan_file_id).length
+        let wscanned = 0
+        this.models('props.data.receptacles', []).filter(it=>it.scan_file_id).map(it=>{
+            wscanned += parseFloat(it.nsetup.weight)
+        })
         return <React.Fragment>
             <Ry/>
-            <tr>
+            <tr className={`${this.props.bg}`}>
                 <td className="green">{moment(this.models('props.data.nsetup.message_function')==1?this.props.data.nsetup.consignment_completion_lt:this.props.data.nsetup.preparation_datetime_lt).format('DD/MM/YYYY')}</td>
                 <td className="green">{moment(this.models('props.data.nsetup.message_function')==1?this.props.data.nsetup.consignment_completion_lt:this.props.data.nsetup.preparation_datetime_lt).format('HH:mm')}</td>
-                <td>
+                <td className='border-right-0'>
                     <div className="d-flex align-items-center px-3">
                         {this.models('props.data.nsetup.exceptions.bgms')?<i className="fa fa-2x fa-exclamation-triangle ml-2 text-danger"></i>:null}
                         {this.props.readOnly?<a href={`#dialog/cardit_file?id=${this.props.data.id}`} className="mr-2"><i className="icon-info"></i></a>:(this.models('props.data.nsetup.message_function')==1?<b className="text-danger mr-2">1</b>:null)}<span className={`d-inline-block px-2 list-document-number ${(this.models('props.data.nsetup.message_function')==1 && this.props.readOnly)?'text-danger':''}`}>{this.props.data.nsetup.document_number}</span>
                         {this.models('props.data.nsetup.exceptions.bgms')?null:<a href="#" onClick={this.detail} className="btnAccord"><i className={`fa ${this.state.open?'fa-sort-up':'fa-sort-down'}`}></i></a>}
-                        {this.models('props.data.lta')?<React.Fragment>
-                            <a href={`#dialog/awb?cardit_id=${this.models('props.data.id')}`} target="_blank" className="btn-success ml-2 px-3 py-1 text-white w-auto" data-display="modal-xl">{trans('AWB')}</a>
-                            {this.models('props.data.lta.medias', []).filter(it=>it.descriptif=='ffr').length>0?<a href={`#dialog/ffr?cardit_id=${this.models('props.data.id')}`} className={`btn-azur ml-2 px-3 py-1 text-white w-auto`}>{trans('FFR')}</a>:null}
-                            {this.models('props.data.lta.medias', []).filter(it=>it.descriptif=='fwb').length>0?<a href={`#dialog/fwb?cardit_id=${this.models('props.data.id')}`} className={`btn-rose ml-2 px-3 py-1 text-white w-auto`}>{trans('FWB')}</a>:null}
-                        </React.Fragment>:null}
+                        <label className={`fancy-checkbox m-0 ml-4 ${this.props.nrows>1?'awb-checkbox':''} ${this.props.pindex==this.props.nrows-1?'awb-checkbox-last-child':''}`}>
+                            <input type="checkbox" checked={this.state.awb} onChange={this.toAwb} disabled={this.props.destFocus && this.props.destFocus!=this.props.data.nsetup.handover_destination_location.id} value="1"/>
+                            <span></span>
+                        </label>
                     </div>
+                </td>
+                {(this.props.nrows>0 && this.props.pindex==0)?<td rowSpan={this.props.nrows+(this.state.groupOpen?1:0)} className='border-right-0 border-left-0'>
+                    {this.models('props.data.lta.id')?<a href={`#dialog/awb?id=${this.models('props.data.lta.id')}`} className={`btn-success ml-2 text-capitalize px-3 py-1 text-white w-auto awb-line ${this.state.open?'d-none':''}`} data-display="modal-xl">{trans('AWB')}</a>:null}
+                </td>:null}
+                <td className='border-left-0'>
+                    {this.models('props.data.receptacles', []).filter(it=>it.scan_file_id).length>0?<a href={`#scan-${this.models('props.data.id')}`} className="btn-theme ml-2 text-capitalize px-3 py-1 text-white w-auto" data-display="modal-xl">{trans('Scan')}</a>:null}
+                    {this.models('props.data.nsetup.consignment_category.code')=='A'?<a href={trans('/cn38?id=:id', {id:this.props.data.id})} target="_blank" className="btn-orange ml-2 px-3 py-1 text-white w-auto">CN 38</a>
+                    :(this.models('props.data.nsetup.consignment_category.code')=='B' && mailclass_concat!='T')?<a href={trans('/cn41?id=:id', {id:this.props.data.id})} target="_blank" className="btn-orange ml-2 px-3 py-1 text-white w-auto">CN 41</a>
+                    :(this.models('props.data.nsetup.consignment_category.code')=='B' && mailclass_concat=='T')?<a href={trans('/cn41?id=:id', {id:this.props.data.id})} type="button" className="btn-orange ml-2 px-3 py-1 text-white w-auto">CN 47</a>:null}
+                    {this.models('props.data.nsetup.csd', []).length>0?<a href={`#dialog/csd?cardit_id=${this.models('props.data.id')}`} className={`btn-blue ml-2 px-3 py-1 text-white w-auto`}>{trans('CSD')}</a>:null}
                 </td>
                 <td>{this.models('props.data.nsetup.consignment_category.code')}</td>
                 <td>{mailclasses}</td>
-                <td>{this.props.data.nsetup.nreceptacles}</td>
-                <td>{numeral(parseFloat(this.props.data.nsetup.wreceptacles)).format('0,0.[00]')}</td>
+                <td className={nscanned>0?(this.props.data.nsetup.nreceptacles!=nscanned?'text-danger':'text-success'):''}>{this.props.data.nsetup.nreceptacles}</td>
+                <td className={wscanned>0?(numeral(parseFloat(this.props.data.nsetup.wreceptacles)).format('0.00')!=numeral(wscanned).format('0.00')?'text-danger':'text-success'):''}>{numeral(parseFloat(this.props.data.nsetup.wreceptacles)).format('0,0.[00]')}</td>
                 <td className="w-info">{this.props.data.nsetup.handover_origin_location.iata} <a href="#" onClick={e=>{
                     e.preventDefault()
                     $(`#origin-${this.props.data.id}`).modal('show')
@@ -672,7 +623,7 @@ class Item extends Component
                     </Popup>
                 </td>
                 <td className="p-2">{moment(this.models('props.data.transports.0.departure_datetime_lt')).format('DD/MM/YYYY')}</td>
-                <td className="p-2">{moment(this.models('props.data.transports.0.departure_datetime_lt')).format('HH:mm')}</td>
+                <td className="p-2 text-danger">{moment(this.models('props.data.transports.0.departure_datetime_lt')).format('HH:mm')}</td>
                 <td className="p-2">{this.props.reception(this.props.data)}</td>
             </tr>
             {(this.state.data && this.state.open)?<FullDetail data={this.state.data} consignmentEvents={this.state.consignment_events} deliveryConsignmentEvents={this.state.delivery_consignment_events} store={this.props.store} readOnly={this.props.readOnly}/>:null}

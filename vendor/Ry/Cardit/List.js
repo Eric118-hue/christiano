@@ -1,12 +1,13 @@
-import React, {Component} from 'react';
+import React from 'react';
+import trans from '../../../app/translations';
+import NavigableModel from 'ryvendor/Ry/Core/NavigableModel';
 import $ from 'jquery';
 import moment from 'moment';
-import {Popup, PopupHeader, PopupBody} from '../../bs/bootstrap';
+import {Popup, PopupHeader, PopupBody} from 'ryvendor/bs/bootstrap';
 import numeral from 'numeral';
-import trans from '../../../app/translations';
-import NavigableModel from '../../Ry/Core/NavigableModel';
-import Modelizer from '../../Ry/Core/Modelizer';
+import Modelizer from 'ryvendor/Ry/Core/Modelizer';
 import swal from 'sweetalert2';
+import Cardit from '../Gha/CarditExport/Item';
 
 class List extends NavigableModel
 {
@@ -57,8 +58,6 @@ class List extends NavigableModel
         this.handleYearChange = this.handleYearChange.bind(this)
         this.ltaSearch = this.ltaSearch.bind(this)
         this.reception = this.reception.bind(this)
-        this.completed = this.completed.bind(this)
-        this.assignation = this.assignation.bind(this)
         this.handleToPreparedAtChange = this.handleToPreparedAtChange.bind(this)
     }
 
@@ -609,200 +608,23 @@ class List extends NavigableModel
     }
 
     reception(cardit) {
-        let k = 0
-        let nmrd = 0
-        let nmld = 0
-        let niftsta = 0
-        if(cardit.resdits && cardit.resdits.find(item=>{
-            return item.event == 'reception'
-        })) {
-            k = 2
-            let item = cardit.resdits.find(item=>{
-                return item.event == 'reception'
-            })
-            if(item.receptacles.find(receptacle=>{
-                return receptacle.nsetup.source=='appscan'
-            })) {
-                k = 5
-                nmrd = 0
-                cardit.resdits.map(resdit=>{
-                    resdit.receptacles.map(receptacle=>{
-                        if(receptacle.nsetup.mrd)
-                            nmrd++
-                    })
-                })
-            }
-            else if(cardit.resdits.filter(item=>{
-                return item.nsetup.mrd && item.event == 'reception'
-            }).length>0) {
+        let k = 0 
+        cardit.receptacles.map(receptacle=>{
+            if(this.cast(receptacle, 'nsetup.poc.value')) {
                 k = 1
-                nmrd = 0
-                cardit.resdits.map(resdit=>{
-                    if(resdit.nsetup.mrd && resdit.event=='reception') {
-                        resdit.receptacles.map(receptacle=>{
-                            if(receptacle.nsetup.mrd)
-                                nmrd++
-                        })
-                    }
-                })
             }
-            else if(item.receptacles.find(receptacle=>{
-                return receptacle.nsetup.mld
-            })) {
-                k = 3
-                nmld = 0
-                cardit.resdits.map(resdit=>{
-                    resdit.receptacles.map(receptacle=>{
-                        if(this.cast(receptacle, 'nsetup.mld'))
-                            nmld++
-                    })
-                })
-            }
-            else if(item.receptacles.find(receptacle=>{
-                return receptacle.nsetup.iftsta
-            })) {
-                k = 4
-                niftsta = 0
-                cardit.resdits.map(resdit=>{
-                    resdit.receptacles.map(receptacle=>{
-                        if(receptacle.nsetup.iftsta)
-                            niftsta++
-                    })
-                })
-            }
-        }
-
-        if(k==1) {
-            return <a className="btn btn-blue cursor-default d-flex text-white justify-content-center pr-1 align-items-center" href="#" style={{height:34}}>MRD</a>
-        }
-        else if(cardit.nsetup.COR) {
-            return <a className={`btn ${(cardit.resdits.filter(it=>!it.mrd).length+cardit.resdits.filter(it=>!it.mld).length)>0?'btn-success':'btn-dark'} cursor-default d-flex ${true?'justify-content-center':'justify-content-between'} pr-1 align-items-center`} href="#" style={{height:34}}><span></span><span>COR</span> {true?null:<i className="icon-pencil"></i>}</a>
-        }
-            
+        })
         switch(k) {
             case 0:
-                return <a className={`btn btn-danger cursor-default d-flex ${true?'justify-content-center':'justify-content-between'} pr-1 align-items-center`} href="#" style={{height:34}}><span></span><span>NT</span> {true?null:<i className="icon-pencil"></i>}</a>
+                return <a className={`align-items-center badge badge-orange border-0`} href="#" style={{height:20,width:20}}><span></span><span></span></a>
             case 5:
-                return <a className="btn btn-theme cursor-default d-flex text-white justify-content-center pr-1 align-items-center" href="#" style={{height:34}}>AMD</a>
+                return <a className="align-items-center cursor-default badge badge-theme border-0 text-white" href="#" style={{height:20,width:20}}>AMD</a>
             case 3:
-                return <a className="btn btn-blue cursor-default d-flex text-white justify-content-center pr-1 align-items-center" href="#" style={{height:34}}>MLD</a>
+                return <a className="align-items-center cursor-default badge badge-turquoise border-0 text-white" href="#" style={{height:20,width:20}}><span></span></a>
             case 4:
-                return <a className="btn btn-army cursor-default d-flex text-white justify-content-center pr-1 align-items-center" href="#" style={{height:34}}>IFTSTA</a>
-            case 2:
-                return <a className={`btn btn-success cursor-default d-flex ${true?'justify-content-center':'justify-content-between'} pr-1 align-items-center`} href="#" style={{height:34}}><span></span><i className="fa fa-check text-white"></i>{true?null:<i className="fa fa-info-circle text-white"></i>}</a>
-            
-        }
-    }
-
-    assignation(cardit) {
-        let k = 0
-        if(cardit.resdits && cardit.resdits.find(item=>{
-            return item.event == 'assignation' && this.cast(item.nsetup, 'mld')
-        }))
-            k = 4
-        else if(cardit.resdits && cardit.resdits.find(item=>{
-            return item.event == 'assignation' && this.cast(item.nsetup, 'mrd.source')=='appscan'
-        }))
-            k = 3
-        else if(cardit.resdits && cardit.resdits.find(item=>{
-            return item.event == 'assignation'
-        }))
-            k = 2
-        switch(k) {
-            case 0:
-                return <a className={`btn btn-danger cursor-default d-flex ${true?'justify-content-center':'justify-content-between'} pr-1 align-items-center`} href="#" style={{height:34}}><span></span><span>NT</span>{true?null:<i className="icon-pencil"></i>}</a>
+                return <a className="align-items-center cursor-default badge badge-army border-0 text-white" href="#" style={{height:20,width:20}}>IFTSTA</a>
             case 1:
-                return <a className="btn text-white cursor-default d-flex justify-content-between pr-1 align-items-center" href="#" style={{background:'#ff7c07',height:34}}><span></span><span>NT</span><i className="icon-pencil"></i></a>
-            case 2:
-                return <a className={`btn btn-success cursor-default d-flex ${true?'justify-content-center':'justify-content-between'} pr-1 align-items-center`} href="#" style={{height:34}}><span></span><i className="fa fa-check text-white"></i> {true?null:<i className="fa fa-info-circle text-white"></i>}</a>
-            case 3:
-                return <a className={`btn btn-theme text-white cursor-default d-flex justify-content-center pr-1 align-items-center`} href="#" style={{height:34}}><span></span>AMD</a>
-            case 4:
-                return <a className={`btn btn-theme text-white cursor-default d-flex justify-content-center pr-1 align-items-center`} href="#" style={{height:34}}><span></span>MLD</a>
-            
-        }
-    }
-
-    completed(cardit) {
-        let k = 0
-        let nmrd = 0
-        let nmld = 0
-        let niftsta = 0
-        if(cardit.resdits && cardit.resdits.find(item=>{
-            return item.event == 'delivery'
-        })) {
-            k = 2
-            let item = cardit.resdits.find(item=>{
-                return item.event == 'delivery'
-            })
-            if(this.cast(item, 'nsetup.fsu')) {
-                k = 6
-            }
-            else if(item.receptacles.find(receptacle=>{
-                return receptacle.nsetup.source=='appscan'
-            })) {
-                k = 5
-                nmrd = 0
-                cardit.resdits.map(resdit=>{
-                    resdit.receptacles.map(receptacle=>{
-                        if(receptacle.nsetup.mrd)
-                            nmrd++
-                    })
-                })
-            }
-            else if(item.receptacles.find(receptacle=>{
-                return receptacle.nsetup.mrd
-            })) {
-                k = 1
-                nmrd = 0
-                cardit.resdits.map(resdit=>{
-                    resdit.receptacles.map(receptacle=>{
-                        if(receptacle.nsetup.mrd)
-                            nmrd++
-                    })
-                })
-            }
-            else if(item.receptacles.find(receptacle=>{
-                return receptacle.nsetup.mld
-            })) {
-                k = 3
-                nmld = 0
-                cardit.resdits.map(resdit=>{
-                    resdit.receptacles.map(receptacle=>{
-                        if(receptacle.nsetup.mld)
-                            nmld++
-                    })
-                })
-            }
-            else if(item.receptacles.find(receptacle=>{
-                return receptacle.nsetup.iftsta
-            })) {
-                k = 4
-                niftsta = 0
-                cardit.resdits.map(resdit=>{
-                    resdit.receptacles.map(receptacle=>{
-                        if(receptacle.nsetup.iftsta)
-                            niftsta++
-                    })
-                })
-            }
-        } 
-        switch(k) {
-            case 0:
-                return <a className={`btn btn-danger cursor-default d-flex ${true?'justify-content-center':'justify-content-between'} pr-1 align-items-center`} href="#" style={{height:34}}><span>NT</span>{true?null:<i className="icon-pencil"></i>}</a>
-            case 1:
-                return <a className="btn btn-blue cursor-default d-flex text-white justify-content-center pr-1 align-items-center" href="#" style={{height:34}}>MRD</a>
-            case 5:
-                return <a className="btn btn-theme cursor-default d-flex text-white justify-content-center pr-1 align-items-center" href="#" style={{height:34}}>AMD</a>
-            case 6:
-                return <a className="btn btn-turquoise cursor-default d-flex text-white justify-content-center pr-1 align-items-center" href="#" style={{height:34}}>FSU</a>
-            case 3:
-                return <a className="btn btn-blue cursor-default d-flex text-white justify-content-center pr-1 align-items-center" href="#" style={{height:34}}>MLD</a>
-            case 4:
-                return <a className="btn btn-army cursor-default d-flex text-white justify-content-center pr-1 align-items-center" href="#" style={{height:34}}>IFTSTA</a>
-            case 2:
-                return <a className={`btn btn-success cursor-default text-white d-flex ${true?'justify-content-center':'justify-content-between'} pr-1 align-items-center`} href="#" style={{height:34}}><i className="fa fa-check text-white"></i> {true?null:<i className="fa fa-info-circle text-white"></i>}</a>
-            
+                return <a className={`align-items-center badge badge-turquoise border-0`} href="#" style={{height:20,width:20}}><span></span></a>   
         }
     }
 
@@ -1002,9 +824,9 @@ class List extends NavigableModel
                             </PopupBody>
                         </Popup>
                     </td>
+                    <td>{moment(this.models('props.data.transports.0.departure_datetime_lt')).format('DD/MM/YYYY')}</td>
+                    <td>{moment(this.models('props.data.transports.0.departure_datetime_lt')).format('HH:mm')}</td>
                     <td>{this.reception(item)}</td>
-                    <td>{this.assignation(item)}</td>
-                    <td>{this.completed(item)}</td>
                     {this.afterTd(item)}
                 </tr>)}
             </tbody>
@@ -1043,7 +865,7 @@ class List extends NavigableModel
                                         </select>
                                     </div>
                                 </div>
-                                <div className={`pr-md-0`}>
+                                <div className={`col-md-2`}>
                                     <div className="align-items-baseline d-flex form-group ml-2">
                                         <label className="control-label mr-2">{trans('Origine')}</label>
                                         <select className="form-control" value={this.state.filter.handover_origin_location} onChange={e=>this.onFilter(e, 'handover_origin_location')} ref="origin">
@@ -1052,9 +874,9 @@ class List extends NavigableModel
                                         </select>
                                     </div>
                                 </div>
-                                <div className={`pr-md-0`}>
+                                <div className={`col-md-2`}>
                                     <div className="align-items-baseline d-flex form-group ml-2">
-                                        <label className="control-label mr-2">{trans('Destination')}</label>
+                                        <label className="control-label mr-2">{trans('Dest.')}</label>
                                         <select className="form-control" value={this.state.filter.handover_destination_location} onChange={e=>this.onFilter(e, 'handover_destination_location')} ref="destination">
                                             <option value="">{trans('Tous')}</option>
                                             {this.props.data.select_destinations.map(handover_destination_location=><option key={`select-handover-destination-location-${handover_destination_location.iata}`} value={handover_destination_location.iata}>{handover_destination_location.iata}</option>)}
@@ -1198,4 +1020,182 @@ class NavigableList extends List
     }
 }
 
-export default NavigableList;
+class List0 extends NavigableList
+{
+    constructor(props) {
+        super(props)
+        this.progressive = true
+        this.state.awbs = []
+        this.state.nawbs = 0
+        this.state.wawbs = 0
+        this.state.prefix = ''
+        this.state.code = ''
+        this.removeAwb = this.removeAwb.bind(this)
+        this.cancelAwbs = this.cancelAwbs.bind(this)
+        this.handleNawbsChange = this.handleNawbsChange.bind(this)
+        this.handleWawbsChange = this.handleWawbsChange.bind(this)
+        this.handleCode = this.handleCode.bind(this)
+        this.handlePrefix = this.handlePrefix.bind(this)
+    }
+
+    handlePrefix(e) {
+        const prefix = e.target.value
+        if(/^\d{0,3}$/.test(prefix)) {
+            this.setState({
+                prefix
+            })
+        }
+    }
+
+    handleCode(e) {
+        const code = e.target.value
+        if(/^\d{0,8}$/.test(code)) {
+            this.setState({
+                code
+            })
+        }
+    }
+
+    handleNawbsChange(e) {
+        const nawbs = e.target.value
+        this.setState({
+            nawbs
+        })
+    }
+
+    handleWawbsChange(e) {
+        const wawbs = e.target.value
+        this.setState({
+            wawbs
+        })
+    }
+
+    componentDidMount() {
+        super.componentDidMount()
+        this.props.store.subscribe(()=>{
+            const storeState = this.props.store.getState()
+            if(storeState.type==='awbs') {
+                setTimeout(()=>{
+                    document.location.reload()
+                }, 1000)
+            }
+            if(storeState.type==='insert_awb') {
+                this.setState(state=>{
+                    if(state.awbs.length==0 || (state.awbs.length>0 && state.awbs[0].nsetup.handover_destination_location.id==storeState.cardit.nsetup.handover_destination_location.id)) {
+                        state.awbs.push(storeState.cardit)
+                        state.nawbs = 0
+                        state.wawbs = 0
+                        state.awbs.map(awb=>{
+                            state.nawbs += parseInt(awb.nsetup.nreceptacles)
+                            state.wawbs += parseFloat(awb.nsetup.wreceptacles)
+                        })
+                        state.wawbs = state.wawbs.toFixed(2)
+                    }
+                    return state
+                })
+            }
+            else if(storeState.type==='delete_awb') {
+                this.setState(state=>{
+                    state.awbs = state.awbs.filter(it=>it.id!=storeState.cardit.id)
+                    state.nawbs = 0
+                    state.wawbs = 0
+                    state.awbs.map(awb=>{
+                        state.nawbs += parseInt(awb.nsetup.nreceptacles)
+                        state.wawbs += parseFloat(awb.nsetup.wreceptacles)
+                    })
+                    state.wawbs = state.wawbs.toFixed(2)
+                    return state
+                })
+            }
+        })
+    }
+
+    removeAwb(awb) {
+        this.props.store.dispatch({
+            type: 'delete_awb',
+            cardit: awb
+        })
+    }
+
+    cancelAwbs() {
+        this.state.awbs.map(awb=>{
+            this.props.store.dispatch({
+                type: 'delete_awb',
+                cardit: awb
+            })
+        })
+    }
+
+    table() {
+        return <React.Fragment>
+            <table className="table table-bordered table-hover table-striped table-liste" cellSpacing="0" cellPadding="0" id="recipientTable">
+                <thead>
+                    <tr>
+                        <th>{trans('Emis le')}</th>
+                        <th>{trans('à')}</th>
+                        <th colSpan={3}>{trans('N° d’expédition')}</th>
+                        <th>{trans('Cat.')}</th>
+                        <th>{trans('Clas.')}</th>
+                        <th>{trans('Qté')}</th>
+                        <th>{trans('Poids')}</th>
+                        <th>{trans('Orig.')}</th>
+                        <th>{trans('Escale')}</th>
+                        <th>{trans('Dest.')}</th>
+                        <th>{trans('Nº de vol')}</th>
+                        <th>{trans('Départ prévu le')}</th>
+                        <th>{trans('à')}</th>
+                        <th>{trans('REC')}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {this.state.data.groupBy(it=>`${this.cast(it, 'lta_id', 'cardit'+it.id)}`).map((group, groupIndex)=>{
+                        let wreceptacles = 0
+                        let nreceptacles = 0
+                        group.map(item=>{
+                            wreceptacles += parseFloat(item.nsetup.wreceptacles)
+                            nreceptacles += parseInt(item.nsetup.nreceptacles)
+                        })
+                        return group.map((item, index)=><Cardit bg={`bg${groupIndex%2?1:2}`} destFocus={this.models('state.awbs.0.nsetup.handover_destination_location.id')} readOnly={this.readOnly} escales={this.escales} data={item} reception={this.reception} consignmentEvents={this.props.data.consignment_events} deliveryConsignmentEvents={this.props.data.delivery_consignment_events} store={this.props.store} wreceptacles={wreceptacles} nreceptacles={nreceptacles} pindex={index} nrows={group.length} key={`cardit-group-${item.id}`} group={`cardit-group-${this.cast(item, 'lta_id')}`}/>)
+                    })}
+                </tbody>
+                <tfoot className={(this.progressive && this.state.page<this.state.last_page)?'':'d-none'}>
+                    <tr>
+                        <td ref="overscroller" colSpan="16" className={`position-relative py-3`}><i className="spinner"></i></td>
+                    </tr>
+                </tfoot>
+            </table>
+            <form action={`/awb`} method="post" className={`awbs border border-turquoise m-5 p-3 position-fixed rounded ${this.state.awbs.length>0?'':'d-none'}`}>
+                <input type="hidden" name="ry"/>
+                <div className='text-center'><strong>{trans("Assemblage des numéros d'expédition sur une AWB")}</strong></div>
+                <div className='awbs-content'>
+                    {this.state.awbs.map(awb=><div key={`awbed-${awb.id}`} onClick={()=>this.removeAwb(awb)} role="button" className='d-flex justify-content-between align-items-center border-bottom py-2'>
+                        <span>{awb.nsetup.document_number}</span>
+                        <span className="text-turquoise"><i className='fa fa-square-full'></i></span>
+                        <input type='hidden' name={`cardits[]`} value={awb.id}/>
+                    </div>)}
+                </div>
+                <div className="input-group mt-2">
+                    <input type="number" aria-label="prefix" required data-parsley-errors-container="#awb-errors" data-parsley-required-message={trans('Le préfixe est obligatoire')} data-parsley-pattern="\d{3}" data-parsley-pattern-message={trans("Le préfixe doit comporter 3 chiffres")} className="form-control" name="prefix" placeholder={trans('Préfixe')} value={this.state.prefix} onChange={this.handlePrefix}/>
+                    <input type="number" aria-label="code" required data-parsley-errors-container="#awb-errors" data-parsley-required-message={trans('Le Nº AWB est obligatoire')} data-parsley-pattern="\d{8}" data-parsley-pattern-message={trans("Le N° de LTA doit comporter 8 chiffres")} className="form-control" name="code" placeholder={trans('Nº AWB')} value={this.state.code} onChange={this.handleCode}/>
+                </div>
+                <div id="awb-errors"></div>
+                <div className="input-group my-2">
+                    <div className="input-group-prepend">
+                        <div className="input-group-text font-10">{trans('Qté')}</div>
+                    </div>
+                    <input type="number" className="form-control" required name="nsetup[nreceptacles]" value={this.state.nawbs} onChange={this.handleNawbsChange}/>
+                    <div className="input-group-prepend">
+                        <div className="input-group-text font-10">{trans('Poids')}</div>
+                    </div>
+                    <input type="number" className="form-control" required name="nsetup[wreceptacles]" value={this.state.wawbs} onChange={this.handleWawbsChange}/>
+                </div>
+                <div className='btn-group w-100'>
+                    <button className='btn btn-grey text-light' type='button' onClick={this.cancelAwbs}>{trans('Annuler')}</button>
+                    <button className='btn btn-turquoise text-light'>{trans('Confirmer')}</button>
+                </div>
+            </form>
+        </React.Fragment>
+    }
+}
+
+export default List0;

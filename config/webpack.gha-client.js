@@ -6,10 +6,7 @@ const config = require("../cenv-gha-client");
 
 module.exports = {
   entry: {
-    manager : './gha/managero.js',
-    gha: './gha/gha.js',
-    cardit : './gha/cardit.js',
-    ryadmin : './gha/admin.js'
+    gha: './gha/gha.js'
   },
   resolve: {
     alias : {
@@ -33,8 +30,8 @@ module.exports = {
     })
   ],
   output: {
-    filename: '[name].amelior.js',
-    chunkFilename: '[name].amelior.js',
+    filename: '[name].gha.js',
+    chunkFilename: '[name].gha.js',
     path: config.laravel.public,
     library: 'Ry'
   },

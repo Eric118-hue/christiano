@@ -1,5 +1,5 @@
 import React from 'react';
-import List from 'ryvendor/Ry/Gha/Cardit/List';
+import List from 'ryvendor/Ry/Gha/CarditExport/List';
 import Cardit, {FullDetail, StepView} from 'ryvendor/Ry/Airline/Cardit/Item';
 import Ry from 'ryvendor/Ry/Core/Ry';
 import moment from 'moment';

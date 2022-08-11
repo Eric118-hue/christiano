@@ -301,7 +301,7 @@ class Item extends Component
             const storeState = this.props.store.getState()
             if(storeState.type==='flight_edit') {
                 $(`#infos-${this.props.data.id}`).modal('hide')
-                if(this.props.data.id == storeState.row.id) {
+                if(this.props.data.id == storeState.row.prev_id) {
                     this.setState(state=>{
                         state.row_data.container_id = storeState.row.container_id
                         state.row_data.conveyence.reference = storeState.row.conveyence.reference
