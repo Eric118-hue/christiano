@@ -473,7 +473,7 @@ class Item extends Component
                         {this.props.readOnly?<a href={`#dialog/cardit_file?id=${this.props.data.id}`} className="mr-2"><i className="icon-info"></i></a>:(this.models('props.data.nsetup.message_function')==1?<b className="text-danger mr-2">1</b>:null)}<span className={`d-inline-block px-2 list-document-number ${(this.models('props.data.nsetup.message_function')==1 && this.props.readOnly)?'text-danger':''}`}>{this.props.data.nsetup.document_number}</span>
                         {this.models('props.data.nsetup.exceptions.bgms')?null:<a href="#" onClick={this.detail} className="btnAccord"><i className={`fa ${this.state.open?'fa-sort-up':'fa-sort-down'}`}></i></a>}
                         <label className={`fancy-checkbox m-0 ml-4 ${this.props.nrows>1?'awb-checkbox':''} ${this.props.pindex==this.props.nrows-1?'awb-checkbox-last-child':''}`}>
-                            <input type="checkbox" checked={this.state.awb} onChange={this.toAwb} disabled={this.props.destFocus && this.props.destFocus!=this.props.data.nsetup.handover_destination_location.id} value="1"/>
+                            <input type="checkbox" checked={this.state.awb} onChange={this.toAwb} disabled={(this.props.destFocus && this.props.destFocus!=this.props.data.nsetup.handover_destination_location.id) || this.models('props.data.provenance.endpoint.owner.nsetup.cover')!=1} value="1"/>
                             <span></span>
                         </label>
                     </div>

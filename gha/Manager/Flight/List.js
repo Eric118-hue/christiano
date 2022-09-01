@@ -124,7 +124,8 @@ class List extends BaseList
                     <th>{trans('Destination')}</th>
                     <th>{trans('Manifest')}</th>
                     <th>{trans('Archive')}</th>
-                    <th>{trans('Edition')}</th>
+                    <th>{trans('Modifications')}</th>
+                    <th>{trans('Départ confirmé')}</th>
                 </tr>
             </thead>
             <tbody>
@@ -132,7 +133,7 @@ class List extends BaseList
             </tbody>
             <tfoot className={(this.progressive && this.state.page<this.state.last_page)?'':'d-none'}>
                 <tr>
-                    <td ref="overscroller" colSpan="15" className={`position-relative py-3`}><i className="spinner"></i></td>
+                    <td ref="overscroller" colSpan="13" className={`position-relative py-3`}><i className="spinner"></i></td>
                 </tr>
             </tfoot>
         </table>
@@ -161,7 +162,7 @@ class List extends BaseList
                                         <label className="control-label mr-2">{trans('Airline')}</label>
                                         <select className="form-control" value={this.state.filter.airline_id} onChange={e=>this.onFilter(e, 'airline_id')}>
                                             <option value="">{trans('Tous')}</option>
-                                            {this.props.data.airlines.map(airline=><option key={`select-airline-${airline.id}`} value={airline.id}>{airline.name}</option>)}
+                                            {this.props.data.airlines.map(airline=><option key={`select-airline-${airline.id}`} value={airline.id}>{airline.iata_code}</option>)}
                                         </select>
                                     </div>
                                 </div>

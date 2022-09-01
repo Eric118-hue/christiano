@@ -1043,6 +1043,7 @@ class List0 extends List1
         this.state.wawbs = 0
         this.state.prefix = ''
         this.state.code = ''
+        this.state.cover = true
         this.removeAwb = this.removeAwb.bind(this)
         this.cancelAwbs = this.cancelAwbs.bind(this)
         this.handleNawbsChange = this.handleNawbsChange.bind(this)
@@ -1096,6 +1097,7 @@ class List0 extends List1
                 this.setState(state=>{
                     if(state.awbs.length==0 || (state.awbs.length>0 && state.awbs[0].nsetup.handover_destination_location.id==storeState.cardit.nsetup.handover_destination_location.id)) {
                         state.awbs.push(storeState.cardit)
+                        state.cover = this.cast(storeState.cardit, 'provenance.endpoint.owner.nsetup.cover') == 1
                         state.nawbs = 0
                         state.wawbs = 0
                         state.awbs.map(awb=>{
