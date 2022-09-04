@@ -18,7 +18,7 @@ module.exports = merge(common, {
     hot: true
   },
   output: {
-	publicPath: 'http://' + config.laravel.host + ':3004/' //mila antsoina ty open /Applications/Google\ Chrome.app --args --disable-web-security --user-data-dir
+	publicPath: 'http://' + config.laravel.host + ':3004/' //mila antsoina  ty open /Applications/Google\ Chrome.app --args --disable-web-security --user-data-dir
   },
   plugins: [
     new webpack.NamedModulesPlugin(),
@@ -36,7 +36,7 @@ module.exports = merge(common, {
             test: /\.s?css$/,
             use : [
                 'style-loader',
-              'css-loader',
+                'css-loader',
               {
                 loader: 'postcss-loader', // Run post css actions
                 options: {
