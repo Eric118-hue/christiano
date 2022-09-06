@@ -4,7 +4,7 @@ const config = {
     laravel : {
         public : `${laravel}public/`,
         root : laravel,
-        host : 'manager.gha.wr'
+        host : 'localhost'
     }
 }
 
