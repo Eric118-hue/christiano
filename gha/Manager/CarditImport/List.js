@@ -47,9 +47,9 @@ class List extends Component {
             <div className="form-check p-0 d-flex align-items-center">
                 <input type="radio" className="form-check-input" name="flexRadioDefault" id="flexRadioDefault2"/>
                   <label className="form-check-label d-flex align-items-center" for="flexDefaultRadio1">
-                      <input type="date"  style={{width:"160px", height: "20px"}}/>
+                      <input type="date" />
                       <p className="p-2">au</p>
-                      <input type="date" style={{width:"160px", height: "20px"}}/>
+                      <input type="date" />
                   </label>
             </div>
 
@@ -91,7 +91,7 @@ class List extends Component {
                 <div className="form-outline" style={{width: "200px"}}>
                   <input type="search"  placeholder="N° d'ULD" className="form-control" style={{ height: "30px", fontSize: "12px"}}/>
                 </div>
-                  <button type="submit" id="confirm_search" className="btn btn-primary" style={{height: "30px"}}>OK</button>
+                  <button type="submit" id="confirm_search" className="btn -primary" style={{backgroundColor: "blue", color: "white", height: "30px"}}>OK</button>
               </div>
             </div>
 
@@ -101,7 +101,7 @@ class List extends Component {
                 <div className="form-outline" style={{width: "200px"}}>
                   <input type="search" placeholder="N° de récipient" className="form-control" style={{height: "30px", fontSize: "12px"}}/>
                 </div>
-                  <button type="submit" id="confirm_search" className="btn btn-primary" style={{height: "30px"}}>OK</button>
+                  <button type="submit" id="confirm_search" className="btn" style={{backgroundColor: "blue", color: "white", height: "30px"}}>OK</button>
               </div>
             </div>
 
@@ -111,7 +111,7 @@ class List extends Component {
                 <div className="form-outline" style={{width: "200px"}}>
                   <input type="search" placeholder="MRD Label" className="form-control" style={{height: "30px", fontSize: "12px"}}/>
                 </div>
-                  <button type="submit" id="confirm_search" className="btn btn-primary" style={{height: "30px"}}>OK</button>
+                  <button type="submit" id="confirm_search" className="btn" style={{marginLeft: "-10px", backgroundColor: "blue", color: "white", height: "30px"}}>OK</button>
               </div>
             </div>
 
@@ -121,7 +121,7 @@ class List extends Component {
                 <div className="form-outline" style={{width: "200px"}}>
                   <input type="search"  placeholder="MRD Location" className="form-control" style={{height: "30px", fontSize: "12px"}}/>
                 </div>
-                  <button type="submit" id="confirm_search" className="btn btn-primary" style={{height: "30px"}}>OK</button>
+                  <button type="submit" id="confirm_search" className="btn" style={{marginLeft: "-10px", backgroundColor: "blue", color: "white", height: "30px"}}>OK</button>
               </div>
             </div>
             

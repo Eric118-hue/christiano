@@ -3,37 +3,37 @@ import React, { Component } from 'react'
 export default class TableResult extends Component {
   render() {
     return (
-      <div class="mt-5 container-fluid bg-body rounded-4">
-        <div class="d-flex justify-content-start align-items-center">
-            <div class="m-2 ml-4">
+      <div className="mt-5 pr-1 container-fluid bg-body rounded" style={{backgroundColor: "white", height:"500px"}}>
+        <div className="d-flex justify-content-start align-items-center flex-wrap p-3">
+            <div className="m-2 ml-4">
                 <h4>RECEPTIONS EXPORT</h4>
             </div>
-            <div class="mt-3 ml-4">
+            <div className="mt-3 ml-4">
                 <p>Nombre d'ULD: 6</p>
             </div>
-            <div class="mt-3 ml-4">
+            <div className="mt-3 ml-4">
                 <p>Nombre de recipients: 8</p>
             </div>
-            <div class="mt-3 ml-4">
+            <div className="mt-3 ml-4">
                 <p>Poids total: 78</p>
             </div>
-            <div class="mt-3- ml-5">
+            <div className="mt-2" style={{marginLeft:"750px"}} >
                 <a href={''}>
-                    <button type="button" class="btn btn-success"><i class="fas fa-file-excel"></i>Télécharger</button>
+                    <button type="button" className="btn btn-success"><i className="fas fa-file-excel"></i>Télécharger</button>
                 </a>
             </div>
         </div>
 
             {/* Table */}
-            <table class="table table-bordered mt-5" style={{fontSize: "10px"}} >
+            <table className="table table-bordered mt-1" style={{fontSize: "10px"}} >
             <thead>
                 <tr>
-                    <th scope="col" colspan="2" class="text-wrap" style={{textAlign: "center", width: "60px"}}>Handover Date&Hour</th>
+                    <th scope="col" colspan="2" className="text-wrap" style={{textAlign: "center", width: "50px"}}>Handover Date&Hour</th>
                     <th scope="col" style={{width: "300px", textAlign: "center"}}>ULD/Receptable</th>
-                    <th scope="col" style={{width: "40px"}}>Origine</th>
+                    <th scope="col" style={{width: "50px"}}>Origine</th>
                     <th scope="col" style={{width: "200px", textAlign: "center"}}>Actual arrival</th>
                     <th scope="col" style={{width: "80px", textAlign: "center"}}>Reg. vs arr</th>
-                    <th scope="col" style={{width: "200px", textAlign: "center"}}>MRD Location</th>
+                    <th scope="col" style={{width: "150px", textAlign: "center"}}>MRD Location</th>
                     <th scope="col" style={{width: "50px", textAlign: "center"}}>Handler</th>
                     <th scope="col" style={{width: "200px", textAlign: "center"}}>MRD Label</th>
                     <th scope="col" style={{width: "60px", textAlign: "center"}}>Regist. Carrier</th>
@@ -44,7 +44,7 @@ export default class TableResult extends Component {
                   </tr>
                   </thead>
 
-                  <tbody>
+                  <tbody style={{backgroundColor: "rgb(214, 206, 206)"}}>
                 
                     <tr >
                         <th scope="row" >fd</th>

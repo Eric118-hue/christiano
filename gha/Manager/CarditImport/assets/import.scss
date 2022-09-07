@@ -15,3 +15,32 @@
   width: 75px !important;
   height: 30px !important;
 }
+
+
+input[type="date"]{
+  width: 200px;
+  // height: 20px;
+  background:  url('./calendar.png');
+  background-size: 18px;
+  background-repeat: no-repeat;
+  background-position: 96%;
+  border-radius: 10px;
+  word-spacing: 3px;
+  font-weight: 999;
+  border: 0.5px solid ;
+  overflow: hidden;  
+}
+
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  
+ background-color: blue;
+ height: 21px;
+ width: 25px;
+ font-size: 15px;
+ z-index: -1; 
+}
+
+
+ 
+
