@@ -250,9 +250,6 @@ class ReceptacleLine extends Component
         <td>
             {this.models('props.data.cardit.lta.code')}
         </td>
-        {this.props.selectTransports.map(select_transport=><td key={`select-transport-departure-${select_transport.id}`} className="text-center">
-            {this.departureControl(select_transport)}
-        </td>)}
     </tr>
     }
 }
@@ -289,7 +286,8 @@ class Status extends Component
             files_tablet : files_tablet,
             resdit_files : resdit_files,
             flights : flights,
-            conveyence: this.props.data.conveyence
+            conveyence: this.props.data.conveyence,
+            dirty: false
         }
         this.handleReceptacleTransportChange = this.handleReceptacleTransportChange.bind(this)
         this.handleAllReceptacleTransportChange = this.handleAllReceptacleTransportChange.bind(this)
@@ -300,10 +298,10 @@ class Status extends Component
         this.handleSubmit = this.handleSubmit.bind(this)
         this.handleValidate = this.handleValidate.bind(this)
         this.confirm = this.confirm.bind(this)
-        this.departure_date = React.createRef()
         this.form = React.createRef()
         this.move = this.move.bind(this)
         this.remove = this.remove.bind(this)
+        this.departure_date_input = React.createRef()
     }
 
     handleDirection() {
@@ -313,6 +311,10 @@ class Status extends Component
     }
 
     move() {
+        $(`#move-${this.props.data.id}`).modal('show')
+    }
+
+    submitMove() {
         const data = $(this.form.current).serializeJSON()
         $.ajax({
             url: '/movetould',
@@ -322,9 +324,7 @@ class Status extends Component
                 receptacles: data.receptacle_ulds
             },
             success: response=>{
-                setTimeout(()=>{
-                    document.location.reload()
-                }, 1000)
+                alert('ampio le liste eeee')
             }
         })
     }
@@ -340,15 +340,13 @@ class Status extends Component
             if (result.value) {
                 const data = $(this.form.current).serializeJSON()
                 $.ajax({
-                    url: '/movetould',
-                    type: 'post',
+                    url: '/uld_receptacles',
+                    type: 'delete',
                     data: {
                         receptacles: data.receptacle_ulds
                     },
                     success: response=>{
-                        setTimeout(()=>{
-                            document.location.reload()
-                        }, 1000)
+                        this.props.store.dispatch(response)
                     }
                 })
             }
@@ -359,6 +357,7 @@ class Status extends Component
         this.setState(state=>{
             const r = state.receptacles.find(it=>it.id==receptacle.id)
             r.selected = value
+            state.dirty = state.receptacles.filter(it=>it.selected).length>0
             return state
         })
     }
@@ -416,7 +415,7 @@ class Status extends Component
             language : 'fr',
             autoclose : true
         }
-        const dp = $(this.departure_date.current).datepicker(opts)
+        const dp = $(this.departure_date_input.current).datepicker(opts)
         dp.on("changeDate", ()=>{
             this.setState(state=>{
                 state.conveyence.departure_datetime_lt = moment(dp.datepicker('getDate')).format('YYYY-MM-DD')
@@ -425,48 +424,13 @@ class Status extends Component
         });
         this.unsubscribe = this.props.store.subscribe(()=>{
             const storeState = this.props.store.getState()
-            if(storeState.type=='flight_resdit' && storeState.id==this.props.data.id) {
-                this.setState(state=>{
-                    let resdits = state.resdits
-                    let resdit_files = []
-                    let flights = []
-                    let transports = {}
-                    storeState.resdits.map(resdit_group=>{
-                        resdit_group.data.map(resdit=>{
-                            resdits.push(resdit)
-                            this.descend(transports, storeState.consignment_event, resdit)
-                            resdit.files.map(file=>{
-                                resdit_files.push(file.split('-')[0])
-                                flights.push(file.split('-')[1])
-                            })
-                        })
-                    })
-                    state.changed = false
-                    state.resdits = resdits
-                    state.updated_resdits = transports
-                    state.resdit_files = resdit_files
-                    state.flights = flights
-                    if(state.resdits.length>0) {
-                        state.resdits.map(resdit=>{
-                            if(storeState.consignment_event=='assignation') {
-                                resdit.files.map(file=>{
-                                    state.files.push(<a key={`download-${this.props.data.id}-resdit-${file}-${state.files.length}`} className="btn btn-info text-white col-md-3 font-10 pt-2 m-2" {...this.hrefs(file, resdit)}>RESDIT<span className="bg-light d-block font-25 m-2 rounded text-primary">{file.split('-')[0]}<br/><small className="font-10 d-block">{file.split('-')[1]}</small></span><Ry/></a>)
-                                    state.files_tablet.push(<a key={`download-tablet-${this.props.data.id}-resdit-${file}-${state.files.length}`} className="btn text-white btn-info col-md-4 font-10 pt-2 m-2" {...this.hrefs(file, resdit)}>RESDIT<span className="bg-light d-block font-25 m-2 rounded text-primary">{file}</span><Ry/></a>)
-                                })
-                            }
-                            else {
-                                resdit.files.map(file=>{
-                                    state.files.push(<a key={`download-${this.props.data.id}-resdit-${file}-${state.files.length}`} className="btn btn-info text-white col-md-3 font-10 pt-2 m-2" {...this.hrefs(file, resdit)}>RESDIT<span className="bg-light d-block font-25 m-2 rounded text-primary">{file.split('-')[0]}<br/><small className="font-10 d-block">{file.split('-')[1]}</small></span><Ry/></a>)
-                                    state.files_tablet.push(<a key={`download-tablet-${this.props.data.id}-resdit-${file}-${state.files.length}`} className="btn text-white btn-info col-md-4 font-10 pt-2 m-2" {...this.hrefs(file, resdit)}>RESDIT<span className="bg-light d-block font-25 m-2 rounded text-primary">{file}</span><Ry/></a>)
-                                })
-                            }
-                        })
-                    }
-                    return state
+            if(storeState.type==='uld_movement' && storeState.source.id==this.props.data.id) {
+                this.setState({
+                    receptacles: storeState.source.receptacles,
+                    dirty: false
                 })
+                $(`#move-${this.props.data.id}`).modal('hide')
             }
-            if(storeState.type=='resdit')
-                $(`#schedule-${this.props.data.id}-departure`).modal('hide')
         })
     }
 
@@ -513,6 +477,7 @@ class Status extends Component
             state.receptacles.map(item=>{
                 item.selected = value
             })
+            state.dirty = value
             return state
         })
     }
@@ -553,68 +518,28 @@ class Status extends Component
                 iata : this.models('props.data.conveyence.departure_location.iata')
             })
         } 
-        return <div className="row">
-        <div className="col-md-12 d-md-block d-xl-none">
+        return <div>
+        <div className="d-md-block d-xl-none">
             <div className="row text-left text-body">
                 <div className="col-md-4">
                     {this.state.files_tablet}
                 </div>
             </div>
         </div>
-        <div className="col-xl-3 d-md-none d-xl-block">
-            <table className="table table-bordered table-resume">
-                <thead>
-                    <tr>
-                        <th>{trans('CARDIT')}</th>
-                        <th>{trans('AWB')}</th>
-                        <th>{trans('Qté de récipients')}</th>
-                        <th>{trans('Poids (:weight_unit)', {weight_unit:'Kg'})}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {this.state.receptacles.groupBy(it=>it.cardit_id).map((receptacles, index)=>{
-                    let weight = 0
-                    receptacles.map(receptacle=>{
-                        weight += parseFloat(receptacle.nsetup.weight)
-                    })
-                    return <tr key={`synthese-cardit-${this.cast(receptacles, '0.cardit_id', index)}`}>
-                        <td>{this.cast(receptacles, '0.cardit.nsetup.document_number')}</td>
-                        <td>{this.cast(receptacles, '0.cardit.lta.code')}</td>
-                        <td>{receptacles.length}</td>
-                        <td>{numeral(weight).format('0,0.00')}</td>
-                    </tr>})}
-                </tbody>
-            </table>
-            <div className="blockTemps">
-                {this.models('state.resdits', []).unique(it=>it.id).groupBy(it=>it.conveyence_id).map((resdits, index)=><div className="row border-bottom" key={`resdit-files-download-${index}`}>{resdits.filter(it=>it.event!='delivery').map(resdit=>resdit.files.map(file=><a key={`download-${resdit.id}-resdit-${file}-${resdit.files.length}`} className="btn btn-info text-white col-md-3 font-10 pt-2 m-2" {...this.hrefs(file, resdit)}>RESDIT<span className="bg-light d-block font-25 m-2 rounded text-primary">{file.split('-')[0]}<br/><small className="font-10 d-block">{file.split('-')[1]}</small><small className="d-block text-dark subfile">{this.cast(resdit, 'cardit.nsetup.document_number')}</small></span><Ry/></a>))}</div>)}
-            </div>
-        </div>
-        <div className="col-xl-9">
-            <div className="table-responsive">
-                <form ref={this.form} name={`frm_cardit${this.props.data.id}`} action={`/flight`} method="post">
-                    <Ry title="ajaxform"/>
+        <form ref={this.form} name={`frm_cardit${this.props.data.id}`} action={`/movetould`} method="post">
+            <div className='row'>
+                <div className="table-responsive col-md-8">
                     <input type="hidden" name="ry"/>
-                    <input type="hidden" name="id" value={this.props.data.id}/>
                     <input type="hidden" name="conveyence_id" value={this.props.data.conveyence_id}/>
-                    <input ref="consignment_event" type="hidden" name="consignment_event" value="departure"/>
-                    <input type="hidden" name="transport_index" value="0"/>
+                    <input type="hidden" name="conveyence[departure_datetime_lt]" value={this.models('state.data.conveyence.departure_datetime_lt')}/>
+                    <input type="hidden" name="id" value={this.props.data.id}/>
                     <table className="table tableRecap">
                         <thead>
                             <tr>
-                                <th rowSpan="2" colSpan="4"
+                                <th colSpan="4"
                                     className="colorVert noBor pl-0 text-left text-wrap">
                                         {trans('Nombre de récipients')} : {this.state.receptacles.length}
                                 </th>
-                                {(!this.props.readOnly && !this.models('props.data.resdits', []).find(it=>it.event=='departure'))?<th rowSpan="2" className="thModal">
-                                    <button className="btn btn-primary js-sweetalert"
-                                            data-type="with-custom-icon" type="button" onClick={this.props.addTransport}>+
-                                    </button>
-                                </th>:null}
-                                <th colSpan={this.props.selectTransports.length} className="thTop text-capitalize">{trans("Départ")}</th>
-                            </tr>
-                            <tr className="thLeft">
-                                {this.props.selectTransports.map(select_transport=><th key={`cardit-departure-0-${this.props.data.id}-select-transport-${select_transport.id}`}><Popover data={select_transport}/>
-                                </th>)}
                             </tr>
                             <tr>
                                 <th>
@@ -625,88 +550,78 @@ class Status extends Component
                                 <th>{trans("Numéro du récipient")}</th>
                                 <th>{trans('Cardit')}</th>
                                 <th>{trans('AWB')}</th>
-                                {this.props.selectTransports.map(select_transport=><th key={`cardit-departure-checkall-${this.props.transportIndex}-${this.props.data.id}-select-transport-${select_transport.id}`}>
-                                    {(this.props.selectTransports.length==1 && CHECKBOXES)?<div className="fancy-checkbox">
-                                    <label><input type="checkbox" onChange={event=>this.handleAllReceptacleTransportChange(select_transport, event)} checked={this.state.oneTransportAllChecked}/><span></span></label>
-                                </div>:<label className="fancy-radio custom-color-green m-auto">
-                                        <input type="radio" name={`checkall[departure][${this.props.transportIndex}]`} onChange={event=>this.handleAllReceptacleTransportChange(select_transport, event)} checked={this.models(`props.allTransport.id`)==select_transport.id}/>
-                                        <span><i className="m-0"></i></span>
-                                    </label>}
-                                </th>)}
                             </tr>
                         </thead>
                         <tbody>
                             {this.state.receptacles.map((receptacle, index)=><ReceptacleLine key={`content-flight-${this.props.transportIndex}-${receptacle.id}`} handleUldChange={checked=>this.handleUldChange(checked, receptacle)} defaultConveyence={this.props.data.conveyence} pkey={this.props.data.id} data={receptacle} selectTransports={this.props.selectTransports} transportIndex={this.props.transportIndex} handleReceptacleTransportChange={(select_transport, checked)=>this.handleReceptacleTransportChange(receptacle, select_transport, checked)} readOnly={this.props.readOnly} store={this.props.store} departureSent={this.models('props.data.resdits', []).find(it=>it.event=='departure')}/>)}
+                        </tbody>
+                    </table>
+                    <table className="table mt-3 table-bordered table-resume">
+                        <thead>
                             <tr>
-                                <td className="border-right-0 border-top-0 border-bottom-0 noBg">
-                                    <div className="dropdown">
-                                        <button className="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            {trans('Actions')}
-                                        </button>
-                                        <div className="dropdown-menu">
-                                            <button type='button' onClick={this.move} className="dropdown-item">{trans('Déplacer')}</button>
-                                            <button type='button' onClick={this.remove} className="dropdown-item">{trans('Supprimer')}</button>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td className="border-right-0 border-top-0 border-bottom-0 noBg" colSpan="3"></td>
-                                <td colSpan={this.props.selectTransports.length} className="border-0 p-0">
-                                    <button className="btn btn-orange rounded-0" type="button" onClick={()=>this.handleSubmit('departure')}>{trans("Valider")}</button>
-                                </td>
+                                <th>{trans('CARDIT')}</th>
+                                <th>{trans('AWB')}</th>
+                                <th>{trans('Qté de récipients')}</th>
+                                <th>{trans('Poids (:weight_unit)', {weight_unit:'Kg'})}</th>
                             </tr>
+                        </thead>
+                        <tbody>
+                            {this.state.receptacles.groupBy(it=>it.cardit_id).map((receptacles, index)=>{
+                            let weight = 0
+                            receptacles.map(receptacle=>{
+                                weight += parseFloat(receptacle.nsetup.weight)
+                            })
+                            return <tr key={`synthese-cardit-${this.cast(receptacles, '0.cardit_id', index)}`}>
+                                <td>{this.cast(receptacles, '0.cardit.nsetup.document_number')}</td>
+                                <td>{this.cast(receptacles, '0.cardit.lta.code')}</td>
+                                <td>{receptacles.length}</td>
+                                <td>{numeral(weight).format('0,0.00')}</td>
+                            </tr>})}
                         </tbody>
                     </table>
                     <Localtime/>
-                    <Popup id={`schedule-${this.props.data.id}-departure`} className="popup-consignment-datetime">
-                        <PopupHeader>
-                            {trans("Confirmation dates/heures départ")}
-                        </PopupHeader>
-                        <PopupBody>
-                            {this.props.selectTransports.map(select_transport=><Transport ref={`schedule-transport-departure-${select_transport.id}`} key={`schedule-transport-departure-${select_transport.id}`} data={select_transport} datetimeLT={select_transport.departure_datetime_lt} onChange={()=>this.setState({dtchanged:true})} consignmentEvent="departure"/>)}
-                        </PopupBody>
-                        <PopupFooter>
-                            <button className="btn btn-primary p-2 font-18 text-uppercase" type="button" onClick={this.confirm}>
-                                {trans('Valider')}
-                            </button>
-                        </PopupFooter>
-                    </Popup>
-                    <Popup id={`infos-detail-${this.props.data.id}`} className="airport-modal">
-                        <PopupHeader className="pb-2" closeButton={<span aria-hidden="true"  className="pb-1 pl-2 pr-2 rounded text-white" style={{background:'#170000'}}>&times;</span>}>
-                            <h5><span className="text-body">{trans("Modifier")}</span></h5>
-                        </PopupHeader>
-                        <PopupBody>
-                            <div className="form-group">
-                                <label className="control-label">
-                                    {trans('Nº de conteneur')}
-                                </label>
-                                <input type="text" name="container_id" className="form-control bs-default" onChange={this.handleDirection} required defaultValue={this.props.data.container_id}/>
-                            </div>
-                            <div className="form-group">
-                                <label className="control-label">
-                                    {trans('Nº de vol')}
-                                </label>
-                                <input type="text" name="conveyence[reference]" className="form-control bs-default" required onChange={this.handleDirection} defaultValue={this.models('props.data.conveyence.reference')}/>
-                            </div>
-                            <div className="form-group">
-                                <label className="control-label text-capitalize">
-                                    {trans("Date de départ")}
-                                </label>
-                                <div ref={this.departure_date} className="input-group date">
-                                    <input type="text" onChange={this.handleDirection} className="form-control bs-default" required data-parsley-errors-container={`#departure_date-${this.props.data.id}-error`} defaultValue={moment(this.models('state.conveyence.departure_datetime_lt')).format('DD/MM/YYYY')}/>
-                                    <div className="input-group-append"> 
-                                        <button className="btn-primary btn text-light pl-3 pr-3" type="button"><i className="fa fa-calendar-alt"></i></button>
-                                    </div>
+                </div>
+                <Popup id={`move-${this.props.data.id}`} className="modal-md">
+                    <PopupHeader>
+                        {trans("Déplacement des sacs sélectionnés")}
+                    </PopupHeader>
+                    <PopupBody>
+                        <div className="form-group">
+                            <label className="control-label">
+                                {trans('Nº de conteneur')}
+                            </label>
+                            <input type="text" name="container_id" className="form-control bs-default" required defaultValue={this.props.data.container_id}/>
+                        </div>
+                        <div className="form-group">
+                            <label className="control-label">
+                                {trans('Nº de vol')}
+                            </label>
+                            <input type="text" name="conveyence[reference]" className="form-control bs-default" required defaultValue={this.models('props.data.conveyence.reference')}/>
+                        </div>
+                        <div className="form-group">
+                            <label className="control-label text-capitalize">
+                                {trans("Date de départ")}
+                            </label>
+                            <div ref={this.departure_date_input} className="input-group date">
+                                <input type="text" className="form-control bs-default" required data-parsley-errors-container={`#departure_date-${this.props.data.id}-error`} defaultValue={moment(this.models('props.data.conveyence.departure_datetime_lt')).format('DD/MM/YYYY')}/>
+                                <div className="input-group-append"> 
+                                    <button className="btn-primary btn text-light pl-3 pr-3" type="button"><i className="fa fa-calendar-alt"></i></button>
                                 </div>
-                                <span id={`departure_date-${this.props.data.id}-error`}></span>
                             </div>
-                            <input type="hidden" name="conveyence[departure_datetime_lt]" value={this.models('state.conveyence.departure_datetime_lt')}/>
-                            <input type='hidden' name='mail_direction' value={this.state.changed?'ALL':'UPL'}/>
-                            <button className="btn btn-orange py-2 font-18 text-capitalize" type="button" onClick={this.handleValidate}>{trans('Confirmer')}</button>
-                        </PopupBody>
-                    </Popup>
-                </form>
+                            <span id={`departure_date-${this.props.data.id}-error`}></span>
+                        </div>
+                        <button className="btn btn-beige text-light py-2 mt-3">{trans('Déplacer les sacs')}</button>
+                    </PopupBody>
+                </Popup>
+                {this.state.dirty?<div className='col-md-4 d-flex mt-5'>
+                    <i className='fa fa-caret-right text-primary fa-10x mr-5'></i>
+                    <div className='d-flex flex-column flex-fill'>
+                        <button type='button' onClick={this.move} className="btn btn-orange mb-5 p-3">{trans('Déplacer les sacs')}</button>
+                        <button type='button' onClick={this.remove} className="btn btn-danger p-3">{trans('Supprimer les sacs')}</button>
+                    </div>
+                </div>:null}
             </div>
-        </div>
+        </form>
     </div>
     }
 }
