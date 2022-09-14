@@ -28,7 +28,9 @@ input[type="date"]{
   word-spacing: 3px;
   font-weight: 999;
   border: 0.5px solid ;
-  overflow: hidden;  
+  overflow: hidden;
+  
+  
 }
 
 
@@ -38,9 +40,15 @@ input[type="date"]::-webkit-calendar-picker-indicator {
  height: 21px;
  width: 25px;
  font-size: 15px;
+
  z-index: -1; 
 }
 
 
  
 
+// style table
+// tr:nth-child(even){
+//   background-color: red;
+// }
+// }

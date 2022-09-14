@@ -1,11 +1,34 @@
-import React, {Component} from 'react';
+import React, {useState, useEffect} from 'react';
 import TableResult from './components/TableResult';
 import './assets/import.scss';
+import axios from 'axios';
 
 
+function List() {
+      const [qUld, setqUld] = useState("");
+      const [uldLists, setuldList] = useState([]);
 
-class List extends Component {
-  render() {
+      useEffect(()=>{
+          fetchProducts() 
+      },[]);
+  
+      const fetchProducts = async () => {
+          await axios.get(`http://127.0.0.1:8000/api/cardit_import`).then(({data})=>{
+              let uldlist = data.data;   
+              setuldList(uldlist)
+          // console.log(uldlist);
+          })
+      }
+  
+     
+      /**
+       * Searching by Num Uld
+       */
+      const searchN_uld = (data) => {
+        // console.log(qUld);
+         return data.filter((item) => item.code.toLowerCase().includes(qUld));
+      }
+ 
     return (
       <div className='content'>
         <div className='toolbar'>
@@ -89,7 +112,7 @@ class List extends Component {
            <div class="p-2 bd-highlight">  
               <div className='input-group'>
                 <div className="form-outline" style={{width: "200px"}}>
-                  <input type="search"  placeholder="N° d'ULD" className="form-control" style={{ height: "30px", fontSize: "12px"}}/>
+                  <input type="search" id='nuld' onChange={e => setqUld(e.target.value)}  placeholder="N° d'ULD" className="form-control" style={{ height: "30px", fontSize: "12px"}}/>
                 </div>
                   <button type="submit" id="confirm_search" className="btn -primary" style={{backgroundColor: "blue", color: "white", height: "30px"}}>OK</button>
               </div>
@@ -99,7 +122,7 @@ class List extends Component {
             <div class="p-2 bd-highlight">  
               <div className='input-group'>
                 <div className="form-outline" style={{width: "200px"}}>
-                  <input type="search" placeholder="N° de récipient" className="form-control" style={{height: "30px", fontSize: "12px"}}/>
+                  <input type="search" id="nrecipient" onChange={e => setqUld(e.target.value)} placeholder="N° de récipient" className="form-control" style={{height: "30px", fontSize: "12px"}}/>
                 </div>
                   <button type="submit" id="confirm_search" className="btn" style={{backgroundColor: "blue", color: "white", height: "30px"}}>OK</button>
               </div>
@@ -109,7 +132,7 @@ class List extends Component {
             <div className="p-2 bd-highlight">  
               <div className='input-group'>
                 <div className="form-outline" style={{width: "200px"}}>
-                  <input type="search" placeholder="MRD Label" className="form-control" style={{height: "30px", fontSize: "12px"}}/>
+                  <input type="search" id='mrdlabel' onChange={e => setqUld(e.target.value)} placeholder="MRD Label" className="form-control" style={{height: "30px", fontSize: "12px"}}/>
                 </div>
                   <button type="submit" id="confirm_search" className="btn" style={{marginLeft: "-10px", backgroundColor: "blue", color: "white", height: "30px"}}>OK</button>
               </div>
@@ -119,7 +142,7 @@ class List extends Component {
             <div className="p-2 bd-highlight">  
               <div className='input-group'>
                 <div className="form-outline" style={{width: "200px"}}>
-                  <input type="search"  placeholder="MRD Location" className="form-control" style={{height: "30px", fontSize: "12px"}}/>
+                  <input type="search" id='mrdlocation' onChange={e => setqUld(e.target.value)} placeholder="MRD Location" className="form-control" style={{height: "30px", fontSize: "12px"}}/>
                 </div>
                   <button type="submit" id="confirm_search" className="btn" style={{marginLeft: "-10px", backgroundColor: "blue", color: "white", height: "30px"}}>OK</button>
               </div>
@@ -130,12 +153,12 @@ class List extends Component {
         </div>
           {/* Table result */}
         <div>
-          <TableResult/>
+          <TableResult ulds={searchN_uld(uldLists)}/>
         </div>
       
       </div>
     )
   }
-}
+
 
 export default List;
