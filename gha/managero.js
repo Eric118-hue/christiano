@@ -23,6 +23,7 @@ import Ry from '../vendor/Ry/Core/Ry';
 import Page from '../vendor/Ry/Admin/PageEditor';
 import Display from '../vendor/Ry/Core/Page';
 
+console.log('ioooeeee', React.version);
 
 const Components = {
     App : App,

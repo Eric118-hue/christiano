@@ -23,6 +23,30 @@ class List extends BaseList
         this.archive = this.archive.bind(this)
     }
 
+    componentWillUnmount() {
+        this.unsubscribe()
+    }
+
+    componentDidMount() {
+        super.componentDidMount()
+        this.unsubscribe = this.props.store.subscribe(()=>{
+            const storeState = this.props.store.getState()
+            if(storeState.type==='uld_movement' && storeState.destination) {
+                this.setState(state=>{
+                    const update = state.data.find(it=>it.id==storeState.destination.id)
+                    if(update) {
+                        update.receptacles = storeState.destination.receptacles
+                        update.nsetup = storeState.destination.nsetup
+                    }
+                    else {
+                        state.data.unshift(storeState.destination)
+                    }
+                    return state
+                })
+            }
+        })
+    }
+
     archive(item) {
         swal({
             title: trans('Confirmez-vous l\'archivage?'),
