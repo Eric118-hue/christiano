@@ -8,3 +8,4 @@ node_modules/
 .history
 /config/webpack.gha.dev.js
 /config/webpack.gha.prod.js
+.env

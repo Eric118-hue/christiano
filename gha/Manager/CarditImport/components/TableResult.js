@@ -18,7 +18,7 @@ const TableResult = ({ulds, data}) => {
      
       
     const fetchCarditUld = async (id) => {
-        await axios.get(`http://127.0.0.1:8000/api/cardit_import/${id}`).then(({data})=>{
+        await axios.get(`${process.env.REACT_APP_API_URL}/api/cardit_import/${id}`).then(({data})=>{
           const cardit = data.data
           setcarditUld(cardit);
          console.log(cardit);
@@ -29,22 +29,24 @@ const TableResult = ({ulds, data}) => {
     
     return (
       <div className="mt-5 pr-1 container-fluid bg-body rounded" style={{backgroundColor: "white", height:"500px"}}>
-        <div className="d-flex justify-content-start align-items-center flex-wrap p-3">
+        <div className="d-flex">
             <div className="m-2 ml-4">
-                <h4>RECEPTIONS EXPORT</h4>
+                <h4>RECEPTIONS IMPORT</h4>
             </div>
-            <div className="mt-3 ml-4">
+            <div className="d-inline m-3">
                 <p>Nombre d'ULD: 6</p>
             </div>
-            <div className="mt-3 ml-4">
-                <p>Nombre de recipients: 8</p>
+            <div className="d-inline m-3">
+                <p>Nombre de récipients: 8</p>
             </div>
-            <div className="mt-3 ml-4">
+            <div className="d-inline m-3">
                 <p>Poids total: 78</p>
             </div>
-            <DownloadTableExcel filename="Uld"  sheet="users" currentTableRef={tableRef.current}  className="mt-2" style={{marginLeft:"750px"}} >
-                    <button type="button" className="btn btn-success"><i className="fas fa-file-excel"></i>Télécharger</button>
-            </DownloadTableExcel>
+            <div className="excel">
+                <DownloadTableExcel filename="Uld"  sheet="users" currentTableRef={tableRef.current}>
+                        <button type="button" className="btn btn-success"><i className="fas fa-file-excel"></i>Télécharger</button>
+                </DownloadTableExcel>
+            </div>
         </div>
 
             {/* Table */}
@@ -123,7 +125,7 @@ const TableResult = ({ulds, data}) => {
                                     <td>{car.weight}</td>
                                 </tr>
                             ))
-                        ) : <p>pas de cardit</p>
+                        ) : null
 
                     }
                      

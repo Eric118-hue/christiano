@@ -15,14 +15,29 @@
 //   
 // }
 .col-md-3 .form-control{
-  width: 300px !important;
+  width: 210px !important;
+}
+.col-md-4 .form-control{
+  width: 90px !important;
+}
+
+.contents{
+  width: 380px;
+  margin-left: 20px;
+}
+.mrdloca{
+  width: 200px;
+  margin-left: 20px;
+}
+
+.excel{
+  margin-top: 20px;
+  margin-left: 90%;
+  position: absolute;
+  // margin-right: 30px;
 }
 
 
-.btn{
-  background-color: blue;
-  color: white;
-}
 
 
 
