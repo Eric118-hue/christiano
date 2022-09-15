@@ -9,8 +9,10 @@ const config = {
     laravel : {
         public : `${laravel}public/`,
         root : laravel
-    }
+    },
+    
 }
+
 
 export const languages = {};
 
