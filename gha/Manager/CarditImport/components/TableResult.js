@@ -11,14 +11,42 @@ const TableResult = ({ulds, data}) => {
     const [carditUld, setcarditUld] = useState([]);
     const [isOpen, setIsOpen] =  useState(false)
 
-    // useEffect(()=>{
-    //     fetchCarditUld()
+    // const cardUld = () => {
+    //             return (
+    //                 <div>
+    //                 {
+                       
+    //                     ulds.map((car) => (
+    //                         <tr>
+    //                              <td>{car.handover_date}</td>
+    //                             <td>{car.handover_time}</td>
+    //                             <td>{car.name}</td>
+    //                             <td>{car.origine}</td>
+    //                             <td>{car.handover_date}</td>
+    //                             <td>{car.origine}</td>
+    //                             <td>{car.actual_arrival}</td>
+    //                             <td>{car.reg_arr}</td>
+    //                             <td>{car.MRD_location}</td>
+    //                             <td>{car.handler}</td>
+    //                             <td>{car.MRD_label}</td>
+    //                             <td>{car.regist_carr} </td>
+    //                             <td>{car.regist_flight}</td>
+    //                             <td>{car.attr_carrier}</td>
+    //                             <td>{car.attr_receptacle}</td>
+    //                             <td>{car.weight}</td>
+    //                         </tr>
+    //                     ))
+                  
 
-    //   },[])
+
+    //             }
+    //             </div>
+    //             )
+    // }
      
       
     const fetchCarditUld = async (id) => {
-        await axios.get(`${process.env.REACT_APP_API_URL}/api/cardit_import/${id}`).then(({data})=>{
+        await axios.get(`http://127.0.0.1:8000/api/cardit_import/${id}`).then(({data})=>{
           const cardit = data.data
           setcarditUld(cardit);
          console.log(cardit);
@@ -74,7 +102,7 @@ const TableResult = ({ulds, data}) => {
                      { 
                         ulds.length > 0 ? (
                            ulds.map((item) => (                     
-                            <tr key={item.id}  style={{backgroundColor: "rgb(214, 206, 206)"}}>
+                            <tr key={item.id}>
                                 <th scope="row" >{item.handover_date}</th>
                                 <td >{item.handover_time}</td>
                                 <td>
@@ -100,34 +128,11 @@ const TableResult = ({ulds, data}) => {
                                 <td>{item.attr_receptacle}</td>
                                 <td>{item.weight}</td>
                             </tr>
+                            
                       ))) : null
-                     }
-
-                    {
-                        carditUld.length > 0 ? (
-                            carditUld.map((car) => (
-                                <tr>
-                                     <td>{car.handover_date}</td>
-                                    <td>{car.handover_time}</td>
-                                    <td>{car.name}</td>
-                                    <td>{car.origine}</td>
-                                    <td>{car.actual_arrival}</td>
-                                    <td>{car.origine}</td>
-                                    <td>{car.actual_arrival}</td>
-                                    <td>{car.reg_arr}</td>
-                                    <td>{car.MRD_location}</td>
-                                    <td>{car.handler}</td>
-                                    <td>{car.MRD_label}</td>
-                                    <td>{car.regist_carr} </td>
-                                    <td>{car.regist_flight}</td>
-                                    <td>{car.attr_carrier}</td>
-                                    <td>{car.attr_receptacle}</td>
-                                    <td>{car.weight}</td>
-                                </tr>
-                            ))
-                        ) : null
-
+                    
                     }
+                    
                      
                 
               

@@ -1,230 +1,78 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState,useRef, useReducer, useEffect} from 'react';
 import TableResult from './components/TableResult';
 import './assets/import.scss';
 import axios from 'axios';
 import trans from '../../translations';
+import SearchModel from './components/SearchModel';
 
 
 function List() {
-      const [qUld, setqUld] = useState("");
-      const [uldLists, setuldList] = useState([]);
+           const [uldLists, setuldList] = useState([]);
+          const [filterInput, setFilterInput] = useReducer(
+            (state, newState) => ({...state, ...newState}),
+            {
+                uld: "",
+                recipient: "",
+                mrdlabel: "",
+                mrdlocation: ""
+            }
+          );
+          const componentIsMounted = useRef(true);
 
-      useEffect(()=>{
-          fetchProducts() 
-      },[]);
+
+          useEffect(()=>{
+              fetchProducts() 
+              
+          },[]);
+      
+          // Fecthing Data
+          const fetchProducts = async () => {
+              await axios.get(`http://127.0.0.1:8000/api/cardit_import`).then(({data})=>{
+                    const datas =data.data
+                    setuldList(datas);
+                    console.log(datas)
+                  
+              }).catch(err => {
+                console.log(err);
+              });
+             
+          }
+
+            // HandleFileter
+          const handleFilter = eve => {
+            const {name, value} = eve.target;
+            setFilterInput({ [name]: value})
+          }
   
-      const fetchProducts = async () => {
-          await axios.get(`${process.env.REACT_APP_API_URL}/api/cardit_import`).then(({data})=>{
-              let uldlist = data.data;   
-              setuldList(uldlist)
-          // console.log(uldlist);
-          })
-      }
-  
+          const filters = list => {
+            return list.filter(item => {
+                return(
+                  item.code.toLowerCase().includes(filterInput.uld.toLowerCase()) &&
+                  item.regist_flight.toLowerCase().includes(filterInput.recipient.toLowerCase())&&
+                  item.MRD_label.toLowerCase().includes(filterInput.mrdlabel.toLowerCase())&&
+                  item.MRD_location.toLowerCase().includes(filterInput.mrdlocation.toLowerCase())
+                );
+            });
+          }
+
+        const values = filters(uldLists)
+
+
      
-      /**
-       * Searching by Num Uld
-       */
-      // const searchN_uld = (data) => {
-      //   // console.log(qUld);
-      //    return data.filter((item) => item.code.toLowerCase().includes(qUld));
-      // }
+     
  
     return (
       <div className='content'>
-        <div className='d-flex flex-wrap'>
-          <div className='toolbarItem'>
-            <div className="col-md-2 mt-3" >
-                  <div className="align-items-baseline d-flex form-group ml-2" style={{width: "220px"}}>
-                      <label className="control-label mr-2">Register Carrier</label>
-                      <select className="form-control" >
-                        <option value="">Tous</option>
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
-                      </select>
-                  </div>
-              </div>
-          </div>
         
-          <div className='toolbarItem'>
-            <div className="col-md-1 mt-3">
-                <div className="align-items-baseline d-flex form-group ml-2" style={{width: "220px"}}>
-                    <label className="control-label mr-2">Attribute Carrier</label>
-                    <select className="form-control" >
-                      <option value="">Tous</option>
-                      <option value="1">One</option>
-                      <option value="2">Two</option>
-                      <option value="3">Three</option>
-                    </select>
-                </div>
-            </div>
-          </div>
-
-         {/* Origine */}
-
-         <div className='toolbarItem'>
-            <div className="col-md-2 mt-3">
-                <div className="align-items-baseline d-flex form-group ml-2" style={{width: "220px"}}>
-                    <label className="control-label mr-2">Origine</label>
-                    <select className="form-control" >
-                      <option value="">Tous</option>
-                      <option value="1">One</option>
-                      <option value="2">Two</option>
-                      <option value="3">Three</option>
-                    </select>
-                    <div className="m-auto">
-                      <i className="fa fa-2x mx-2 fa-caret-right"></i>
-                    </div>
-                </div>
-            </div>
-          </div>
-
-          
-              {/* Filtring by date */}
-              <div className="col-md-6 border rounded p-3 mr-4" >
-                  <div className="d-flex ">
-                    <label className="fancy-radio m-auto custom-color-green">
-                      <input  type="radio" value="date"/>
-                        <span><i className="mr-0"></i></span>
-                    </label>
-                  <div className="input-group date ">
-                      <input type="text" className="form-control " defaultValue="DD/MM/YYYY"/>
-                       <div className="input-group-append"> 
-                          <button className="btn-primary btn text-light" type="button"><i className="fa fa-calendar-alt"></i></button>
-                       </div>
-                  </div>
-                  <div className="form-group m-auto">
-                      <label className="control-label mx-2 mb-0">au</label>
-                  </div>
-                  <div  className="input-group date mx-2">
-                      <input type="text" className="form-control" value="DD/MM/YYYY"/>
-                      <div className="input-group-append"> 
-                        <button className="btn-primary btn text-light" type="button"><i className="fa fa-calendar-alt"></i></button>
-                      </div>
-                  </div>
-                  <div className="form-group m-auto">
-                    <label className="control-label ml-5 mr-2 mb-0">{trans('ou')}</label>
-                  </div>
-                  <label className="fancy-radio m-auto custom-color-green mx-2">
-                    <input  type="radio" value="year" />
-                    <span><i className="mr-0"></i></span>
-                  </label>
-                  <select className="form-control mx-2 w-50" >
-                      <option >2021</option>
-                      <option >2022</option>
-                  </select>
-              </div>
-            
-         </div>      
-      
-
-              {/* 2nd row of the Searching */}
-        <div className="d-flex justify-content-between bd-highlight mt-4 w-100">
-              <div className="p-2 ">
-                  <div className="align-items-baseline d-flex form-group ml-2" style={{width: "200px"}}>
-                      <label className="control-label mr-2">Register flight</label>
-                      <select className="form-control" >
-                        <option value="">Tous</option>
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
-                      </select>
-                  </div>
-              </div>
-              <div className="p-2 w-50">
-                  <div className="input-group" >
-                      <input  type="search" placeholder="N° d'ULD" value="" className="form-control" />
-                        <div className="input-group-append">
-                          <button className="btn-primary btn text-light" type="button">OK</button>
-                        </div>
-                    </div>
-              </div>
-              <div className="p-2 w-75 ">
-              <div className="input-group" >
-                      <input  type="search" placeholder="N° de récipient" value="" className="form-control" style={{width: "400px !important"}} />
-                        <div className="input-group-append">
-                          <button className="btn-primary btn text-light" type="button">OK</button>
-                        </div>
-                    </div>
-              </div>
-              <div className="p-2 w-75">
-                  <div className="input-group" >
-                      <input  type="search" placeholder="MRD label" value="" className="form-control" />
-                        <div className="input-group-append">
-                          <button className="btn-primary btn text-light" type="button">OK</button>
-                        </div>
-                    </div>
-              </div>
-              <div className="p-2 w-50 mr-4 ">
-                <div className="input-group"  >
-                
-                <input  type="search" placeholder="MRD location" value="" className="form-control" style={{width: "300px !important"}} />
-                
-                  <div className="">
-                    <button className="btn-primary btn text-light" type="button">OK</button>
-                  </div>
-                </div>
-              </div>
-        </div>
-      
-           
-
-            {/* Search with N_Uld */}
-            
-            
-
-            {/* Search with N_recipient */}
-            
-            {/* <div className="contens" >
-                <div className=" " >
-                    <div className="input-group" >
-                      <input  type="search" placeholder="N° de récipient" value="" className="form-control" style={{width: "400px !important"}} />
-                        <div className="input-group-append">
-                          <button className="btn-primary btn text-light" type="button">OK</button>
-                        </div>
-                    </div>
-                </div>
-              </div> */}
-            
-
-            {/* Search with MRDLabel */}
-{/*             
-            <div className="contentsc" >
-                <div className=" " >
-                    <div className="input-group" >
-                      <input  type="search" placeholder="MRD label" value="" className="form-control" />
-                        <div className="input-group-append">
-                          <button className="btn-primary btn text-light" type="button">OK</button>
-                        </div>
-                    </div>
-                </div>
-              </div> */}
-            
-
-            
-              {/* <div className="mrdloca1" >
-                <div className=" " >
-                    <div className="input-group" >
-              
-                      <input  type="search" placeholder="MRD location" value="" className="form-control" />
-                      
-                        <div className="">
-                          <button className="btn-primary btn text-light" type="button">OK</button>
-                        </div>
-                    </div>
-                </div>
-              </div> */}
-            
-
-      </div>
+          <SearchModel searchValue={filterInput} handleChangeValue={handleFilter}/>
+        
     
     
 
       
           {/* Table result */}
         <div>
-          <TableResult ulds={uldLists}/>
+          <TableResult ulds={values}/>
         </div>
       
       </div>
