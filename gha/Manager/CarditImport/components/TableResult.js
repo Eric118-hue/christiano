@@ -6,10 +6,16 @@ import { DownloadTableExcel } from 'react-export-table-to-excel';
 
 
 
-const TableResult = ({ulds, data}) => {
+const TableResult = ({ulds}) => {
     const tableRef = useRef(null);
-    const [carditUld, setcarditUld] = useState([]);
-    const [isOpen, setIsOpen] =  useState(false)
+    const [countUld, setCountUld] = useState(0);
+
+
+    const NumberUld = () =>{
+        
+    }
+    // const [carditUld, setcarditUld] = useState([]);
+    // const [isOpen, setIsOpen] =  useState(false)
 
     // const cardUld = () => {
     //             return (
@@ -45,14 +51,14 @@ const TableResult = ({ulds, data}) => {
     // }
      
       
-    const fetchCarditUld = async (id) => {
-        await axios.get(`http://127.0.0.1:8000/api/cardit_import/${id}`).then(({data})=>{
-          const cardit = data.data
-          setcarditUld(cardit);
-         console.log(cardit);
+    // const fetchCarditUld = async (id) => {
+    //     await axios.get(`http://127.0.0.1:8000/api/cardit_import/${id}`).then(({data})=>{
+    //       const cardit = data.data
+    //       setcarditUld(cardit);
+    //      console.log(cardit);
         
-        })
-    }
+    //     })
+    // }
 
     
     return (
@@ -79,7 +85,7 @@ const TableResult = ({ulds, data}) => {
 
             {/* Table */}
             
-            <table ref={tableRef} className="table table-bordered table-hover table striped table-liste" style={{fontSize: "10px"}} >
+            <table ref={tableRef} className="table table-bordered table-hover table-striped table-liste" cellSpacing="0" cellPadding="0" id="recipientTable" >
             <thead>
                 <tr>
                     <th scope="col" colSpan={2} className="text-wrap" style={{textAlign: "center", width: "50px"}}>Handover Date&Hour</th>
@@ -101,10 +107,10 @@ const TableResult = ({ulds, data}) => {
                   <tbody>
                      { 
                         ulds.length > 0 ? (
-                           ulds.map((item) => (                     
+                           ulds.map((item) => (                    
                             <tr key={item.id}>
-                                <th scope="row" >{item.handover_date}</th>
-                                <td >{item.handover_time}</td>
+                                <th>{item.handover_date}</th>
+                                <td style={{color: "red", fontWeight: "bold"}} >{item.handover_time}</td>
                                 <td>
                                     {item.code} <a href="#" className="btn-sm btn-icon btn-pure btn-turquoise on-default ml-2 m-r-5 button-edit"
                                         onClick={ e => {
@@ -129,7 +135,7 @@ const TableResult = ({ulds, data}) => {
                                 <td>{item.weight}</td>
                             </tr>
                             
-                      ))) : null
+                      ))) : <p>Loading</p>
                     
                     }
                     
