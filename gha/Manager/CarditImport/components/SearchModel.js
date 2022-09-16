@@ -133,7 +133,7 @@ const SearchModel = ({searchValue, handleChangeValue}) => {
                         onChange= {e => handleChangeValue(e)}
                       />
                         <div className="input-group-append">
-                          <button className="btn-primary btn text-light" type="button">OK</button>
+                          <button className="btn-blue btn text-light" type="button">OK</button>
                         </div>
                     </div>
               </div>
