@@ -82,7 +82,7 @@ function List() {
 
           
               {/* Filtring by date */}
-              <div className="col-md-6 border rounded p-3 " >
+              <div className="col-md-6 border rounded p-3 mr-4" >
                   <div className="d-flex ">
                     <label className="fancy-radio m-auto custom-color-green">
                       <input  type="radio" value="date"/>
@@ -120,9 +120,8 @@ function List() {
       
 
               {/* 2nd row of the Searching */}
-      <div className="toolbar">        
-        <div className="d-flex flex-wrap pt-2">   
-            <div className="mrdloca">
+        <div className="d-flex justify-content-between bd-highlight mt-4 w-100">
+              <div className="p-2 ">
                   <div className="align-items-baseline d-flex form-group ml-2" style={{width: "200px"}}>
                       <label className="control-label mr-2">Register flight</label>
                       <select className="form-control" >
@@ -133,26 +132,52 @@ function List() {
                       </select>
                   </div>
               </div>
-           
-
-            {/* Search with N_Uld */}
-            
-              <div className="mrdloca" >
-                <div className="d-flex " >
-                    <div className="input-group" >
+              <div className="p-2 w-50">
+                  <div className="input-group" >
                       <input  type="search" placeholder="N° d'ULD" value="" className="form-control" />
                         <div className="input-group-append">
                           <button className="btn-primary btn text-light" type="button">OK</button>
                         </div>
                     </div>
+              </div>
+              <div className="p-2 w-75 ">
+              <div className="input-group" >
+                      <input  type="search" placeholder="N° de récipient" value="" className="form-control" style={{width: "400px !important"}} />
+                        <div className="input-group-append">
+                          <button className="btn-primary btn text-light" type="button">OK</button>
+                        </div>
+                    </div>
+              </div>
+              <div className="p-2 w-75">
+                  <div className="input-group" >
+                      <input  type="search" placeholder="MRD label" value="" className="form-control" />
+                        <div className="input-group-append">
+                          <button className="btn-primary btn text-light" type="button">OK</button>
+                        </div>
+                    </div>
+              </div>
+              <div className="p-2 w-50 mr-4 ">
+                <div className="input-group"  >
+                
+                <input  type="search" placeholder="MRD location" value="" className="form-control" style={{width: "300px !important"}} />
+                
+                  <div className="">
+                    <button className="btn-primary btn text-light" type="button">OK</button>
+                  </div>
                 </div>
               </div>
+        </div>
+      
+           
+
+            {/* Search with N_Uld */}
+            
             
 
             {/* Search with N_recipient */}
             
-            <div className="contents" >
-                <div className="d-flex " >
+            {/* <div className="contens" >
+                <div className=" " >
                     <div className="input-group" >
                       <input  type="search" placeholder="N° de récipient" value="" className="form-control" style={{width: "400px !important"}} />
                         <div className="input-group-append">
@@ -160,13 +185,13 @@ function List() {
                         </div>
                     </div>
                 </div>
-              </div>
+              </div> */}
             
 
             {/* Search with MRDLabel */}
-            
-            <div className="contents" >
-                <div className="d-flex " >
+{/*             
+            <div className="contentsc" >
+                <div className=" " >
                     <div className="input-group" >
                       <input  type="search" placeholder="MRD label" value="" className="form-control" />
                         <div className="input-group-append">
@@ -174,12 +199,12 @@ function List() {
                         </div>
                     </div>
                 </div>
-              </div>
+              </div> */}
             
 
             
-              <div className="mrdloca" >
-                <div className="d-flex " >
+              {/* <div className="mrdloca1" >
+                <div className=" " >
                     <div className="input-group" >
               
                       <input  type="search" placeholder="MRD location" value="" className="form-control" />
@@ -189,12 +214,12 @@ function List() {
                         </div>
                     </div>
                 </div>
-              </div>
+              </div> */}
             
 
       </div>
-      </div>
-    </div>  
+    
+    
 
       
           {/* Table result */}
