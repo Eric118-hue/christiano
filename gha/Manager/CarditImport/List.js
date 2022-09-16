@@ -33,10 +33,10 @@ function List() {
     return (
       <div className='content'>
         <div className='d-flex flex-wrap'>
-          <div className='toolbarItem'>
-            <div className="col-md-2 mt-3" >
-                  <div className="align-items-baseline d-flex form-group ml-2" style={{width: "220px"}}>
-                      <label className="control-label mr-2">Register Carrier</label>
+          <div className='col-md-2 toolbarItem'>
+            <div className="mt-3" >
+                  <div className="align-items-baseline d-flex form-group mb-0 ml-2" style={{width: "220px"}}>
+                      <label className="control-label">Register Carrier</label>
                       <select className="form-control" >
                         <option value="">Tous</option>
                         <option value="1">One</option>
@@ -47,10 +47,10 @@ function List() {
               </div>
           </div>
         
-          <div className='toolbarItem'>
-            <div className="col-md-1 mt-3">
-                <div className="align-items-baseline d-flex form-group ml-2" style={{width: "220px"}}>
-                    <label className="control-label mr-2">Attribute Carrier</label>
+          <div className='col-md-2 toolbarItem'>
+            <div className="mt-3">
+                <div className="align-items-baseline d-flex form-group mb-0 ml-2" style={{width: "220px"}}>
+                    <label className="control-label">Attribute Carrier</label>
                     <select className="form-control" >
                       <option value="">Tous</option>
                       <option value="1">One</option>
@@ -63,10 +63,10 @@ function List() {
 
          {/* Origine */}
 
-         <div className='toolbarItem'>
-            <div className="col-md-2 mt-3">
-                <div className="align-items-baseline d-flex form-group ml-2" style={{width: "220px"}}>
-                    <label className="control-label mr-2">Origine</label>
+         <div className='col-md-2 toolbarItem'>
+            <div className="mt-3">
+                <div className="align-items-baseline d-flex form-group mb-0 ml-2" style={{width: "220px"}}>
+                    <label className="control-label">Origine</label>
                     <select className="form-control" >
                       <option value="">Tous</option>
                       <option value="1">One</option>
@@ -82,7 +82,7 @@ function List() {
 
           
               {/* Filtring by date */}
-              <div className="col-md-6 border rounded p-3 mr-4" >
+              <div className="col-md-6 border rounded py-3" >
                   <div className="d-flex ">
                     <label className="fancy-radio m-auto custom-color-green">
                       <input  type="radio" value="date"/>

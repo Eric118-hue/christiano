@@ -3,6 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const WorkboxPlugin = require('workbox-webpack-plugin');
 const config = require("../cenv-gha");
+const Dotenv = require('dotenv-webpack');
 
 module.exports = {
   entry: {
@@ -18,6 +19,7 @@ module.exports = {
     
   },
   plugins: [
+    new Dotenv(),
     new CleanWebpackPlugin(['dist']),
     new HtmlWebpackPlugin({
       title: 'GHA',
