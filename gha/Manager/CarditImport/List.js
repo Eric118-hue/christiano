@@ -65,10 +65,7 @@ function List() {
       <div className='content'>
         
           <SearchModel searchValue={filterInput} handleChangeValue={handleFilter}/>
-        
-    
-    
-
+          
       
           {/* Table result */}
         <div>
