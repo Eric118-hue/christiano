@@ -1,13 +1,4 @@
-/.project
-/.settings/
-node_modules/
-.DS_Store
-<<<<<<< HEAD
-/env.js
-/cenv.js
-.history
-.env
-=======
-.history
 
->>>>>>> chris
+node_modules/
+
+.history
